@@ -7,7 +7,7 @@ import ElementStructure from '@/components/ElementStructure';
 import TenGods from '@/components/TenGods';
 import { calculateLuckyStars } from '@/lib/bazi/lucky-stars';
 import { calculateElementStructure, calculateTenGods } from '@/lib/bazi/element-analysis';
-import { detectAllHSCombinations, detectAllBranchInteractions } from '@/lib/bazi/combinations';
+import { detectAllHSCombinations, detectAllBranchInteractions, detectLuckPillarCombinations } from '@/lib/bazi/combinations';
 import { 
   calculateCurrentYearPillar, 
   calculateCurrentMonthPillar, 
@@ -33,6 +33,7 @@ export default function BaziCalculator() {
   const [tenGodsData, setTenGodsData] = useState<any>(null);
   const [hsCombos, setHsCombos] = useState<any>(null);
   const [branchInteractions, setBranchInteractions] = useState<any>(null);
+  const [luckPillarCombos, setLuckPillarCombos] = useState<any[]>([]);
   const [currentPillars, setCurrentPillars] = useState<any>(null);
 
   // Selection state for drill-down
@@ -121,6 +122,12 @@ export default function BaziCalculator() {
       
       const interactions = detectAllBranchInteractions(data.four_pillars, currentPillarsObj);
       setBranchInteractions(interactions);
+      
+      // Calculate per-luck-pillar combinations (vs natal chart only)
+      const luckCombos = data.luck_pillars.luck_pillars.map((lp: any) =>
+        detectLuckPillarCombinations(lp, data.four_pillars)
+      );
+      setLuckPillarCombos(luckCombos);
       
       // Reset selections
       handleResetSelection();
@@ -301,7 +308,7 @@ export default function BaziCalculator() {
               <div className="flex flex-nowrap flex-row justify-center items-start gap-[0.6rem] my-8 p-[1.25rem_0.75rem] bg-gradient-to-br from-[#f8f9fa] to-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] overflow-visible min-h-[400px]">
                 {/* Natal Chart */}
                 {!unknownTime ? (
-                  <Pillar title="Hour Pillar (時柱)" pillarData={baziData.four_pillars.hour_pillar} luckyStars={luckyStars} hsCombos={hsCombos?.H} branchInteractions={branchInteractions?.H} />
+                  <Pillar title="Hour Pillar (時柱)" pillarData={baziData.four_pillars.hour_pillar} luckyStars={luckyStars} hsCombos={hsCombos?.H} branchInteractions={branchInteractions?.H} dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name} />
                 ) : (
                   <div className="pillar flex-none w-[145px] min-h-[520px] h-auto p-0 rounded-xl shadow-[0_4px_15px_rgba(0,0,0,0.08)] text-[#2c3e50] text-center bg-white box-border transition-all duration-350 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] relative grid grid-rows-[50px_80px_1px_80px_55px_1px_45px_1px_45px_auto] items-center gap-0 natal-pillar border-3 border-[#3498db] bg-gradient-to-br from-white to-[#f8fbff]">
                     <div className="absolute top-0 left-0 right-0 h-1 rounded-t-xl bg-gradient-to-r from-[#3498db] to-[#2980b9]"></div>
@@ -326,18 +333,18 @@ export default function BaziCalculator() {
                     </div>
                   </div>
                 )}
-                <Pillar title="Day Pillar (日柱)" pillarData={baziData.four_pillars.day_pillar} luckyStars={luckyStars} hsCombos={hsCombos?.D} branchInteractions={branchInteractions?.D} />
-                <Pillar title="Month Pillar (月柱)" pillarData={baziData.four_pillars.month_pillar} luckyStars={luckyStars} hsCombos={hsCombos?.M} branchInteractions={branchInteractions?.M} />
-                <Pillar title="Year Pillar (年柱)" pillarData={baziData.four_pillars.year_pillar} luckyStars={luckyStars} hsCombos={hsCombos?.Y} branchInteractions={branchInteractions?.Y} />
+                <Pillar title="Day Pillar (日柱)" pillarData={baziData.four_pillars.day_pillar} luckyStars={luckyStars} hsCombos={hsCombos?.D} branchInteractions={branchInteractions?.D} dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name} />
+                <Pillar title="Month Pillar (月柱)" pillarData={baziData.four_pillars.month_pillar} luckyStars={luckyStars} hsCombos={hsCombos?.M} branchInteractions={branchInteractions?.M} dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name} />
+                <Pillar title="Year Pillar (年柱)" pillarData={baziData.four_pillars.year_pillar} luckyStars={luckyStars} hsCombos={hsCombos?.Y} branchInteractions={branchInteractions?.Y} dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name} />
                 
                 {/* Visual Separator */}
                 <div className="w-[2px] bg-gradient-to-b from-transparent via-[rgba(189,195,199,0.5)] to-transparent mx-2 my-8"></div>
 
                 {/* Current Pillars */}
-                <Pillar title="Current Luck Cycle" pillarData={currentPillars?.luck} isCurrent luckyStars={luckyStars} hsCombos={hsCombos?.CL} branchInteractions={branchInteractions?.CL} periodLabel="Period:" periodValue={currentPillars?.luck?.luck_period} />
-                <Pillar title="Current Year" pillarData={currentPillars?.year} isCurrent luckyStars={luckyStars} hsCombos={hsCombos?.CY} branchInteractions={branchInteractions?.CY} />
-                <Pillar title="Current Month" pillarData={currentPillars?.month} isCurrent luckyStars={luckyStars} hsCombos={hsCombos?.CM} branchInteractions={branchInteractions?.CM} />
-                <Pillar title="Current Day" pillarData={currentPillars?.day} isCurrent luckyStars={luckyStars} hsCombos={hsCombos?.CD} branchInteractions={branchInteractions?.CD} />
+                <Pillar title="Current Luck Cycle" pillarData={currentPillars?.luck} isCurrent luckyStars={luckyStars} hsCombos={hsCombos?.CL} branchInteractions={branchInteractions?.CL} periodLabel="Period:" periodValue={currentPillars?.luck?.luck_period} dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name} />
+                <Pillar title="Current Year" pillarData={currentPillars?.year} isCurrent luckyStars={luckyStars} hsCombos={hsCombos?.CY} branchInteractions={branchInteractions?.CY} dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name} />
+                <Pillar title="Current Month" pillarData={currentPillars?.month} isCurrent luckyStars={luckyStars} hsCombos={hsCombos?.CM} branchInteractions={branchInteractions?.CM} dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name} />
+                <Pillar title="Current Day" pillarData={currentPillars?.day} isCurrent luckyStars={luckyStars} hsCombos={hsCombos?.CD} branchInteractions={branchInteractions?.CD} dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name} />
               </div>
 
               {/* Analysis Section */}
@@ -377,6 +384,10 @@ export default function BaziCalculator() {
                         onClick={() => setSelectedLuck(selectedLuck === index ? null : index)}
                         periodLabel="Period:"
                         periodValue={`${pillar.year_start}-${pillar.year_end}`}
+                        luckyStars={luckyStars}
+                        hsCombos={luckPillarCombos[index]?.hsCombos}
+                        branchInteractions={luckPillarCombos[index]?.branchInteractions}
+                        dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name}
                         isCompact
                       />
                     </div>
@@ -389,16 +400,23 @@ export default function BaziCalculator() {
                 <div className="mt-8">
                   <h4 className="text-center mb-4 text-[#2c3e50] font-bold text-xl">Year Pillars:</h4>
                   <div className="flex flex-nowrap flex-row-reverse justify-start items-stretch gap-[0.3rem] overflow-x-auto overflow-y-hidden p-[1rem_0.5rem] scrollbar-thin bg-gradient-to-br from-[rgba(52,152,219,0.02)] to-[rgba(255,255,255,0.8)] rounded-[0.8rem] my-2 border border-[rgba(52,152,219,0.1)]">
-                    {yearPillars.map((pillar, index) => (
-                      <Pillar 
-                        key={index}
-                        title={pillar.year.toString()}
-                        pillarData={pillar}
-                        isSelected={selectedYear === pillar.year}
-                        onClick={() => setSelectedYear(selectedYear === pillar.year ? null : pillar.year)}
-                        isCompact
-                      />
-                    ))}
+                    {yearPillars.map((pillar, index) => {
+                      const combos = detectLuckPillarCombinations(pillar, baziData.four_pillars);
+                      return (
+                        <Pillar 
+                          key={index}
+                          title={pillar.year.toString()}
+                          pillarData={pillar}
+                          isSelected={selectedYear === pillar.year}
+                          onClick={() => setSelectedYear(selectedYear === pillar.year ? null : pillar.year)}
+                          luckyStars={luckyStars}
+                          hsCombos={combos.hsCombos}
+                          branchInteractions={combos.branchInteractions}
+                          dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name}
+                          isCompact
+                        />
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -408,16 +426,23 @@ export default function BaziCalculator() {
                 <div className="mt-8">
                   <h4 className="text-center mb-4 text-[#2c3e50] font-bold text-xl">Month Pillars:</h4>
                   <div className="flex flex-nowrap flex-row-reverse justify-start items-stretch gap-[0.3rem] overflow-x-auto overflow-y-hidden p-[1rem_0.5rem] scrollbar-thin bg-gradient-to-br from-[rgba(52,152,219,0.02)] to-[rgba(255,255,255,0.8)] rounded-[0.8rem] my-2 border border-[rgba(52,152,219,0.1)]">
-                    {monthPillars.map((pillar, index) => (
-                      <Pillar 
-                        key={index}
-                        title={pillar.month_english}
-                        pillarData={pillar}
-                        isSelected={selectedMonth === pillar.month}
-                        onClick={() => setSelectedMonth(selectedMonth === pillar.month ? null : pillar.month)}
-                        isCompact
-                      />
-                    ))}
+                    {monthPillars.map((pillar, index) => {
+                      const combos = detectLuckPillarCombinations(pillar, baziData.four_pillars);
+                      return (
+                        <Pillar 
+                          key={index}
+                          title={pillar.month_english}
+                          pillarData={pillar}
+                          isSelected={selectedMonth === pillar.month}
+                          onClick={() => setSelectedMonth(selectedMonth === pillar.month ? null : pillar.month)}
+                          luckyStars={luckyStars}
+                          hsCombos={combos.hsCombos}
+                          branchInteractions={combos.branchInteractions}
+                          dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name}
+                          isCompact
+                        />
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -427,16 +452,23 @@ export default function BaziCalculator() {
                 <div className="mt-8">
                   <h4 className="text-center mb-4 text-[#2c3e50] font-bold text-xl">Day Pillars:</h4>
                   <div className="flex flex-nowrap flex-row-reverse justify-start items-stretch gap-[0.3rem] overflow-x-auto overflow-y-hidden p-[1rem_0.5rem] scrollbar-thin bg-gradient-to-br from-[rgba(52,152,219,0.02)] to-[rgba(255,255,255,0.8)] rounded-[0.8rem] my-2 border border-[rgba(52,152,219,0.1)]">
-                    {dayPillars.map((pillar, index) => (
-                      <Pillar 
-                        key={index}
-                        title={pillar.day.toString()}
-                        pillarData={pillar}
-                        isSelected={selectedDay === pillar.day}
-                        onClick={() => setSelectedDay(selectedDay === pillar.day ? null : pillar.day)}
-                        isCompact
-                      />
-                    ))}
+                    {dayPillars.map((pillar, index) => {
+                      const combos = detectLuckPillarCombinations(pillar, baziData.four_pillars);
+                      return (
+                        <Pillar 
+                          key={index}
+                          title={pillar.day.toString()}
+                          pillarData={pillar}
+                          isSelected={selectedDay === pillar.day}
+                          onClick={() => setSelectedDay(selectedDay === pillar.day ? null : pillar.day)}
+                          luckyStars={luckyStars}
+                          hsCombos={combos.hsCombos}
+                          branchInteractions={combos.branchInteractions}
+                          dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name}
+                          isCompact
+                        />
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -446,14 +478,21 @@ export default function BaziCalculator() {
                 <div className="mt-8">
                   <h4 className="text-center mb-4 text-[#2c3e50] font-bold text-xl">Hour Pillars:</h4>
                   <div className="flex flex-nowrap flex-row-reverse justify-start items-stretch gap-[0.3rem] overflow-x-auto overflow-y-hidden p-[1rem_0.5rem] scrollbar-thin bg-gradient-to-br from-[rgba(52,152,219,0.02)] to-[rgba(255,255,255,0.8)] rounded-[0.8rem] my-2 border border-[rgba(52,152,219,0.1)]">
-                    {hourPillars.map((pillar, index) => (
-                      <Pillar 
-                        key={index}
-                        title={pillar.hour_time}
-                        pillarData={pillar}
-                        isCompact
-                      />
-                    ))}
+                    {hourPillars.map((pillar, index) => {
+                      const combos = detectLuckPillarCombinations(pillar, baziData.four_pillars);
+                      return (
+                        <Pillar 
+                          key={index}
+                          title={pillar.hour_time}
+                          pillarData={pillar}
+                          luckyStars={luckyStars}
+                          hsCombos={combos.hsCombos}
+                          branchInteractions={combos.branchInteractions}
+                          dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name}
+                          isCompact
+                        />
+                      );
+                    })}
                   </div>
                 </div>
               )}

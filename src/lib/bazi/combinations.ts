@@ -281,6 +281,62 @@ export function detectAllHSCombinations(fourPillars: any, currentPillars: any) {
     return combinations;
 }
 
+// ============================================
+// DETECT LUCK PILLAR COMBINATIONS vs NATAL CHART ONLY
+// ============================================
+export function detectLuckPillarCombinations(luckPillar: any, fourPillars: any): { hsCombos: any[], branchInteractions: any[] } {
+    const natalPillars = [
+        { name: 'H', stem: fourPillars.hour_pillar?.heavenly_stem, branch: fourPillars.hour_pillar?.earthly_branch },
+        { name: 'D', stem: fourPillars.day_pillar?.heavenly_stem, branch: fourPillars.day_pillar?.earthly_branch },
+        { name: 'M', stem: fourPillars.month_pillar?.heavenly_stem, branch: fourPillars.month_pillar?.earthly_branch },
+        { name: 'Y', stem: fourPillars.year_pillar?.heavenly_stem, branch: fourPillars.year_pillar?.earthly_branch },
+    ].filter(p => p.stem && p.branch);
+
+    const hsCombos: any[] = [];
+    const branchInteractions: any[] = [];
+
+    if (!luckPillar?.heavenly_stem || !luckPillar?.earthly_branch) {
+        return { hsCombos, branchInteractions };
+    }
+
+    const luckStemIndex = HEAVENLY_STEMS.findIndex(s => s.name === luckPillar.heavenly_stem.name);
+    const luckBranchIndex = EARTHLY_BRANCHES.findIndex(b => b.name === luckPillar.earthly_branch.name);
+
+    natalPillars.forEach(natal => {
+        // HS Combinations
+        const natalStemIndex = HEAVENLY_STEMS.findIndex(s => s.name === natal.stem.name);
+        const combo = getHSCombination(luckStemIndex, natalStemIndex);
+        if (combo) {
+            hsCombos.push({ partner: natal.name, combo });
+        }
+
+        // Branch Interactions
+        const natalBranchIndex = EARTHLY_BRANCHES.findIndex(b => b.name === natal.branch.name);
+        const checks = [
+            { func: canFormSeasonalUnion, type: 'seasonal' },
+            { func: canFormThreeHarmony, type: 'sanhe' },
+            { func: canFormHalfCombination, type: 'banhe' },
+            { func: canFormSixHarmony, type: 'liuhe' },
+            { func: canFormAnhe, type: 'anhe' },
+            { func: canFormUngratefulPunishment, type: 'ungrateful' },
+            { func: canFormArrogantPunishment, type: 'arrogant' },
+            { func: canFormRudePunishment, type: 'rude' },
+            { func: canFormSelfPunishment, type: 'self' },
+            { func: canFormClash, type: 'clash' },
+            { func: canFormDestruction, type: 'destruction' },
+            { func: canFormHarm, type: 'harm' }
+        ];
+        checks.forEach(check => {
+            const result = check.func(luckBranchIndex, natalBranchIndex);
+            if (result) {
+                branchInteractions.push({ partner: natal.name, interaction: result, type: check.type });
+            }
+        });
+    });
+
+    return { hsCombos, branchInteractions };
+}
+
 export function detectAllBranchInteractions(fourPillars: any, currentPillars: any) {
     const allPillars = [
         { name: 'H', branch: fourPillars.hour_pillar?.earthly_branch },

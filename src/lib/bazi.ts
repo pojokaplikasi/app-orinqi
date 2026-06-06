@@ -785,6 +785,7 @@ export function calculateLuckPillars(birthTime: dayjs.Dayjs, gender: number, fou
             },
             hidden_stems: getHiddenStemsWithTenGods(branchIdx, dayStemIdx),
             gan_zhi: GANZHI_COMBINATIONS[(stemIdx * 6 + Math.floor(branchIdx / 2)) % 60],
+            life_cycle: LIFE_CYCLES[(stemIdx + branchIdx) % 12],
             year_start: startYear,
             year_end: endYear,
             time: luckStartTime.toISOString()

@@ -1,5 +1,7 @@
 import React from 'react';
 import { ELEMENT_COLORS } from '@/lib/bazi/constants';
+import { getTenGodsRelationship } from '@/lib/bazi/element-analysis';
+import { HEAVENLY_STEMS } from '@/lib/bazi/constants';
 
 interface PillarProps {
   title: string;
@@ -13,6 +15,7 @@ interface PillarProps {
   onClick?: () => void;
   isSelected?: boolean;
   isCompact?: boolean;
+  dayMasterName?: string;
 }
 
 export default function Pillar({
@@ -26,11 +29,22 @@ export default function Pillar({
   periodValue,
   onClick,
   isSelected = false,
-  isCompact = false
+  isCompact = false,
+  dayMasterName
 }: PillarProps) {
   if (!pillarData) return null;
 
   const { heavenly_stem, earthly_branch, hidden_stems, gan_zhi, life_cycle } = pillarData;
+  
+  // Calculate 10 God abbreviation for heavenly stem (if dayMasterName provided)
+  let hsTenGodAbbr = '';
+  if (dayMasterName && heavenly_stem?.name) {
+    const dayMasterIndex = HEAVENLY_STEMS.findIndex(s => s.name === dayMasterName);
+    const stemIndex = HEAVENLY_STEMS.findIndex(s => s.name === heavenly_stem.name);
+    if (dayMasterIndex >= 0 && stemIndex >= 0 && dayMasterIndex !== stemIndex) {
+      hsTenGodAbbr = getTenGodsRelationship(dayMasterIndex, stemIndex);
+    }
+  }
   
   // Get element colors
   const hsElement = heavenly_stem?.element || "Wood";
@@ -149,6 +163,12 @@ export default function Pillar({
           <strong className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] font-bold leading-[0.9] mb-[0.3rem] block drop-shadow-[2px_2px_4px_rgba(0,0,0,0.1)] transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[3px_3px_6px_rgba(0,0,0,0.2)]" style={{ color: ELEMENT_COLORS[hsElement], fontSize: isCompact ? '2.2rem' : '3.5rem' }}>
             {heavenly_stem?.character || '?'}
           </strong>
+          {/* 10 God Abbreviation Badge */}
+          {hsTenGodAbbr && (
+            <span className="absolute bg-white rounded-[3px] shadow-[0_1px_3px_rgba(0,0,0,0.2)] font-bold text-[#9b59b6] leading-none" style={{ top: isCompact ? '-3px' : '-5px', right: isCompact ? '-18px' : '-25px', fontSize: isCompact ? '0.55rem' : '0.75rem', padding: isCompact ? '1px 3px' : '2px 4px' }}>
+              {hsTenGodAbbr}
+            </span>
+          )}
         </div>
         <div className="font-bold mt-[0.2rem] leading-[1.2] uppercase tracking-[0.5px] drop-shadow-[0_1px_2px_rgba(0,0,0,0.1)]" style={{ color: ELEMENT_COLORS[hsElement], fontSize: isCompact ? '0.52rem' : '0.75rem' }}>
           {heavenly_stem?.name || 'N/A'}
@@ -257,10 +277,10 @@ export default function Pillar({
       </div>
 
       {/* Period Label (for Current/Luck Pillars) */}
-      {periodLabel && periodValue && !isCompact && (
-        <div className="p-[0.5rem] bg-[rgba(0,0,0,0.03)] rounded-[8px] text-center mt-[0.5rem]">
-          <div className="text-[0.85rem] font-bold text-[#666]">{periodLabel}</div>
-          <div className="text-[1rem] font-bold text-[#333] mt-[0.2rem]">{periodValue}</div>
+      {periodLabel && periodValue && (
+        <div className={`text-center ${isCompact ? 'p-[0.3rem_0.15rem] mt-[0.2rem]' : 'p-[0.5rem] bg-[rgba(0,0,0,0.03)] rounded-[8px] mt-[0.5rem]'}`}>
+          <div className="font-bold text-[#666]" style={{ fontSize: isCompact ? '0.45rem' : '0.85rem' }}>{periodLabel}</div>
+          <div className="font-bold text-[#333]" style={{ fontSize: isCompact ? '0.52rem' : '1rem', marginTop: isCompact ? '0.1rem' : '0.2rem' }}>{periodValue}</div>
         </div>
       )}
     </div>
