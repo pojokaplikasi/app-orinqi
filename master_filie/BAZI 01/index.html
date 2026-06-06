@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title id="pageTitle">Bazi Calculator</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <h1 class="text-center mb-4 animate__animated animate__fadeIn" id="mainHeading">Bazi Calculator</h1>
+
+            <div class="row mb-3 animate__animated animate__fadeIn">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="birthDate" id="birthDateLabel" class="form-label">Date:</label>
+                        <input type="date" id="birthDate" name="birthDate" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="birthTime" id="birthTimeLabel" class="form-label">Time:</label>
+                        <input type="time" id="birthTime" name="birthTime" class="form-control" value="" step="1">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="location" id="locationLabel" class="form-label">Timezone:</label>
+                        <select id="location" name="location" class="form-select">
+                            <option value="" selected disabled>-- Select Timezone --</option>
+                            <option value="Etc/GMT+12">(UTC-12:00) International Date Line West</option>
+                            <option value="Pacific/Midway">(UTC-11:00) Pacific/Midway, US/Samoa</option>
+                            <option value="Pacific/Honolulu">(UTC-10:00) Pacific/Honolulu, US/Hawaii</option>
+                            <option value="America/Anchorage">(UTC-09:00) America/Anchorage, US/Alaska</option>
+                            <option value="America/Los_Angeles">(UTC-08:00) America/Los_Angeles</option>
+                            <option value="America/Denver">(UTC-07:00) America/Denver</option>
+                            <option value="America/Chicago">(UTC-06:00) America/Chicago</option>
+                            <option value="America/New_York">(UTC-05:00) America/New_York</option>
+                            <option value="America/Halifax">(UTC-04:00) America/Halifax</option>
+                            <option value="America/Argentina">(UTC-03:00) America/Argentina/Buenos_Aires</option>
+                            <option value="America/Noronha">(UTC-02:00) America/Noronha</option>
+                            <option value="Atlantic/Cape_Verde">(UTC-01:00) Atlantic/Cape_Verde</option>
+                            <option value="GMT">(UTC+00:00) UTC, GMT</option>
+                            <option value="Europe/London">(UTC+01:00) Europe/London</option>
+                            <option value="Europe/Helsinki">(UTC+02:00) Europe/Helsinki</option>
+                            <option value="Europe/Moscow">(UTC+03:00) Europe/Moscow</option>
+                            <option value="Asia/Dubai">(UTC+04:00) Asia/Dubai</option>
+                            <option value="Asia/Karachi">(UTC+05:00) Asia/Karachi</option>
+                            <option value="Asia/Dhaka">(UTC+06:00) Asia/Dhaka</option>
+                            <option value="Asia/Bangkok">(UTC+07:00) Asia/Bangkok</option>
+                            <option value="Asia/Ho_Chi_Minh">(UTC+07:00) Asia/Ho_Chi_Minh</option>
+                            <option value="Asia/Singapore">(UTC+08:00) Asia/Singapore</option>
+                            <option value="Asia/Tokyo">(UTC+09:00) Asia/Tokyo</option>
+                            <option value="Australia/Brisbane">(UTC+10:00) Australia/Brisbane</option>
+                            <option value="Pacific/Noumea">(UTC+11:00) Pacific/Noumea</option>
+                            <option value="Pacific/Auckland">(UTC+12:00) Pacific/Auckland</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center animate__animated animate__fadeIn">
+                <!-- Gender Selection -->
+                <div class="col-12 col-md-6 d-flex justify-content-center mb-2 mb-md-0">
+                    <label id="genderLabel" class="form-label me-3">Gender:</label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="gender" id="femaleRadio" value="0">
+                        <label class="form-check-label" for="femaleRadio">Female</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="gender" id="maleRadio" value="1">
+                        <label class="form-check-label" for="maleRadio">Male</label>
+                    </div>
+                </div>
+                <!-- Calculate Button and Unknown Birth Time Toggle -->
+                <div class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center">
+                    <!-- Unknown Birth Time Checkbox -->
+                    <div class="form-check me-3">
+                        <input class="form-check-input" type="checkbox" id="unknownBirthTime" onchange="toggleBirthTimeField()">
+                        <label class="form-check-label" for="unknownBirthTime" style="white-space: nowrap;">
+                            <i class="fas fa-clock"></i> Don't Know Birth Time
+                        </label>
+                    </div>
+                    <!-- Calculate Button -->
+                    <button id="calculateButton" onclick="calculateBazi()" class="btn btn-primary calculate-btn"
+                            style="padding: 0.1rem 2rem; font-size: 1rem; height: auto; width: auto; min-width: 150px;">
+                        Calculate
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Combination Style Toggle (Classic/Modern) -->
+            <div class="row mt-2">
+                <div class="col-12 d-flex justify-content-center">
+                    <div class="btn-group" role="group" aria-label="Combination Style">
+                        <button type="button" id="classicBtn" class="btn btn-outline-secondary btn-sm" onclick="setCombinationStyle('classic')">
+                            <i class="fas fa-book"></i> Classic (经典)
+                        </button>
+                        <button type="button" id="modernBtn" class="btn btn-outline-secondary btn-sm active" onclick="setCombinationStyle('modern')">
+                            <i class="fas fa-globe"></i> Modern
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Error -->
+            <div id="error" class="alert alert-danger mt-3" style="display: none;"></div>
+            <hr>
+            <!-- Results -->
+            <div id="resultsContainer" style="display: none;">
+                <h3 class="text-center mb-4" id="fourPillarsHeading">Four Pillars:</h3>
+                <div id="allPillarsRow" class="d-flex justify-content-center align-items-stretch" style="gap: 0.5rem;">
+                    <!-- Natal Chart Pillars (Left Side) -->
+                    <div id="HourPillar" class="pillar natal-pillar"></div>
+                    <div id="DayPillar" class="pillar natal-pillar"></div>
+                    <div id="MonthPillar" class="pillar natal-pillar"></div>
+                    <div id="YearPillar" class="pillar natal-pillar"></div>
+                    
+                    <!-- Current Transiting Pillars (Right Side) -->
+                    <div id="CurrentLuckPillar" class="pillar current-pillar"></div>
+                    <div id="CurrentYearPillar" class="pillar current-pillar"></div>
+                    <div id="CurrentMonthPillar" class="pillar current-pillar"></div>
+                    <div id="CurrentDayPillar" class="pillar current-pillar"></div>
+                </div>
+                
+                <!-- Lucky Stars & Element Structure Section (Side by Side) -->
+                <div id="luckyStarsAndElementSection" class="mt-4" style="display: none;">
+                    <div class="row justify-content-center">
+                        <div class="col-12">
+                            <div style="background: #fff; border-radius: 15px; padding: 2.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+                                <div class="row" style="margin: 0;">
+                                    <!-- Lucky Stars (Left) -->
+                                    <div class="col-md-3" style="padding-right: 2rem;">
+                                        <h3 class="text-center mb-4" style="font-weight: 700; color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 0.5rem; font-size: 1.8rem;">Lucky Stars</h3>
+                                        <div class="lucky-stars-table" style="background: #f8f9fa; border-radius: 10px; padding: 1.5rem; margin-top: 1rem;">
+                                            <table style="width: 100%; border-collapse: separate; border-spacing: 0 10px;">
+                                                <tbody id="luckyStarsTableBody">
+                                                    <!-- Stars will be dynamically inserted here -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Element Structure (Center) -->
+                                    <div class="col-md-5" style="padding: 0 2rem;">
+                                        <h3 class="text-center mb-4" style="font-weight: 700; color: #2c3e50; border-bottom: 3px solid #e74c3c; padding-bottom: 0.5rem; font-size: 1.8rem;">Element Composition</h3>
+                                        <div class="element-structure-content" style="margin-top: 1rem;">
+                                            <div class="row align-items-center">
+                                                <!-- Radar Chart -->
+                                                <div class="col-md-6">
+                                                    <canvas id="elementRadarChart" width="400" height="400"></canvas>
+                                                </div>
+                                                <!-- Element Percentages -->
+                                                <div class="col-md-6">
+                                                    <div id="elementPercentages" style="padding: 0.5rem;">
+                                                        <!-- Will be populated dynamically -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 10 Gods (Right) -->
+                                    <div class="col-md-4" style="padding-left: 2rem;">
+                                        <h3 class="text-center mb-4" style="font-weight: 700; color: #2c3e50; border-bottom: 3px solid #9b59b6; padding-bottom: 0.5rem; font-size: 1.8rem;">10 GODS</h3>
+                                        <div id="tenGodsContainer" style="margin-top: 1rem; background: #f8f9fa; border-radius: 10px; padding: 1.5rem;">
+                                            <!-- Will be populated dynamically -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <br>
+                <div class="row mb-3 no-gutters">
+                    <div class="col-md-12">
+                        <div style="text-align: center; margin-bottom: 15px;">
+                            <button id="resetSelectionBtn" onclick="resetPillarSelection()" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; font-size: 0.9rem; box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3); transition: all 0.3s ease;">
+                                🔄 Reset to Current Time
+                            </button>
+                        </div>
+                        <h3 class="text-center mb-4" id="luckPillarsHeading">10-Year Luck Pillars:</h3>
+                        <div id="luckPillars" class="d-flex justify-content-center">
+                        </div>
+                        
+                        <!-- Year Pillars Row -->
+                        <div class="mt-4">
+                            <h4 class="text-center mb-3" id="yearPillarsHeading">Year Pillars:</h4>
+                            <div id="yearPillarsRow" class="time-period-row">
+                            </div>
+                        </div>
+                        
+                        <!-- Month Pillars Row -->
+                        <div class="mt-4">
+                            <h4 class="text-center mb-3" id="monthPillarsHeading">Month Pillars:</h4>
+                            <div id="monthPillarsRow" class="time-period-row">
+                            </div>
+                        </div>
+                        
+                        <!-- Day Pillars Row -->
+                        <div class="mt-4">
+                            <h4 class="text-center mb-3" id="dayPillarsHeading">Day Pillars:</h4>
+                            <div id="dayPillarsRow" class="time-period-row">
+                            </div>
+                        </div>
+                        
+                        <!-- Hour Pillars Row -->
+                        <div class="mt-4">
+                            <h4 class="text-center mb-3" id="hourPillarsHeading">Hour Pillars:</h4>
+                            <div id="hourPillarsRow" class="time-period-row">
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white py-3 mt-5">
+    <div class="footer-content d-flex justify-content-center align-items-center position-relative">
+        <div class="footer-text text-center">
+            <p class="mb-0">Copyright © <span id="current-year"></span> tommitoan.</p>
+        </div>
+        <div class="social-icons-wrapper position-absolute end-0">
+            <ul class="social-icons list-inline mb-0">
+                <li class="list-inline-item">
+                    <a href="https://github.com/tommitoan/bazica" style="color: white" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</footer>
+
+
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/gsap.min.js"></script>
+</body>
+</html>

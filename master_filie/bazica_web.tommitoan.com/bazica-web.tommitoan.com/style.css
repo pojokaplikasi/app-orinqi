@@ -1,0 +1,1375 @@
+/* Reset CSS to ensure consistent layout */
+body, h1, h3, div {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    color: #2c3e50;
+    display: flex;
+    flex-direction: column;
+    background-color: #FFFFFF;
+    position: relative;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* General container styling */
+.container {
+    flex: 1;
+    padding: 0.2rem;
+}
+
+/* Title styling */
+h1 {
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-weight: 600;
+    text-shadow: 2px 2px 4px rgba(52, 152, 219, 0.1);
+}
+
+h3 {
+    margin-bottom: 1rem;
+    color: #34495e;
+    font-weight: 500;
+}
+
+/* Results container styling */
+#resultsContainer {
+    margin: 1rem;
+    padding-top: 1rem;
+}
+
+/* ============================================ */
+/* PERFECT 7-PILLAR ALIGNMENT - ONE ROW */
+/* ============================================ */
+
+#allPillarsRow {
+    display: flex;
+    flex-wrap: nowrap; /* Force single row - all 7 pillars aligned */
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch; /* Equal height alignment */
+    gap: 0.5rem; /* Tighter spacing for 7 pillars */
+    margin: 2rem 0;
+    padding: 1rem 0.5rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 1rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    overflow-x: visible; /* No scrolling needed with proper sizing */
+    min-height: 400px;
+}
+
+/* UNIFORM PILLAR STYLING - PERFECT 7-PILLAR ALIGNMENT */
+.pillar {
+    flex: 0 0 auto;
+    width: 128px; /* Optimized for 7-pillar single-row fit without scrolling */
+    height: 520px; /* Increased height for larger HS Combo row */
+    padding: 0;
+    border-radius: 1rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    color: #2c3e50;
+    text-align: center;
+    background: #ffffff;
+    box-sizing: border-box;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    display: grid;
+    /* All pillars: Title at TOP, then HS, EB, Hidden Stems+10Gods combined, Nayin, 12 Phrase, HS Combo */
+    grid-template-rows: 55px 70px 1px 70px 60px 1px 48px 1px 48px 110px;
+    align-items: center;
+    gap: 0;
+    overflow: hidden;
+}
+
+/* Remove special grid for current pillars - all use same layout */
+.current-pillar {
+    /* Same grid as natal pillars */
+}
+
+/* Natal Pillars - Elegant Blue Theme */
+.natal-pillar {
+    border: 3px solid #3498db;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+}
+
+.natal-pillar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+    border-radius: 1rem 1rem 0 0;
+}
+
+/* Current Pillars - Premium Orange Theme */
+.current-pillar {
+    border: 3px solid #e67e22;
+    background: linear-gradient(135deg, #fff8f0 0%, #ffecd1 100%);
+    position: relative;
+}
+
+.current-pillar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #e67e22 0%, #d35400 100%);
+    border-radius: 1rem 1rem 0 0;
+}
+
+/* Enhanced Hover Effects */
+.pillar:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+.natal-pillar:hover {
+    border-color: #2980b9;
+    box-shadow: 0 15px 40px rgba(52, 152, 219, 0.3);
+}
+
+.current-pillar:hover {
+    border-color: #d35400;
+    box-shadow: 0 15px 40px rgba(230, 126, 34, 0.4);
+}
+
+/* Pillar Title Section - AT TOP for ALL pillars */
+.pillar-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #2c3e50;
+    padding: 0.5rem 0.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    grid-row: 1; /* Always at top */
+    background: rgba(52, 152, 219, 0.08);
+    border-bottom: 2px solid #e8f4f8;
+    line-height: 1.2;
+    min-height: 55px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Current pillars: Orange theme for title */
+.current-pillar .pillar-title {
+    background: rgba(230, 126, 34, 0.1);
+    border-bottom-color: #f4e4d1;
+    color: #d35400;
+}
+
+/* Premium Current Luck Cycle Header */
+.luck-pillar-top-info {
+    font-size: 0.68rem;
+    color: #2c3e50;
+    padding: 0.6rem 0.4rem;
+    border-bottom: 2px solid #e8f4f8;
+    line-height: 1.6;
+    background: linear-gradient(135deg, rgba(230, 126, 34, 0.05) 0%, rgba(230, 126, 34, 0.02) 100%);
+    min-height: 85px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.luck-pillar-top-info::before {
+    content: '';
+    position: absolute;
+    left: 20%;
+    right: 20%;
+    bottom: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #e67e22 50%, transparent 100%);
+}
+
+.luck-pillar-number {
+    font-weight: 800;
+    font-size: 0.75rem;
+    margin-bottom: 0.4rem;
+    color: #d35400;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.luck-year {
+    font-size: 0.62rem;
+    color: #7f8c8d;
+    margin: 0.08rem 0;
+    line-height: 1.5;
+    font-weight: 600;
+}
+
+.luck-time {
+    font-size: 0.62rem;
+    color: #7f8c8d;
+    margin: 0.08rem 0;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+/* Enhanced Pillar Content - Heavenly Stem ABOVE Earthly Branch */
+.pillar-value {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.8rem 0.4rem;
+    min-height: 95px;
+    position: relative;
+}
+
+/* All pillars: Heavenly Stem at grid-row 2, Earthly Branch at grid-row 4 */
+.pillar-value:nth-of-type(2) {
+    grid-row: 2; /* Heavenly Stem - after title */
+}
+
+.pillar-value:nth-of-type(4) {
+    grid-row: 4; /* Earthly Branch */
+}
+
+/* Premium Chinese Characters */
+#bigCharacter {
+    font-size: 3.5rem;
+    font-family: 'STKaiti', 'KaiTi', 'SimSun', 'Microsoft YaHei', serif;
+    font-weight: bold;
+    line-height: 0.9;
+    margin-bottom: 0.3rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.pillar:hover #bigCharacter {
+    transform: scale(1.05);
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Enhanced Element Names */
+#bigValue {
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-top: 0.2rem;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================ */
+/* HIDDEN STEMS (藏干) STYLING */
+/* ============================================ */
+
+.hidden-stems-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.4rem;
+    padding: 0.25rem 0.2rem;
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.05) 0%, rgba(52, 152, 219, 0.02) 100%);
+    border-radius: 0.3rem;
+    border: 1px solid rgba(52, 152, 219, 0.15);
+}
+
+.current-pillar .hidden-stems-row {
+    background: linear-gradient(135deg, rgba(230, 126, 34, 0.06) 0%, rgba(230, 126, 34, 0.03) 100%);
+    border-color: rgba(230, 126, 34, 0.2);
+}
+
+.hidden-stem {
+    font-size: 0.95rem;
+    font-family: 'STKaiti', 'KaiTi', 'SimSun', 'Microsoft YaHei', serif;
+    font-weight: 700;
+    line-height: 1;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    position: relative;
+    min-width: 18px;
+    text-align: center;
+}
+
+.hidden-stem.main {
+    font-size: 1.1rem;
+    font-weight: 900;
+    order: 2;
+    transform: scale(1.1);
+}
+
+.hidden-stem.sub-main {
+    order: 3;
+    font-size: 0.85rem;
+}
+
+.hidden-stem.residual {
+    order: 1;
+    font-size: 0.85rem;
+}
+
+.hidden-stem:hover {
+    transform: scale(1.15);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hidden-stem.main:hover {
+    transform: scale(1.25);
+}
+
+/* Smaller hidden stems for luck pillars */
+#luckPillars .pillar .hidden-stems-row {
+    gap: 0.2rem;
+    padding: 0.2rem 0.15rem;
+    margin-top: 0.3rem;
+}
+
+#luckPillars .pillar .hidden-stem {
+    font-size: 0.75rem;
+    min-width: 14px;
+}
+
+#luckPillars .pillar .hidden-stem.main {
+    font-size: 0.9rem;
+}
+
+#luckPillars .pillar .hidden-stem.sub-main,
+#luckPillars .pillar .hidden-stem.residual {
+    font-size: 0.68rem;
+}
+
+/* Smaller hidden stems for time period pillars */
+.time-period-pillar .hidden-stems-row {
+    gap: 0.15rem;
+    padding: 0.2rem 0.1rem;
+    margin-top: 0.25rem;
+}
+
+.time-period-pillar .hidden-stem {
+    font-size: 0.7rem;
+    min-width: 12px;
+}
+
+.time-period-pillar .hidden-stem.main {
+    font-size: 0.85rem;
+}
+
+.time-period-pillar .hidden-stem.sub-main,
+.time-period-pillar .hidden-stem.residual {
+    font-size: 0.63rem;
+}
+
+/* Premium Nayin Section */
+.ganzhi-separator {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.4rem 0.25rem;
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.08) 0%, rgba(52, 152, 219, 0.03) 100%);
+    border-radius: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.2;
+    min-height: 48px;
+    position: relative;
+    grid-row: 7; /* Updated position - after hidden stems */
+}
+
+/* Current pillars: Orange theme for Nayin */
+.current-pillar .ganzhi-separator {
+    background: linear-gradient(135deg, rgba(230, 126, 34, 0.08) 0%, rgba(230, 126, 34, 0.03) 100%);
+}
+
+/* Enhanced 12 Phrase Section */
+.lifecycle-separator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem 0.25rem;
+    min-height: 48px;
+    background: linear-gradient(135deg, rgba(142, 68, 173, 0.05) 0%, rgba(142, 68, 173, 0.02) 100%);
+    grid-row: 9; /* Updated position - after Nayin */
+}
+
+#lifeCycle {
+    color: #8e44ad;
+    font-weight: 800;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================ */
+/* HEAVENLY STEM COMBINATION ROW */
+/* ============================================ */
+
+.hs-combo-row {
+    grid-row: 10; /* Bottom of pillar - after 12 Phrase */
+    display: flex;
+    flex-direction: column; /* Stack vertically */
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0.4rem 0.2rem;
+    min-height: 110px; /* Increased to accommodate multiple interactions */
+    max-height: 110px; /* Fixed height */
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.08) 0%, rgba(231, 76, 60, 0.03) 100%);
+    border-top: 2px solid rgba(231, 76, 60, 0.15);
+    position: relative;
+    gap: 0.15rem; /* Tighter spacing between stacked items */
+    overflow-y: auto; /* Enable scrolling for many interactions */
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(231, 76, 60, 0.3) rgba(231, 76, 60, 0.1);
+}
+
+.hs-combo-row::before {
+    content: '';
+    position: absolute;
+    left: 20%;
+    right: 20%;
+    top: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #e74c3c 50%, transparent 100%);
+}
+
+.hs-combo-label {
+    font-size: 0.52rem; /* Smaller font for better fit */
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.15; /* Tighter line height */
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    width: 100%; /* Full width for vertical stacking */
+    display: block;
+    padding: 0.12rem 0.15rem;
+}
+
+.hs-combo-label i {
+    font-size: 0.50rem; /* Smaller icon */
+    margin-right: 0.15rem;
+    opacity: 0.8;
+}
+
+.hs-combo-label.empty {
+    color: #bdc3c7;
+    font-weight: 600;
+}
+
+.hs-combo-label.empty span {
+    font-size: 1rem;
+    opacity: 0.5;
+}
+
+/* Seasonal Union Label */
+.seasonal-combo-label {
+    font-size: 0.50rem; /* Smaller font for better fit */
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.15; /* Tighter line height */
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    margin-top: 0;
+    padding: 0.12rem 0.15rem;
+    border-top: none;
+    width: 100%; /* Full width for vertical stacking */
+    display: block;
+}
+
+/* Branch Interaction Label */
+.branch-interaction-label {
+    font-size: 0.48rem; /* Smaller font for better fit */
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.1; /* Tighter line height */
+    text-transform: uppercase;
+    letter-spacing: 0.15px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    margin-top: 0;
+    padding: 0.12rem 0.15rem;
+    width: 100%; /* Full width for vertical stacking */
+    display: block;
+}
+
+.branch-interaction-label.positive {
+    border-top: none;
+}
+
+.branch-interaction-label.negative {
+    border-top: none;
+    opacity: 0.9;
+}
+
+/* Natal pillars: Blue theme for combo row */
+.natal-pillar .hs-combo-row {
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.08) 0%, rgba(52, 152, 219, 0.03) 100%);
+    border-top-color: rgba(52, 152, 219, 0.2);
+}
+
+.natal-pillar .hs-combo-row::before {
+    background: linear-gradient(90deg, transparent 0%, #3498db 50%, transparent 100%);
+}
+
+/* Current pillars: Orange theme for combo row */
+.current-pillar .hs-combo-row {
+    background: linear-gradient(135deg, rgba(230, 126, 34, 0.1) 0%, rgba(230, 126, 34, 0.05) 100%);
+    border-top-color: rgba(230, 126, 34, 0.25);
+}
+
+.current-pillar .hs-combo-row::before {
+    background: linear-gradient(90deg, transparent 0%, #e67e22 50%, transparent 100%);
+}
+
+/* Hover effect for combination row */
+.pillar:hover .hs-combo-row {
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.12) 0%, rgba(231, 76, 60, 0.06) 100%);
+}
+
+.pillar:hover .hs-combo-label {
+    transform: scale(1.05);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* Premium Horizontal Dividers */
+.pillar hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(52, 152, 219, 0.3) 20%, rgba(52, 152, 219, 0.3) 80%, transparent 100%);
+    width: 100%;
+    margin: 0;
+    position: relative;
+}
+
+.current-pillar hr {
+    background: linear-gradient(90deg, transparent 0%, rgba(230, 126, 34, 0.3) 20%, rgba(230, 126, 34, 0.3) 80%, transparent 100%);
+}
+
+/* All pillars: HR positioning */
+hr:nth-of-type(1) {
+    grid-row: 3; /* Between Heavenly Stem and Earthly Branch */
+}
+
+hr:nth-of-type(2) {
+    grid-row: 6; /* After Hidden Stems+10Gods section */
+}
+
+hr:nth-of-type(3) {
+    grid-row: 8; /* Between Nayin and 12 Phrase */
+}
+
+/* Hidden stems container positioning */
+.hidden-stems-container {
+    grid-row: 5; /* Combined hidden stems + 10 gods */
+}
+
+/* ============================================ */
+/* PREMIUM LUCK PILLARS - MILLION TIMES BETTER */
+/* ============================================ */
+
+#luckPillars {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row; /* Normal direction for proper reversal */
+    justify-content: center;
+    gap: 0.3rem; /* Even smaller gap for 10 pillars */
+    margin: 2rem 0;
+    overflow-x: visible; /* No scrolling needed */
+    padding: 1.5rem 0.3rem;
+    background: linear-gradient(135deg, #f4f4f4 0%, #ffffff 100%);
+    border-radius: 1rem;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#luckPillars .pillar {
+    width: 100px; /* Smaller width to fit 10 pillars */
+    min-height: 560px; /* Increased height for larger HS Combo row */
+    border: 3px solid #95a5a6;
+    /* Grid with combined hidden stems and 10 gods in one row, plus HS Combo */
+    grid-template-rows: 52px 62px 1px 62px 58px 1px 43px 1px 43px 1px 52px 110px;
+    background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#luckPillars .pillar:hover {
+    transform: translateY(-6px) scale(1.03);
+    border-color: #7f8c8d;
+    box-shadow: 0 12px 30px rgba(127, 140, 141, 0.3);
+}
+
+/* Luck Pillar Period Label (at bottom) */
+.luck-period-label {
+    grid-row: 11; /* Updated for new grid with HS Combo */
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #34495e;
+    padding: 0.5rem 0.3rem;
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(52, 152, 219, 0.05) 100%);
+    border-top: 2px solid rgba(52, 152, 219, 0.2);
+    line-height: 1.2;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.luck-period-number {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #2c3e50;
+    margin-bottom: 0.2rem;
+}
+
+/* Luck Pillars: specific grid positioning */
+#luckPillars .pillar .pillar-title {
+    grid-row: 1;
+    font-size: 0.68rem;
+    min-height: 55px;
+    padding: 0.5rem 0.3rem;
+}
+
+#luckPillars .pillar .pillar-value:nth-of-type(2) {
+    grid-row: 2; /* Heavenly Stem */
+}
+
+#luckPillars .pillar hr:nth-of-type(1) {
+    grid-row: 3;
+}
+
+#luckPillars .pillar .pillar-value:nth-of-type(4) {
+    grid-row: 4; /* Earthly Branch */
+}
+
+#luckPillars .pillar .hidden-stems-container {
+    grid-row: 5; /* Hidden stems + 10 gods row (58px) */
+}
+
+#luckPillars .pillar hr:nth-of-type(2) {
+    grid-row: 6; /* HR after hidden stems */
+}
+
+#luckPillars .pillar .ganzhi-separator {
+    grid-row: 7; /* Nayin */
+    font-size: 0.62rem;
+    min-height: 45px;
+    padding: 0.4rem 0.2rem;
+}
+
+#luckPillars .pillar hr:nth-of-type(3) {
+    grid-row: 8;
+}
+
+#luckPillars .pillar .lifecycle-separator {
+    grid-row: 9; /* 12 Phrase */
+    font-size: 0.62rem;
+    min-height: 45px;
+    padding: 0.4rem 0.2rem;
+}
+
+#luckPillars .pillar hr:nth-of-type(4) {
+    grid-row: 10;
+}
+
+#luckPillars .pillar .hs-combo-row {
+    grid-row: 12; /* HS Combo row at bottom */
+}
+
+/* Smaller font sizes for luck pillar interactions */
+#luckPillars .pillar .hs-combo-label {
+    font-size: 0.48rem; /* Smaller for luck pillars */
+    line-height: 1.1;
+    padding: 0.1rem 0.12rem;
+    font-weight: 600;
+}
+
+#luckPillars .pillar .seasonal-combo-label {
+    font-size: 0.46rem; /* Smaller for luck pillars */
+    line-height: 1.1;
+    padding: 0.1rem 0.12rem;
+    font-weight: 600;
+}
+
+#luckPillars .pillar .branch-interaction-label {
+    font-size: 0.44rem; /* Smaller for luck pillars */
+    line-height: 1.05;
+    padding: 0.1rem 0.12rem;
+    font-weight: 600;
+    letter-spacing: 0.1px;
+}
+
+#luckPillars .pillar .hs-combo-label i {
+    font-size: 0.48rem;
+    margin-right: 0.15rem;
+}
+
+/* Smaller text sizes for luck pillars */
+#luckPillars .pillar #bigCharacter {
+    font-size: 2.5rem; /* Even smaller for 100px width */
+}
+
+#luckPillars .pillar #bigValue {
+    font-size: 0.58rem; /* Smaller text */
+    line-height: 1.1;
+}
+
+/* Adjust luck pillar title */
+#luckPillars .pillar .pillar-title {
+    font-size: 0.65rem;
+    padding: 0.4rem 0.2rem;
+}
+
+/* Adjust Nayin and 12 Phrase sizes */
+#luckPillars .pillar .ganzhi-separator {
+    font-size: 0.58rem;
+    padding: 0.3rem 0.2rem;
+}
+
+#luckPillars .pillar .lifecycle-separator {
+    font-size: 0.58rem;
+    padding: 0.3rem 0.2rem;
+}
+
+/* Adjust period label */
+#luckPillars .pillar .luck-period-label {
+    font-size: 0.6rem;
+    padding: 0.4rem 0.2rem;
+}
+
+#luckPillars .pillar .luck-period-number {
+    font-size: 0.65rem;
+}
+
+/* ============================================ */
+/* ENHANCED CURRENT PERIOD INDICATOR */
+/* ============================================ */
+
+.pillar.current-period {
+    border: 4px solid #f39c12;
+    background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+    box-shadow: 0 8px 25px rgba(243, 156, 18, 0.4);
+    position: relative;
+    transform: scale(1.05);
+}
+
+.pillar.current-period::before {
+    content: "⭐ Current Period";
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 1.5rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(243, 156, 18, 0.5);
+    z-index: 10;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    border: 2px solid #ffffff;
+}
+
+.pillar.current-period.vietnamese::before {
+    content: "⭐ Đại vận hiện tại";
+}
+
+.pillar.current-period:hover {
+    transform: translateY(-8px) scale(1.08);
+    box-shadow: 0 15px 40px rgba(243, 156, 18, 0.5);
+}
+
+/* ============================================ */
+/* PREMIUM TIME PERIOD SECTIONS */
+/* ============================================ */
+
+.time-period-row {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row-reverse; /* Right to left as per specs */
+    justify-content: flex-start; /* Start alignment to allow full scrolling */
+    align-items: stretch;
+    gap: 0.3rem; /* Slightly larger gap for better spacing */
+    overflow-x: auto; /* Allow scrolling if needed */
+    overflow-y: hidden;
+    padding: 1rem 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: #3498db #f8f9fa;
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.02) 0%, rgba(255, 255, 255, 0.8) 100%);
+    border-radius: 0.8rem;
+    margin: 0.5rem 0;
+    border: 1px solid rgba(52, 152, 219, 0.1);
+}
+
+.time-period-row::-webkit-scrollbar {
+    height: 8px;
+}
+
+.time-period-row::-webkit-scrollbar-track {
+    background: rgba(52, 152, 219, 0.1);
+    border-radius: 4px;
+}
+
+.time-period-row::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+    border-radius: 4px;
+}
+
+.time-period-row::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(90deg, #2980b9 0%, #1c5a85 100%);
+}
+
+/* Enhanced Time Period Pillars - Perfect Centering & Sizing */
+.time-period-pillar {
+    flex: 0 0 auto;
+    width: 90px; /* Slightly larger for better readability */
+    min-height: 560px; /* Increased height for larger HS Combo row */
+    padding: 0.4rem 0.25rem;
+    margin: 0;
+    border-radius: 0.6rem;
+    font-size: 0.58rem; /* Optimized font size */
+    text-align: center;
+    border: 2px solid #bdc3c7;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    display: grid;
+    /* Grid: Title, HS, HR, EB, Hidden Stems, HR, Nayin, HR, 12 Phrase, HS Combo */
+    grid-template-rows: 48px 64px 1px 64px 58px 1px 38px 1px 38px 140px;
+    align-items: center;
+    gap: 0;
+}
+
+.time-period-pillar:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    border-color: #95a5a6;
+}
+
+.time-period-pillar .pillar-title {
+    font-size: 0.58rem; /* Smaller for more compact display */
+    font-weight: 700;
+    padding: 0.35rem 0.2rem;
+    background: rgba(52, 152, 219, 0.1);
+    border-radius: 0.4rem 0.4rem 0 0;
+    color: #2c3e50;
+    margin-bottom: 0;
+    grid-row: 1;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.1;
+}
+
+.time-period-pillar .pillar-value {
+    padding: 0.5rem 0.25rem;
+    min-height: 68px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.time-period-pillar .bigCharacter {
+    font-size: 2.2rem; /* Smaller for more compact display */
+    line-height: 1;
+    margin: 0.12rem 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+}
+
+.time-period-pillar .bigValue {
+    font-size: 0.52rem; /* Smaller for more compact display */
+    line-height: 1.1;
+    margin: 0.12rem 0;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+}
+
+.time-period-pillar .ganzhi-separator {
+    font-size: 0.50rem; /* Smaller for more compact display */
+    margin: 0;
+    padding: 0.3rem 0.15rem;
+    background: rgba(52, 152, 219, 0.05);
+    border-radius: 0.2rem;
+    font-weight: 600;
+    grid-row: 7; /* Nayin row */
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.1;
+}
+
+.time-period-pillar .lifecycle-separator {
+    font-size: 0.50rem; /* Smaller for more compact display */
+    margin: 0;
+    font-weight: 700;
+    color: #8e44ad;
+    grid-row: 9; /* Life Cycle row */
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.3rem 0.15rem;
+    line-height: 1.1;
+}
+
+.time-period-pillar .lifeCycle {
+    text-transform: uppercase;
+}
+
+/* Grid positioning for time period pillar elements */
+.time-period-pillar .pillar-value:nth-of-type(2) {
+    grid-row: 2; /* Heavenly Stem */
+}
+
+.time-period-pillar hr:nth-of-type(1) {
+    grid-row: 3; /* HR after Heavenly Stem */
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(52, 152, 219, 0.3) 20%, rgba(52, 152, 219, 0.3) 80%, transparent 100%);
+    margin: 0;
+}
+
+.time-period-pillar .pillar-value:nth-of-type(3) {
+    grid-row: 4; /* Earthly Branch */
+}
+
+.time-period-pillar .hidden-stems-container {
+    grid-row: 5; /* Hidden Stems + 10 Gods (62px) */
+}
+
+.time-period-pillar hr:nth-of-type(2) {
+    grid-row: 6; /* HR after Hidden Stems */
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(52, 152, 219, 0.3) 20%, rgba(52, 152, 219, 0.3) 80%, transparent 100%);
+    margin: 0;
+}
+
+.time-period-pillar hr:nth-of-type(3) {
+    grid-row: 8; /* HR after Nayin */
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(52, 152, 219, 0.3) 20%, rgba(52, 152, 219, 0.3) 80%, transparent 100%);
+    margin: 0;
+}
+
+.time-period-pillar .hs-combo-row {
+    grid-row: 10; /* HS Combo row at bottom */
+    min-height: 140px; /* Larger for time period pillars with many interactions */
+    max-height: 140px;
+    padding: 0.35rem 0.15rem;
+    gap: 0.12rem; /* Even tighter spacing */
+}
+
+/* Scrollbar styling for HS Combo row */
+.hs-combo-row::-webkit-scrollbar {
+    width: 4px;
+}
+
+.hs-combo-row::-webkit-scrollbar-track {
+    background: rgba(231, 76, 60, 0.05);
+    border-radius: 2px;
+}
+
+.hs-combo-row::-webkit-scrollbar-thumb {
+    background: rgba(231, 76, 60, 0.3);
+    border-radius: 2px;
+}
+
+.hs-combo-row::-webkit-scrollbar-thumb:hover {
+    background: rgba(231, 76, 60, 0.5);
+}
+
+/* Smaller font sizes for time period pillar interactions */
+.time-period-pillar .hs-combo-label {
+    font-size: 0.46rem; /* Even smaller for time period pillars */
+    line-height: 1.1;
+    padding: 0.1rem 0.12rem;
+    font-weight: 600;
+}
+
+.time-period-pillar .seasonal-combo-label {
+    font-size: 0.44rem; /* Even smaller for time period pillars */
+    line-height: 1.1;
+    padding: 0.1rem 0.12rem;
+    font-weight: 600;
+}
+
+.time-period-pillar .branch-interaction-label {
+    font-size: 0.42rem; /* Even smaller for time period pillars */
+    line-height: 1.05;
+    padding: 0.1rem 0.12rem;
+    font-weight: 600;
+    letter-spacing: 0.1px;
+}
+
+.time-period-pillar .hs-combo-label i {
+    font-size: 0.45rem;
+    margin-right: 0.15rem;
+}
+
+.time-period-pillar hr {
+    margin: 0.1rem 0;
+    border-color: rgba(52, 152, 219, 0.2);
+    height: 0.5px;
+}
+
+/* Section Headers Enhancement */
+h3, h4 {
+    color: #2c3e50;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+h3::after, h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, #3498db 50%, transparent 100%);
+    border-radius: 2px;
+}
+
+/* Footer styling */
+footer {
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    color: #ecf0f1;
+    text-align: center;
+    padding: 1rem;
+    margin-top: auto;
+    border-top: 3px solid #3498db;
+}
+
+/* Footer */
+.footer-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.footer-text {
+    text-align: center;
+    font-size: 0.875rem;
+}
+
+.social-icons-wrapper {
+    position: absolute;
+    right: 0;
+}
+
+.social-icons {
+    display: flex;
+    gap: 10px;
+    padding: 0;
+    list-style: none;
+    margin: 0;
+}
+
+.social-icons .list-inline-item {
+    margin: 0;
+}
+
+.social-icons .list-inline-item a {
+    font-size: 18px;
+    text-decoration: none;
+    color: white;
+}
+
+/* Enhanced container styling */
+.container {
+    flex: 1;
+    padding: 0.2rem;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 1rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced form styling */
+.form-control, .form-select {
+    border: 2px solid #bdc3c7;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+    background-color: #ffffff;
+    color: #2c3e50;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    outline: none;
+}
+
+.form-label {
+    color: #34495e;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Button styling */
+.btn-primary {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    border: none;
+    border-radius: 0.6rem;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    color: #ffffff;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+}
+
+.btn-outline-secondary {
+    border: 2px solid #95a5a6;
+    color: #34495e;
+    background-color: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover, .btn-outline-secondary:disabled {
+    background-color: #ecf0f1;
+    border-color: #7f8c8d;
+    color: #2c3e50;
+}
+
+/* Error message styling */
+.alert-danger {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    border-radius: 0.5rem;
+}
+
+/* Results container enhancement */
+#resultsContainer {
+    margin: 1rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 1rem;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+}
+
+/* Horizontal rule styling */
+hr {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, #3498db 0%, #2ecc71 50%, #f39c12 100%);
+    margin: 2rem 0;
+    border-radius: 1px;
+}
+
+/* ============================================ */
+/* RESPONSIVE DESIGN */
+/* ============================================ */
+
+@media (max-width: 1200px) {
+    .pillar {
+        width: 150px;
+        min-height: 380px;
+    }
+    
+    #luckPillars .pillar {
+        width: 120px;
+        min-height: 320px;
+    }
+}
+
+@media (max-width: 768px) {
+    #result {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    #luckPillars {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+    }
+
+    .pillar {
+        width: 90%;
+        max-width: 280px;
+        min-height: 360px;
+    }
+    
+    #luckPillars .pillar {
+        width: 110px;
+        min-height: 300px;
+    }
+    
+    .pillar.current-period::before {
+        font-size: 0.65rem;
+        padding: 0.25rem 0.6rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .pillar {
+        width: 95%;
+        min-height: 340px;
+    }
+    
+    #luckPillars .pillar {
+        width: 100px;
+        min-height: 280px;
+    }
+    
+    #bigCharacter {
+        font-size: 2.8rem;
+    }
+    
+    #luckPillars #bigCharacter {
+        font-size: 2rem;
+    }
+}
+
+/* ============================================ */
+/* HIDDEN STEMS AND 10 GODS STYLING */
+/* ============================================ */
+
+/* Hidden Stems Container - Perfectly Centered Layout */
+.hidden-stems-container {
+    padding: 0.35rem 0.3rem;
+    background: linear-gradient(135deg, rgba(149, 165, 166, 0.05) 0%, rgba(149, 165, 166, 0.02) 100%);
+    border-radius: 0.4rem;
+    margin: 0.2rem 0.3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(149, 165, 166, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+}
+
+/* Remove the label - no longer needed */
+.hidden-stems-label {
+    display: none;
+}
+
+/* Grid layout for hidden stems columns - perfectly centered */
+.hidden-stems-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+    align-items: center;
+    gap: 0.7rem;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Individual hidden stem column (Chinese char + 10 Gods label) */
+.hidden-stem-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Chinese character styling - balanced size */
+.hidden-stem-char {
+    font-size: 1.35rem;
+    font-family: 'Times New Roman', serif;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    line-height: 1;
+    text-align: center;
+}
+
+/* 10 Gods label - perfectly centered below character */
+.ten-gods-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: #3498db;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    text-shadow: 0 1px 1px rgba(52, 152, 219, 0.1);
+    padding: 0.12rem 0.28rem;
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.08) 0%, rgba(52, 152, 219, 0.04) 100%);
+    border-radius: 0.25rem;
+    border: 1px solid rgba(52, 152, 219, 0.12);
+    white-space: nowrap;
+    min-width: 26px;
+    text-align: center;
+    display: inline-block;
+}
+
+/* Responsive adjustments for luck pillars */
+#luckPillars .hidden-stems-container {
+    padding: 0.28rem 0.22rem;
+    margin: 0.15rem 0.22rem;
+}
+
+#luckPillars .hidden-stems-grid {
+    gap: 0.5rem;
+}
+
+#luckPillars .hidden-stem-char {
+    font-size: 1.15rem;
+    margin-bottom: 0.18rem;
+}
+
+#luckPillars .ten-gods-label {
+    font-size: 0.56rem;
+    padding: 0.1rem 0.22rem;
+    min-width: 22px;
+}
+
+/* Time period pillars - compact and centered */
+.time-period-pillar .hidden-stems-container {
+    padding: 0.22rem 0.18rem;
+    margin: 0.12rem 0.18rem;
+}
+
+.time-period-pillar .hidden-stems-grid {
+    gap: 0.4rem;
+}
+
+.time-period-pillar .hidden-stem-char {
+    font-size: 1.05rem;
+    margin-bottom: 0.15rem;
+}
+
+.time-period-pillar .ten-gods-label {
+    font-size: 0.52rem;
+    padding: 0.08rem 0.18rem;
+    min-width: 20px;
+}
+
+/* Remove old separate styling */
+.hidden-stems-separator,
+.ten-gods-separator {
+    display: none;
+}
