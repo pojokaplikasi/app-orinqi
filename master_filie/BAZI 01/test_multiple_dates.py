@@ -16,7 +16,7 @@ print("=" * 80)
 
 for test_case in test_dates:
     try:
-        response = requests.post('http://localhost:5000/calculate', 
+        response = requests.post('http://localhost:5001/calculate', 
                                json={
                                    'dateTime': f"{test_case['date']}T{test_case['time']}:00",
                                    'location': 'Asia/Jakarta',

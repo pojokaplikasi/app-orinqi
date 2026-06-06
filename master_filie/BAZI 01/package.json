@@ -1,0 +1,13 @@
+{
+  "name": "bazi-calculator",
+  "version": "1.0.0",
+  "description": "Bazi Calculator Application",
+  "main": "app.py",
+  "scripts": {
+    "dev": "source venv/bin/activate && FLASK_RUN_PORT=5001 python3 app.py",
+    "start": "source venv/bin/activate && FLASK_RUN_PORT=5001 python3 app.py",
+    "setup": "python3 -m venv venv && source venv/bin/activate && pip install flask flask-cors python-dateutil pytz"
+  },
+  "author": "",
+  "license": "ISC"
+}

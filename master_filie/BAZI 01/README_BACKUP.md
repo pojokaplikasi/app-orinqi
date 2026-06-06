@@ -79,7 +79,7 @@
 cd "d:\BAZI\Bahan Software\20251119 kombinasi ok dan tambahan kalkulator\BAZI 01"
 python app.py
 ```
-Then open browser to: http://localhost:5000
+Then open browser to: http://localhost:5001
 
 ### Requirements:
 - Python 3.x

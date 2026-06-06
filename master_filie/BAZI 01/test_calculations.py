@@ -23,7 +23,7 @@ def test_bazi_calculation():
     
     try:
         # Send request to our duplicate server
-        response = requests.post('http://localhost:5000/calculate', 
+        response = requests.post('http://localhost:5001/calculate', 
                                json=test_data,
                                headers={'Content-Type': 'application/json'})
         
