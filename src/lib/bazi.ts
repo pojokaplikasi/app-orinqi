@@ -788,7 +788,7 @@ export function calculateLuckPillars(birthTime: dayjs.Dayjs, gender: number, fou
             life_cycle: LIFE_CYCLES[(stemIdx + branchIdx) % 12],
             year_start: startYear,
             year_end: endYear,
-            time: luckStartTime.toISOString()
+            time: luckStartTime.format('YYYY-MM-DDTHH:mm:ss')
         };
         
         luckPillars.push(luckPillar);
