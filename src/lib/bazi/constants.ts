@@ -90,9 +90,9 @@ export const GANZHI_COMBINATIONS = [
 ];
 
 export const LIFE_CYCLES_ENGLISH = [
-    "Birth", "Bath", "Youth", "Prosperity", 
-    "Peak", "Weakening", "Sickness", "Death", 
-    "Tomb", "Extinction", "Conception", "Nurturing"
+    "Birth", "Bath", "Youth", "Thriving",
+    "Prosperous", "Weakening", "Sick", "Death",
+    "Grave", "Extinction", "Conceived", "Nourishing"
 ];
 
 export const LIFE_CYCLES_PINYIN = [
