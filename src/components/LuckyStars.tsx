@@ -29,131 +29,127 @@ export default function LuckyStars({ stars, mode = 'modern' }: LuckyStarsProps) 
     return { character: branchChars[englishName] || branchTraditionalName, english: englishName };
   };
 
-  const icons = {
-    nobleman: '👑',
-    intelligence: '🎓',
-    peachBlossom: '🌸',
-    skyHorse: '🦄',
-    solitary: '🌙',
-    heavenlyDoctor: '⚕️'
-  };
-
-  const colors = {
-    nobleman: '#28a745',
-    intelligence: '#007bff',
-    peachBlossom: '#e83e8c',
-    skyHorse: '#fd7e14',
-    solitary: '#9c27b0',
-    heavenlyDoctor: '#20c997'
-  };
-
-  const noblemanBranches = stars.nobleman && stars.nobleman.length > 0 
-    ? stars.nobleman.map((b: string) => {
-        const info = getBranchInfo(b);
+  const starConfig = [
+    {
+      id: 'nobleman',
+      name: 'Noble People',
+      chinese: '贵人',
+      icon: '👑',
+      color: '#16A34A',
+      branches: stars.nobleman && stars.nobleman.length > 0 
+        ? stars.nobleman.map((b: string) => {
+            const info = getBranchInfo(b);
+            return `${info.character} ${info.english}`;
+          }).join(', ') 
+        : null
+    },
+    {
+      id: 'intelligence',
+      name: 'Intelligence',
+      chinese: '文昌',
+      icon: '🎓',
+      color: '#2563EB',
+      branches: stars.intelligence ? (() => {
+        const info = getBranchInfo(stars.intelligence);
         return `${info.character} ${info.english}`;
-      }).join(', ') 
-    : 'None';
+      })() : null
+    },
+    {
+      id: 'peachBlossom',
+      name: 'Peach Blossom',
+      chinese: '桃花',
+      icon: '🌸',
+      color: '#EC4899',
+      branches: stars.peachBlossom ? (() => {
+        const info = getBranchInfo(stars.peachBlossom);
+        return `${info.character} ${info.english}`;
+      })() : null
+    },
+    {
+      id: 'skyHorse',
+      name: 'Sky Horse',
+      chinese: '驿马',
+      icon: '🦄',
+      color: '#F97316',
+      branches: stars.skyHorse ? (() => {
+        const info = getBranchInfo(stars.skyHorse);
+        return `${info.character} ${info.english}`;
+      })() : null
+    },
+    {
+      id: 'solitary',
+      name: 'Solitary',
+      chinese: '孤辰',
+      icon: '🌙',
+      color: '#9333EA',
+      branches: stars.solitary ? (() => {
+        const info = getBranchInfo(stars.solitary);
+        return `${info.character} ${info.english}`;
+      })() : null
+    },
+    {
+      id: 'heavenlyDoctor',
+      name: 'Heavenly Doctor',
+      chinese: '天医',
+      icon: '⚕️',
+      color: '#10B981',
+      branches: stars.heavenlyDoctor ? (() => {
+        const info = getBranchInfo(stars.heavenlyDoctor);
+        return `${info.character} ${info.english}`;
+      })() : null
+    },
+    {
+      id: 'kongwang',
+      name: mode === 'modern' ? 'Dead Emptiness' : 'Kong Wang',
+      chinese: '空亡',
+      icon: '🌪️',
+      color: '#8B5CF6',
+      branches: stars.kongwang && stars.kongwang.length > 0 
+        ? stars.kongwang.map((kw: string) => {
+            const kwInfo = getBranchInfo(kw);
+            return kwInfo.character ? `${kwInfo.character} ${kwInfo.english}` : '';
+          }).join(', ')
+        : null
+    }
+  ];
 
-  const intelInfo = stars.intelligence ? getBranchInfo(stars.intelligence) : { character: '', english: '' };
-  const peachInfo = stars.peachBlossom ? getBranchInfo(stars.peachBlossom) : { character: '', english: '' };
-  const skyInfo = stars.skyHorse ? getBranchInfo(stars.skyHorse) : { character: '', english: '' };
-  const solitaryInfo = stars.solitary ? getBranchInfo(stars.solitary) : { character: '', english: '' };
-  const doctorInfo = stars.heavenlyDoctor ? getBranchInfo(stars.heavenlyDoctor) : { character: '', english: '' };
-
-  const kongwangBranches = stars.kongwang && stars.kongwang.length > 0 
-    ? stars.kongwang.map((kw: string) => {
-        const kwInfo = getBranchInfo(kw);
-        return kwInfo.character ? `${kwInfo.character} ${kwInfo.english}` : '';
-      }).join(', ')
-    : 'None';
-
-  const kongwangLabel = mode === 'modern' ? 'DEAD EMPTINESS 空亡' : 'KONG WANG 空亡';
+  const activeStars = starConfig.filter(star => star.branches);
 
   return (
-    <div className="col-md-3 pr-8">
-      <h3 className="text-center mb-4 font-bold text-[#2c3e50] border-b-3 border-[#3498db] pb-2 text-[1.8rem]">Lucky Stars</h3>
-      <div className="lucky-stars-table bg-[#f8f9fa] rounded-[10px] p-6 mt-4">
-        <table className="w-full border-separate border-spacing-y-[10px]">
-          <tbody>
-            {/* Nobleman */}
-            <tr>
-              <td className="p-[14px_18px] bg-white rounded-l-[8px] font-semibold align-middle text-[1.05rem]" style={{ color: colors.nobleman }}>
-                <span className="text-[1.5rem] mr-[10px]">{icons.nobleman}</span>
-                NOBLE PEOPLE 贵人
-              </td>
-              <td className="p-[14px_18px] bg-white rounded-r-[8px] font-bold text-[1.15rem] align-middle text-right" style={{ color: colors.nobleman }}>
-                {noblemanBranches}
-              </td>
-            </tr>
-            
-            {/* Intelligence */}
-            <tr>
-              <td className="p-[14px_18px] bg-white rounded-l-[8px] font-semibold align-middle text-[1.05rem]" style={{ color: colors.intelligence }}>
-                <span className="text-[1.5rem] mr-[10px]">{icons.intelligence}</span>
-                INTELLIGENCE 文昌
-              </td>
-              <td className="p-[14px_18px] bg-white rounded-r-[8px] font-bold text-[1.15rem] align-middle text-right" style={{ color: colors.intelligence }}>
-                {intelInfo.character ? `${intelInfo.character} ${intelInfo.english}` : 'None'}
-              </td>
-            </tr>
-
-            {/* Peach Blossom */}
-            <tr>
-              <td className="p-[14px_18px] bg-white rounded-l-[8px] font-semibold align-middle text-[1.05rem]" style={{ color: colors.peachBlossom }}>
-                <span className="text-[1.5rem] mr-[10px]">{icons.peachBlossom}</span>
-                PEACH BLOSSOM 桃花
-              </td>
-              <td className="p-[14px_18px] bg-white rounded-r-[8px] font-bold text-[1.15rem] align-middle text-right" style={{ color: colors.peachBlossom }}>
-                {peachInfo.character ? `${peachInfo.character} ${peachInfo.english}` : 'None'}
-              </td>
-            </tr>
-
-            {/* Sky Horse */}
-            <tr>
-              <td className="p-[14px_18px] bg-white rounded-l-[8px] font-semibold align-middle text-[1.05rem]" style={{ color: colors.skyHorse }}>
-                <span className="text-[1.5rem] mr-[10px]">{icons.skyHorse}</span>
-                SKY HORSE 驛馬
-              </td>
-              <td className="p-[14px_18px] bg-white rounded-r-[8px] font-bold text-[1.15rem] align-middle text-right" style={{ color: colors.skyHorse }}>
-                {skyInfo.character ? `${skyInfo.character} ${skyInfo.english}` : 'None'}
-              </td>
-            </tr>
-
-            {/* Solitary */}
-            <tr>
-              <td className="p-[14px_18px] bg-white rounded-l-[8px] font-semibold align-middle text-[1.05rem]" style={{ color: colors.solitary }}>
-                <span className="text-[1.5rem] mr-[10px]">{icons.solitary}</span>
-                SOLITARY 孤辰
-              </td>
-              <td className="p-[14px_18px] bg-white rounded-r-[8px] font-bold text-[1.15rem] align-middle text-right" style={{ color: colors.solitary }}>
-                {solitaryInfo.character ? `${solitaryInfo.character} ${solitaryInfo.english}` : 'None'}
-              </td>
-            </tr>
-
-            {/* Heavenly Doctor */}
-            <tr>
-              <td className="p-[14px_18px] bg-white rounded-l-[8px] font-semibold align-middle text-[1.05rem]" style={{ color: colors.heavenlyDoctor }}>
-                <span className="text-[1.5rem] mr-[10px]">{icons.heavenlyDoctor}</span>
-                HEAVENLY DOCTOR 天医
-              </td>
-              <td className="p-[14px_18px] bg-white rounded-r-[8px] font-bold text-[1.15rem] align-middle text-right" style={{ color: colors.heavenlyDoctor }}>
-                {doctorInfo.character ? `${doctorInfo.character} ${doctorInfo.english}` : 'None'}
-              </td>
-            </tr>
-
-            {/* Kong Wang */}
-            <tr>
-              <td className="p-[14px_18px] bg-white rounded-l-[8px] font-semibold align-middle text-[1.05rem] text-[#9B59B6]">
-                <span className="text-[1.5rem] mr-[10px]">☯️</span>
-                {kongwangLabel}
-              </td>
-              <td className="p-[14px_18px] bg-white rounded-r-[8px] font-bold text-[1.15rem] align-middle text-right text-[#9B59B6]">
-                {kongwangBranches}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div className="flex flex-col gap-4">
+      {activeStars.length > 0 ? (
+        activeStars.map((star) => (
+          <div 
+            key={star.id}
+            className="bg-white rounded-[18px] p-[18px] flex items-center gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#F1F5F9]"
+          >
+            <div 
+              className="w-[48px] h-[48px] rounded-full flex items-center justify-center text-[24px] flex-shrink-0"
+              style={{ 
+                background: 'rgba(255,255,255,0.7)',
+                backdropFilter: 'blur(16px)',
+                border: `1px solid ${star.color}20`,
+                boxShadow: `0 4px 12px ${star.color}15`
+              }}
+            >
+              {star.icon}
+            </div>
+            <div className="flex flex-col flex-1">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-[#18181B] text-[15px]">{star.name}</span>
+                <span className="text-[13px] text-[#71717A]">{star.chinese}</span>
+              </div>
+              <div className="text-[14px] font-medium mt-1" style={{ color: star.color }}>
+                {star.branches}
+              </div>
+            </div>
+          </div>
+        ))
+      ) : (
+        <div className="bg-white rounded-[18px] p-[18px] flex items-center justify-center text-[#71717A] text-[14px] border border-[#F1F5F9]">
+          No active stars found in this chart.
+        </div>
+      )}
     </div>
   );
 }

@@ -11,16 +11,29 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
   const tenGodsStems = tenGodsData.stems;
 
   const tenGodsChinese: Record<string, string> = {
-    'Friend': 'Bi Jian 比肩',
-    'Rob Wealth': 'Jie Cai 劫财',
-    'Eating God': 'Shi Shen 食神',
-    'Hurting Officer': 'Shang Guan 伤官',
-    'Direct Wealth': 'Zheng Cai 正财',
-    'Indirect Wealth': 'Pian Cai 偏财',
-    'Direct Officer': 'Zheng Guan 正官',
-    'Seven Killings': 'Qi Sha 七杀',
-    'Direct Resource': 'Zheng Yin 正印',
-    'Indirect Resource': 'Pian Yin 偏印'
+    'Friend': '比肩',
+    'Rob Wealth': '劫财',
+    'Eating God': '食神',
+    'Hurting Officer': '伤官',
+    'Direct Wealth': '正财',
+    'Indirect Wealth': '偏财',
+    'Direct Officer': '正官',
+    'Seven Killings': '七杀',
+    'Direct Resource': '正印',
+    'Indirect Resource': '偏印'
+  };
+
+  const tenGodsColors: Record<string, string> = {
+    'Friend': '#22C55E',
+    'Rob Wealth': '#16A34A',
+    'Eating God': '#EF4444',
+    'Hurting Officer': '#DC2626',
+    'Direct Wealth': '#F59E0B',
+    'Indirect Wealth': '#D97706',
+    'Direct Officer': '#94A3B8',
+    'Seven Killings': '#64748B',
+    'Direct Resource': '#3B82F6',
+    'Indirect Resource': '#2563EB'
   };
 
   // Sort 10 Gods by Natal points (descending)
@@ -31,58 +44,63 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
   const totalAnnual = Object.values(tenGodsPoints.annual).reduce((sum: any, p: any) => sum + p, 0) as number;
 
   return (
-    <div className="col-md-4 pl-8">
-      <h3 className="text-center mb-4 font-bold text-[#2c3e50] border-b-3 border-[#9b59b6] pb-2 text-[1.8rem]">10 GODS</h3>
-      <div id="tenGodsContainer" className="mt-4 bg-[#f8f9fa] rounded-[10px] p-6">
-        <div className="flex flex-col gap-2">
-          {sortedGods.map(([godName, natalPoints]: [string, any]) => {
-            const annualPoints = tenGodsPoints.annual[godName] || 0;
-            const pinyinChinese = tenGodsChinese[godName] || '';
-            
-            const natalStemsArr = tenGodsStems.natal[godName] || [];
-            const annualStemsArr = tenGodsStems.annual[godName] || [];
-            
-            const allStemsSet = new Set([...natalStemsArr, ...annualStemsArr]);
-            const allStems = Array.from(allStemsSet).join(' ');
-            
-            const natalStems = natalStemsArr.length > 0 ? natalStemsArr.join(' ') : '';
-            const annualStems = annualStemsArr.length > 0 ? annualStemsArr.join(' ') : '';
-            
-            const natalPercent = totalNatal > 0 ? ((natalPoints / totalNatal) * 100).toFixed(1) : '0.0';
-            const annualPercent = totalAnnual > 0 ? ((annualPoints / totalAnnual) * 100).toFixed(1) : '0.0';
+    <div className="flex flex-col gap-4">
+      {sortedGods.map(([godName, natalPoints]: [string, any]) => {
+        const annualPoints = tenGodsPoints.annual[godName] || 0;
+        const chineseChar = tenGodsChinese[godName] || '';
+        const color = tenGodsColors[godName] || '#A855F7';
+        
+        const natalStemsArr = tenGodsStems.natal[godName] || [];
+        const annualStemsArr = tenGodsStems.annual[godName] || [];
+        
+        const allStemsSet = new Set([...natalStemsArr, ...annualStemsArr]);
+        const allStems = Array.from(allStemsSet).join(' ');
+        
+        const natalPercent = totalNatal > 0 ? ((natalPoints / totalNatal) * 100) : 0;
+        const annualPercent = totalAnnual > 0 ? ((annualPoints / totalAnnual) * 100) : 0;
 
-            return (
-              <div key={godName} className="bg-white rounded-[8px] p-[14px_16px] flex justify-between items-center shadow-[0_2px_4px_rgba(0,0,0,0.08)] border-l-[4px] border-[#9b59b6]">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-[3px]">
-                    <span className="text-[1.2rem] font-bold text-[#9b59b6] min-w-[30px] text-center">{allStems}</span>
-                    <span className="font-bold text-[#2c3e50] text-[0.95rem]">{godName}</span>
-                  </div>
-                  <div className="text-[0.85rem] text-[#7f8c8d] font-medium">
-                    ({pinyinChinese})
-                  </div>
+        // Only show gods that have some presence
+        if (natalPercent === 0 && annualPercent === 0) return null;
+
+        return (
+          <div 
+            key={godName} 
+            className="bg-white rounded-[18px] p-[18px] flex items-center gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#F1F5F9]"
+          >
+            <div 
+              className="w-[48px] h-[48px] rounded-full flex items-center justify-center text-[18px] font-bold flex-shrink-0"
+              style={{ 
+                background: 'rgba(255,255,255,0.7)',
+                backdropFilter: 'blur(16px)',
+                border: `1px solid ${color}20`,
+                boxShadow: `0 4px 12px ${color}15`,
+                color: color
+              }}
+            >
+              {allStems || chineseChar[0]}
+            </div>
+            
+            <div className="flex flex-col flex-1">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-[#18181B] text-[15px]">{godName}</span>
+                <span className="text-[13px] text-[#71717A]">{chineseChar}</span>
+              </div>
+              
+              <div className="flex items-center gap-3 mt-1">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[12px] text-[#94A3B8]">Natal</span>
+                  <span className="text-[13px] font-bold" style={{ color }}>{natalPercent.toFixed(1)}%</span>
                 </div>
-                <div className="flex gap-6 items-center">
-                  <div className="text-right min-w-[75px]">
-                    <div className="text-[#95a5a6] text-[0.7rem] uppercase tracking-[0.5px] mb-[2px]">Natal</div>
-                    <div className="flex items-center justify-end gap-1">
-                      <span className="text-[0.9rem] text-[#9b59b6] font-semibold">{natalStems}</span>
-                      <span className="text-[#e74c3c] font-bold text-[1rem]">{natalPercent}%</span>
-                    </div>
-                  </div>
-                  <div className="text-right min-w-[75px]">
-                    <div className="text-[#95a5a6] text-[0.7rem] uppercase tracking-[0.5px] mb-[2px]">Annual</div>
-                    <div className="flex items-center justify-end gap-1">
-                      <span className="text-[0.9rem] text-[#9b59b6] font-semibold">{annualStems}</span>
-                      <span className="text-[#3498db] font-bold text-[1rem]">{annualPercent}%</span>
-                    </div>
-                  </div>
+                <div className="w-[3px] h-[3px] rounded-full bg-[#E5E7EB]"></div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[12px] text-[#94A3B8]">Annual</span>
+                  <span className="text-[13px] font-bold" style={{ color, opacity: 0.8 }}>{annualPercent.toFixed(1)}%</span>
                 </div>
               </div>
-            );
-          })}
-        </div>
-      </div>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

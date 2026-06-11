@@ -144,54 +144,60 @@ export default function ElementStructure({ elementData }: ElementStructureProps)
   };
 
   return (
-    <div className="col-md-5 px-8">
-      <h3 className="text-center mb-4 font-bold text-[#2c3e50] border-b-3 border-[#e74c3c] pb-2 text-[1.8rem]">Element Composition</h3>
-      <div className="element-structure-content mt-4">
-        <div className="flex flex-wrap items-center">
-          {/* Radar Chart */}
-          <div className="w-full md:w-1/2">
-            <canvas ref={chartRef} width="400" height="400"></canvas>
-          </div>
-          {/* Element Percentages */}
-          <div className="w-full md:w-1/2 p-2">
-            <div className="mt-4">
-              {Object.keys(elementData.natal).map(elem => {
-                const natalPercent = elementData.natal[elem];
-                const annualPercent = elementData.annual[elem];
-                const color = elementColors[elem];
-                const icon = elementIcons[elem];
-
-                return (
-                  <div key={elem} className="mb-[1.8rem]">
-                    <div className="flex items-center mb-[0.8rem]">
-                      <span className="text-[1.4rem] mr-[0.6rem]">{icon}</span>
-                      <strong className="text-[1.1rem] font-bold uppercase" style={{ color }}>{elem}</strong>
-                    </div>
-                    <div className="mb-[0.6rem]">
-                      <div className="flex justify-between items-center mb-[0.4rem]">
-                        <span className="text-[0.85rem] text-[#6c757d] font-semibold">Natal</span>
-                        <span className="text-[0.95rem] font-bold" style={{ color }}>{natalPercent}%</span>
-                      </div>
-                      <div className="bg-[#e8f5e9] rounded-[10px] h-[8px] overflow-hidden">
-                        <div className="h-full rounded-[10px] transition-all duration-500 ease-in-out" style={{ background: color, width: `${natalPercent}%` }}></div>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between items-center mb-[0.4rem]">
-                        <span className="text-[0.85rem] text-[#6c757d] font-semibold">Annual</span>
-                        <span className="text-[0.95rem] font-bold opacity-80" style={{ color }}>{annualPercent}%</span>
-                      </div>
-                      <div className="bg-[#f3e5f5] rounded-[10px] h-[8px] overflow-hidden">
-                        <div className="h-full rounded-[10px] opacity-60 transition-all duration-500 ease-in-out" style={{ background: color, width: `${annualPercent}%` }}></div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
+    <div className="flex flex-col items-center w-full">
+      
+      {/* Chart Container */}
+      <div className="relative w-full max-w-[320px] h-[320px] flex items-center justify-center mb-6">
+        <canvas ref={chartRef} width="320" height="320"></canvas>
       </div>
+
+      {/* Element Labels & Comparison Bars */}
+      <div className="w-full grid grid-cols-2 gap-4">
+        {Object.keys(elementData.natal).map(elem => {
+          const natalPercent = elementData.natal[elem];
+          const annualPercent = elementData.annual[elem];
+          const color = elementColors[elem];
+          const icon = elementIcons[elem];
+
+          return (
+            <div 
+              key={elem} 
+              className="bg-white rounded-[18px] p-[16px] flex flex-col items-center text-center gap-3 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#F1F5F9]"
+            >
+              <div 
+                className="w-[40px] h-[40px] rounded-full flex items-center justify-center text-[20px] flex-shrink-0"
+                style={{ 
+                  background: 'rgba(255,255,255,0.7)',
+                  backdropFilter: 'blur(16px)',
+                  border: `1px solid ${color}20`,
+                  boxShadow: `0 4px 12px ${color}15`
+                }}
+              >
+                {icon}
+              </div>
+              
+              <div className="flex flex-col w-full">
+                <div className="text-[14px] font-bold text-[#18181B] uppercase tracking-wide mb-1" style={{ color }}>
+                  {elem}
+                </div>
+                
+                <div className="flex items-center justify-center gap-2">
+                  <div className="flex items-center gap-1">
+                    <span className="text-[11px] text-[#94A3B8]">N</span>
+                    <span className="text-[12px] font-bold" style={{ color }}>{natalPercent}%</span>
+                  </div>
+                  <div className="w-[3px] h-[3px] rounded-full bg-[#E5E7EB]"></div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-[11px] text-[#94A3B8]">A</span>
+                    <span className="text-[12px] font-bold" style={{ color, opacity: 0.8 }}>{annualPercent}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
     </div>
   );
 }

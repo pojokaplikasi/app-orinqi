@@ -78,6 +78,7 @@ export function calculateCurrentYearPillar(currentDate: Date, fourPillarsData: a
     );
     
     return {
+        year: year,
         heavenly_stem: {
             name: HEAVENLY_STEMS[yearStemIndex].name,
             character: HEAVENLY_STEMS[yearStemIndex].character
@@ -129,7 +130,11 @@ export function calculateCurrentMonthPillar(currentDate: Date, fourPillarsData: 
         s.name === fourPillarsData.day_pillar.heavenly_stem.name
     );
     
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    
     return {
+        month: month,
+        month_english: monthNames[month - 1],
         heavenly_stem: {
             name: HEAVENLY_STEMS[monthStemIndex].name,
             character: HEAVENLY_STEMS[monthStemIndex].character
@@ -169,6 +174,7 @@ export function calculateCurrentDayPillar(currentDate: Date, fourPillarsData: an
     );
     
     return {
+        day: dayForCalculation.getDate(),
         heavenly_stem: {
             name: HEAVENLY_STEMS[dayStemIndex].name,
             character: HEAVENLY_STEMS[dayStemIndex].character

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ELEMENT_COLORS } from '@/lib/bazi/constants';
 import { getTenGodsRelationship } from '@/lib/bazi/element-analysis';
 import { HEAVENLY_STEMS } from '@/lib/bazi/constants';
@@ -16,6 +16,8 @@ interface PillarProps {
   isSelected?: boolean;
   isCompact?: boolean;
   dayMasterName?: string;
+  isExpanded?: boolean;
+  onToggleExpand?: () => void;
 }
 
 export default function Pillar({
@@ -30,7 +32,9 @@ export default function Pillar({
   onClick,
   isSelected = false,
   isCompact = false,
-  dayMasterName
+  dayMasterName,
+  isExpanded = false,
+  onToggleExpand
 }: PillarProps) {
   if (!pillarData) return null;
 
@@ -131,158 +135,160 @@ export default function Pillar({
   });
 
   // Base classes
-  let pillarClass = "pillar flex-none w-[145px] min-h-[520px] h-auto p-0 rounded-xl shadow-[0_4px_15px_rgba(0,0,0,0.08)] text-[#2c3e50] text-center bg-white box-border transition-all duration-350 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] relative grid grid-rows-[50px_80px_1px_80px_55px_1px_45px_1px_45px_auto] items-center gap-0 hover:-translate-y-1.5 hover:shadow-[0_12px_35px_rgba(0,0,0,0.15)]";
+  let pillarClass = "flex-none w-[150px] md:w-[180px] lg:w-[200px] h-auto p-4 rounded-[20px] bg-white/72 backdrop-blur-[20px] border border-[#F1F5F9] shadow-[0_6px_24px_rgba(0,0,0,0.05)] text-[#18181B] text-center box-border transition-all duration-200 relative flex flex-col gap-3";
   
-  if (isCompact) {
-    pillarClass = "time-period-pillar flex-none w-[90px] min-h-[560px] h-auto p-[0.4rem_0.25rem] m-0 rounded-[0.6rem] text-[0.58rem] text-center border-2 border-[#bdc3c7] bg-gradient-to-br from-white to-[#f8f9fa] shadow-[0_3px_8px_rgba(0,0,0,0.1)] transition-all duration-300 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] relative grid grid-rows-[48px_64px_1px_64px_58px_1px_38px_1px_38px_auto] items-center gap-0 hover:-translate-y-[3px] hover:scale-105 hover:shadow-[0_6px_16px_rgba(0,0,0,0.2)] hover:border-[#95a5a6] cursor-pointer";
-  } else if (isCurrent) {
-    pillarClass += " current-pillar border-3 border-[#e67e22] bg-gradient-to-br from-[#fff8f0] to-[#ffecd1] hover:border-[#d35400] hover:shadow-[0_12px_35px_rgba(230,126,34,0.3)]";
+  if (isCurrent) {
+    pillarClass += " border-t-[4px] border-t-[#F97316]";
   } else {
-    pillarClass += " natal-pillar border-3 border-[#3498db] bg-gradient-to-br from-white to-[#f8fbff] hover:border-[#2980b9] hover:shadow-[0_12px_35px_rgba(52,152,219,0.25)]";
+    pillarClass += " border-t-[4px] border-t-[#2563EB]";
   }
 
   if (isSelected) {
-    pillarClass += " border-3 border-[#e74c3c] bg-[rgba(231,76,60,0.1)]";
+    pillarClass += " ring-2 ring-[#E94B4B] ring-offset-2";
+  }
+
+  if (onClick) {
+    pillarClass += " cursor-pointer hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)]";
+  }
+
+  // Extract Chinese title if available (e.g., "Hour Pillar (時柱)" -> "Hour Pillar", "時柱")
+  let mainTitle = title;
+  let chineseTitle = '';
+  const match = title.match(/(.*?)\s*\((.*?)\)/);
+  if (match) {
+    mainTitle = match[1];
+    chineseTitle = match[2];
   }
 
   return (
     <div className={pillarClass} onClick={onClick}>
-      {/* Top Border Gradient */}
-      {!isCompact && (
-        <div className={`absolute top-0 left-0 right-0 h-1 rounded-t-xl ${isCurrent ? 'bg-gradient-to-r from-[#e67e22] to-[#d35400]' : 'bg-gradient-to-r from-[#3498db] to-[#2980b9]'}`}></div>
-      )}
-
-      {/* Title */}
-      <div className={`pillar-title text-[0.78rem] font-bold text-[#2c3e50] p-[0.5rem_0.35rem] flex items-center justify-center row-start-1 border-b-2 leading-[1.2] min-h-[55px] drop-shadow-[0_1px_2px_rgba(0,0,0,0.08)] tracking-[0.3px] ${isCompact ? 'text-[0.58rem] p-[0.35rem_0.2rem] bg-[rgba(52,152,219,0.1)] rounded-t-[0.4rem] min-h-[48px] border-none' : isCurrent ? 'bg-[rgba(230,126,34,0.1)] border-b-[#f4e4d1] text-[#d35400]' : 'bg-[rgba(52,152,219,0.08)] border-b-[#e8f4f8]'}`}>
-        {title}
-      </div>
-
-      {/* Heavenly Stem */}
-      <div className={`pillar-value flex flex-col items-center justify-center p-[0.5rem_0.3rem] relative row-start-2 ${isCompact ? 'min-h-[68px]' : 'min-h-[85px]'}`}>
-        <div className="relative inline-block">
-          <strong className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] font-bold leading-[0.9] mb-[0.3rem] block drop-shadow-[2px_2px_4px_rgba(0,0,0,0.1)] transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[3px_3px_6px_rgba(0,0,0,0.2)]" style={{ color: ELEMENT_COLORS[hsElement], fontSize: isCompact ? '2.2rem' : '3.5rem' }}>
-            {heavenly_stem?.character || '?'}
-          </strong>
-          {/* 10 God Abbreviation Badge */}
-          {hsTenGodAbbr && (
-            <span className="absolute bg-white rounded-[3px] shadow-[0_1px_3px_rgba(0,0,0,0.2)] font-bold text-[#9b59b6] leading-none" style={{ top: isCompact ? '-3px' : '-5px', right: isCompact ? '-18px' : '-25px', fontSize: isCompact ? '0.55rem' : '0.75rem', padding: isCompact ? '1px 3px' : '2px 4px' }}>
-              {hsTenGodAbbr}
+      
+      {/* Header & Ten Gods Badge */}
+      <div className="flex justify-between items-start w-full relative">
+        <div className="flex flex-col items-start text-left">
+          <span className="text-[13px] font-semibold text-[#18181B] leading-tight">{mainTitle}</span>
+          {chineseTitle && <span className="text-[11px] opacity-50 text-[#71717A]">{chineseTitle}</span>}
+          {periodLabel && periodValue && (
+            <span className="text-[11px] font-medium text-[#E94B4B] mt-1">
+              {periodValue}
             </span>
           )}
         </div>
-        <div className="font-bold mt-[0.2rem] leading-[1.2] uppercase tracking-[0.5px] drop-shadow-[0_1px_2px_rgba(0,0,0,0.1)]" style={{ color: ELEMENT_COLORS[hsElement], fontSize: isCompact ? '0.52rem' : '0.75rem' }}>
+        {hsTenGodAbbr && (
+          <div className="h-[22px] px-2 rounded-full bg-[#F3E8FF] text-[#7C3AED] text-[11px] font-bold flex items-center justify-center whitespace-nowrap">
+            {hsTenGodAbbr}
+          </div>
+        )}
+      </div>
+
+      {/* Heavenly Stem */}
+      <div className="flex flex-col items-center justify-center mt-2">
+        <strong className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[48px] leading-none drop-shadow-sm" style={{ color: ELEMENT_COLORS[hsElement] }}>
+          {heavenly_stem?.character || '?'}
+        </strong>
+        <div className="text-[11px] font-bold uppercase tracking-wider mt-1" style={{ color: ELEMENT_COLORS[hsElement] }}>
           {heavenly_stem?.name || 'N/A'}
         </div>
       </div>
 
-      {/* HR 1 */}
-      <hr className="border-none h-[1px] w-full m-0 relative row-start-3" style={{ background: `linear-gradient(90deg, transparent 0%, ${isCurrent ? 'rgba(230,126,34,0.3)' : 'rgba(52,152,219,0.25)'} 15%, ${isCurrent ? 'rgba(230,126,34,0.3)' : 'rgba(52,152,219,0.25)'} 85%, transparent 100%)` }} />
+      {/* Separator */}
+      <div className="w-full h-[1px] bg-[#F1F5F9] my-1"></div>
 
       {/* Earthly Branch */}
-      <div className={`pillar-value flex flex-col items-center justify-center p-[0.5rem_0.3rem] relative row-start-4 ${isCompact ? 'min-h-[68px]' : 'min-h-[85px]'}`}>
-        <strong className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] font-bold leading-[0.9] mb-[0.3rem] block drop-shadow-[2px_2px_4px_rgba(0,0,0,0.1)] transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[3px_3px_6px_rgba(0,0,0,0.2)]" style={{ color: ELEMENT_COLORS[ebElement], fontSize: isCompact ? '2.2rem' : '3.5rem' }}>
+      <div className="flex flex-col items-center justify-center relative">
+        <strong className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[44px] leading-none drop-shadow-sm" style={{ color: ELEMENT_COLORS[ebElement] }}>
           {earthly_branch?.character || '?'}
         </strong>
-        <div className="font-bold mt-[0.2rem] leading-[1.2] uppercase tracking-[0.5px] drop-shadow-[0_1px_2px_rgba(0,0,0,0.1)]" style={{ color: ELEMENT_COLORS[ebElement], fontSize: isCompact ? '0.52rem' : '0.75rem' }}>
+        <div className="text-[11px] font-bold uppercase tracking-wider mt-1" style={{ color: ELEMENT_COLORS[ebElement] }}>
           {earthly_branch?.name || 'N/A'}
         </div>
         
         {/* Lucky Stars Indicator */}
         {starsForThisBranch.length > 0 && (
-          <div className="absolute top-[10px] right-[5px] flex flex-col items-center bg-[rgba(255,255,255,0.95)] rounded-[5px] p-[3px_4px] shadow-[0_2px_5px_rgba(0,0,0,0.25)] z-10">
+          <div className="absolute top-0 right-[-5px] flex flex-col items-center bg-white/90 rounded-md p-1 shadow-sm z-10">
             {starsForThisBranch.map((star, idx) => (
-              <div key={idx} className="text-[0.95rem] leading-[1.2] mb-[2px]">{star}</div>
+              <div key={idx} className="text-[12px] leading-tight">{star}</div>
             ))}
           </div>
         )}
       </div>
 
-      {/* Hidden Stems */}
-      <div className={`hidden-stems-container row-start-5 p-[0.35rem_0.3rem] rounded-[0.4rem] m-[0.2rem_0.3rem] flex flex-col items-center justify-center border shadow-[0_2px_5px_rgba(0,0,0,0.03)] ${isCurrent ? 'bg-gradient-to-br from-[rgba(230,126,34,0.06)] to-[rgba(230,126,34,0.03)] border-[rgba(230,126,34,0.2)]' : 'bg-gradient-to-br from-[rgba(149,165,166,0.05)] to-[rgba(149,165,166,0.02)] border-[rgba(149,165,166,0.1)]'}`}>
-        <div className="hidden-stems-grid grid grid-cols-3 justify-items-center items-center gap-[0.7rem] w-full max-w-full">
-          {/* Residual Qi */}
-          <div className="hidden-stem-column flex flex-col items-center justify-center w-full">
-            <div className="hidden-stem-char font-['Times_New_Roman',serif] font-bold mb-[0.2rem] drop-shadow-[0_1px_2px_rgba(0,0,0,0.1)] leading-[1] text-center" style={{ color: hidden_stems?.residual_qi ? ELEMENT_COLORS[hidden_stems.residual_qi.element] : '#ccc', fontSize: isCompact ? '0.63rem' : '0.85rem' }}>
-              {hidden_stems?.residual_qi?.character || '-'}
+      {/* Hidden Stems (Mini Chips) */}
+      <div className="bg-[#F8FAFC] rounded-[12px] p-[10px] flex justify-center gap-2 w-full mt-1">
+        {[hidden_stems?.residual_qi, hidden_stems?.main_qi, hidden_stems?.sub_main_qi].map((qi, idx) => {
+          if (!qi) return null;
+          return (
+            <div key={idx} className="flex flex-col items-center">
+              <span className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[14px] font-bold leading-none mb-1" style={{ color: ELEMENT_COLORS[qi.element] }}>
+                {qi.character}
+              </span>
+              <span className="text-[9px] font-bold text-[#64748B] uppercase">
+                {qi.ten_gods || '-'}
+              </span>
             </div>
-            <div className="ten-gods-label font-bold text-[#3498db] uppercase tracking-[0.02em] drop-shadow-[0_1px_1px_rgba(52,152,219,0.1)] p-[0.12rem_0.28rem] bg-gradient-to-br from-[rgba(52,152,219,0.08)] to-[rgba(52,152,219,0.04)] rounded-[0.25rem] border border-[rgba(52,152,219,0.12)] whitespace-nowrap min-w-[26px] text-center inline-block" style={{ fontSize: isCompact ? '0.45rem' : '0.62rem' }}>
-              {hidden_stems?.residual_qi?.ten_gods || '--'}
-            </div>
-          </div>
-          
-          {/* Main Qi */}
-          <div className="hidden-stem-column flex flex-col items-center justify-center w-full">
-            <div className="hidden-stem-char font-['Times_New_Roman',serif] font-bold mb-[0.2rem] drop-shadow-[0_1px_2px_rgba(0,0,0,0.1)] leading-[1] text-center" style={{ color: hidden_stems?.main_qi ? ELEMENT_COLORS[hidden_stems.main_qi.element] : '#ccc', fontSize: isCompact ? '0.85rem' : '1.1rem' }}>
-              {hidden_stems?.main_qi?.character || '-'}
-            </div>
-            <div className="ten-gods-label font-bold text-[#3498db] uppercase tracking-[0.02em] drop-shadow-[0_1px_1px_rgba(52,152,219,0.1)] p-[0.12rem_0.28rem] bg-gradient-to-br from-[rgba(52,152,219,0.08)] to-[rgba(52,152,219,0.04)] rounded-[0.25rem] border border-[rgba(52,152,219,0.12)] whitespace-nowrap min-w-[26px] text-center inline-block" style={{ fontSize: isCompact ? '0.45rem' : '0.62rem' }}>
-              {hidden_stems?.main_qi?.ten_gods || '--'}
-            </div>
-          </div>
-          
-          {/* Sub Main Qi */}
-          <div className="hidden-stem-column flex flex-col items-center justify-center w-full">
-            <div className="hidden-stem-char font-['Times_New_Roman',serif] font-bold mb-[0.2rem] drop-shadow-[0_1px_2px_rgba(0,0,0,0.1)] leading-[1] text-center" style={{ color: hidden_stems?.sub_main_qi ? ELEMENT_COLORS[hidden_stems.sub_main_qi.element] : '#ccc', fontSize: isCompact ? '0.63rem' : '0.85rem' }}>
-              {hidden_stems?.sub_main_qi?.character || '-'}
-            </div>
-            <div className="ten-gods-label font-bold text-[#3498db] uppercase tracking-[0.02em] drop-shadow-[0_1px_1px_rgba(52,152,219,0.1)] p-[0.12rem_0.28rem] bg-gradient-to-br from-[rgba(52,152,219,0.08)] to-[rgba(52,152,219,0.04)] rounded-[0.25rem] border border-[rgba(52,152,219,0.12)] whitespace-nowrap min-w-[26px] text-center inline-block" style={{ fontSize: isCompact ? '0.45rem' : '0.62rem' }}>
-              {hidden_stems?.sub_main_qi?.ten_gods || '--'}
-            </div>
-          </div>
-        </div>
+          );
+        })}
       </div>
 
-      {/* HR 2 */}
-      <hr className="border-none h-[1px] w-full m-0 relative row-start-6" style={{ background: `linear-gradient(90deg, transparent 0%, ${isCurrent ? 'rgba(230,126,34,0.3)' : 'rgba(52,152,219,0.25)'} 15%, ${isCurrent ? 'rgba(230,126,34,0.3)' : 'rgba(52,152,219,0.25)'} 85%, transparent 100%)` }} />
-
-      {/* Nayin */}
-      <div className={`ganzhi-separator font-bold m-0 flex items-center justify-center leading-[1.2] relative row-start-7 ${isCompact ? 'text-[0.50rem] p-[0.3rem_0.15rem] bg-[rgba(52,152,219,0.05)] rounded-[0.2rem] min-h-[38px]' : 'text-[0.65rem] p-[0.4rem_0.25rem] min-h-[48px]'} ${!isCompact && isCurrent ? 'bg-gradient-to-br from-[rgba(230,126,34,0.08)] to-[rgba(230,126,34,0.03)]' : !isCompact ? 'bg-gradient-to-br from-[rgba(52,152,219,0.08)] to-[rgba(52,152,219,0.03)]' : ''}`}>
-        <strong style={{ color: ELEMENT_COLORS[nayinElement] }}>{gan_zhi?.name || 'N/A'}</strong>
+      {/* Element Section (Nayin) */}
+      <div className="flex flex-col items-center justify-center mt-1">
+        <span className="text-[12px] font-semibold text-[#18181B] text-center leading-tight">
+          {gan_zhi?.name || 'N/A'}
+        </span>
       </div>
 
-      {/* HR 3 */}
-      <hr className="border-none h-[1px] w-full m-0 relative row-start-8" style={{ background: `linear-gradient(90deg, transparent 0%, ${isCurrent ? 'rgba(230,126,34,0.3)' : 'rgba(52,152,219,0.25)'} 15%, ${isCurrent ? 'rgba(230,126,34,0.3)' : 'rgba(52,152,219,0.25)'} 85%, transparent 100%)` }} />
+      {/* Separator */}
+      <div className="w-full h-[1px] bg-[#F1F5F9] my-1"></div>
 
-      {/* 12 Phrase */}
-      <div className={`lifecycle-separator flex items-center justify-center row-start-9 ${isCompact ? 'text-[0.50rem] font-bold text-[#8e44ad] min-h-[38px] p-[0.3rem_0.15rem] leading-[1.1] m-0' : 'p-[0.4rem_0.25rem] min-h-[48px] bg-gradient-to-br from-[rgba(142,68,173,0.05)] to-[rgba(142,68,173,0.02)]'}`}>
-        <div className="text-[#8e44ad] font-extrabold uppercase tracking-[0.4px] drop-shadow-[0_1px_2px_rgba(0,0,0,0.1)]" style={{ fontSize: isCompact ? 'inherit' : '0.65rem' }}>
+      {/* Life Stage */}
+      <div className="flex items-center justify-center">
+        <span className="text-[13px] font-bold text-[#7C3AED] uppercase tracking-wide">
           {life_cycle || 'N/A'}
-        </div>
+        </span>
       </div>
 
-      {/* Combinations Row */}
-      <div className={`hs-combo-row flex flex-col items-center justify-start relative overflow-y-auto overflow-x-hidden scrollbar-thin ${isCompact ? 'row-start-10 min-h-auto max-h-[200px] p-[0.35rem_0.15rem] gap-[0.2rem]' : 'row-start-10 p-[0.5rem_0.25rem] min-h-auto max-h-[200px] gap-[0.25rem] border-t-2'} ${!isCompact && isCurrent ? 'bg-gradient-to-br from-[rgba(230,126,34,0.1)] to-[rgba(230,126,34,0.05)] border-t-[rgba(230,126,34,0.25)]' : !isCompact ? 'bg-gradient-to-br from-[rgba(231,76,60,0.08)] to-[rgba(231,76,60,0.03)] border-t-[rgba(231,76,60,0.15)]' : ''}`}>
-        {!isCompact && (
-          <div className={`absolute top-0 left-[20%] right-[20%] h-[2px] ${isCurrent ? 'bg-gradient-to-r from-transparent via-[#e67e22] to-transparent' : 'bg-gradient-to-r from-transparent via-[#e74c3c] to-transparent'}`}></div>
-        )}
-        
-        {hsLabel || branchLabels.length > 0 ? (
-          <>
-            {hsLabel && (
-              <div className="hs-combo-label font-bold text-center uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.08)] transition-all duration-300 w-full block break-words" style={{ color: ELEMENT_COLORS[hsCombos[0].combo.element], fontSize: isCompact ? '0.46rem' : '0.62rem', lineHeight: isCompact ? '1.1' : '1.35', padding: isCompact ? '0.1rem 0.12rem' : '0.2rem 0.25rem' }} title={hsCombos.map(c => c.combo.name).join(', ')}>
-                <i className="fas fa-link mr-[0.15rem] opacity-85" style={{ fontSize: isCompact ? '0.45rem' : '0.58rem' }}></i> {hsLabel}
-              </div>
-            )}
-            {branchLabels.map((label, idx) => (
-              <div key={idx} className={`branch-interaction-label font-semibold text-center uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.08)] transition-all duration-300 w-full block break-words ${label.category === 'positive' ? 'border-t-0' : 'border-t-0 opacity-90'}`} style={{ color: label.element ? ELEMENT_COLORS[label.element] : label.category === 'negative' ? '#e74c3c' : '#27ae60', fontSize: isCompact ? '0.42rem' : '0.58rem', lineHeight: isCompact ? '1.05' : '1.3', padding: isCompact ? '0.1rem 0.12rem' : '0.2rem 0.25rem', letterSpacing: isCompact ? '0.1px' : '0.15px' }} title={label.tooltip}>
-                {label.text}
-              </div>
-            ))}
-          </>
-        ) : (
-          <div className="hs-combo-label empty text-[#bdc3c7] font-semibold">
-            <span className="text-[1rem] opacity-50">-</span>
+      {/* Collapsible Relationship Indicators */}
+      {(hsLabel || branchLabels.length > 0) && (
+        <div className="mt-2 w-full">
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onToggleExpand) onToggleExpand();
+            }}
+            className="w-full bg-[#F8FAFC] border border-[#E5E7EB] rounded-[12px] h-[36px] flex items-center justify-center gap-2 text-[12px] font-semibold text-[#475569] transition-colors hover:bg-[#F1F5F9]"
+          >
+            +{branchLabels.length + (hsLabel ? 1 : 0)} Indicators {isExpanded ? '▲' : '▼'}
+          </button>
+          
+          <div 
+            className={`overflow-hidden transition-all duration-200 ease-in-out ${isExpanded ? 'max-h-[500px] opacity-100 mt-2' : 'max-h-0 opacity-0'}`}
+          >
+            <div className="flex flex-col gap-1 w-full text-left bg-white/50 rounded-[12px] p-2 border border-[#F1F5F9]">
+              {hsLabel && (
+                <div className="text-[11px] leading-[1.5] font-medium flex items-start gap-1" style={{ color: '#16A34A' }}>
+                  <span className="mt-[2px]">🔥</span>
+                  <span className="break-words">{hsLabel}</span>
+                </div>
+              )}
+              {branchLabels.map((label, idx) => {
+                let color = '#64748B'; // Neutral
+                if (label.category === 'positive') color = '#16A34A';
+                else if (label.category === 'negative') {
+                  if (label.text.includes('Punishment') || label.text.includes('Harm')) color = '#EAB308'; // Warning
+                  else color = '#EF4444'; // Negative
+                }
+                
+                return (
+                  <div key={idx} className="text-[11px] leading-[1.5] font-medium flex items-start gap-1" style={{ color }}>
+                    <span className="break-words">{label.text}</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        )}
-      </div>
-
-      {/* Period Label (for Current/Luck Pillars) */}
-      {periodLabel && periodValue && (
-        <div className={`text-center ${isCompact ? 'p-[0.3rem_0.15rem] mt-[0.2rem]' : 'p-[0.5rem] bg-[rgba(0,0,0,0.03)] rounded-[8px] mt-[0.5rem]'}`}>
-          <div className="font-bold text-[#666]" style={{ fontSize: isCompact ? '0.45rem' : '0.85rem' }}>{periodLabel}</div>
-          <div className="font-bold text-[#333]" style={{ fontSize: isCompact ? '0.52rem' : '1rem', marginTop: isCompact ? '0.1rem' : '0.2rem' }}>{periodValue}</div>
         </div>
       )}
+
     </div>
   );
 }
