@@ -56,28 +56,28 @@ export default function HeroForm({
   // If data is present, show the info card instead of the form
   if (baziData) {
     return (
-      <div className="relative flex w-full flex-col items-center justify-center overflow-hidden bg-[#FAFAFB] py-8">
+      <div className="relative flex w-full flex-col items-center justify-center overflow-hidden bg-background py-8">
         <div className="relative z-10 mx-auto w-full">
-          <div className="group relative overflow-hidden rounded-[32px] border border-white/60 bg-white/40 p-8 shadow-[0_8px_32px_rgba(0,0,0,0.05)] backdrop-blur-[30px]">
+          <div className="group relative overflow-hidden rounded-[32px] border border-border bg-card/40 p-8 shadow-[0_8px_32px_rgba(0,0,0,0.05)] backdrop-blur-[30px]">
             {/* Liquid Background Effects */}
-            <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-gradient-to-br from-[#E94B4B]/20 to-[#F97316]/20 opacity-70 mix-blend-multiply blur-3xl transition-opacity duration-700 group-hover:opacity-100"></div>
-            <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-gradient-to-tr from-[#8B5CF6]/20 to-[#3B82F6]/20 opacity-70 mix-blend-multiply blur-3xl transition-opacity duration-700 group-hover:opacity-100"></div>
+            <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-gradient-to-br from-primary/20 to-chart-2/20 opacity-70 mix-blend-multiply blur-3xl transition-opacity duration-700 group-hover:opacity-100 dark:mix-blend-screen"></div>
+            <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-gradient-to-tr from-chart-1/20 to-chart-5/20 opacity-70 mix-blend-multiply blur-3xl transition-opacity duration-700 group-hover:opacity-100 dark:mix-blend-screen"></div>
 
             <div className="relative z-10 flex flex-col items-center justify-between gap-6 md:flex-row">
               <div className="flex items-center gap-6">
-                <div className="flex h-[80px] w-[80px] shrink-0 items-center justify-center rounded-full border-4 border-white/80 bg-gradient-to-br from-[#E94B4B] to-[#c0392b] shadow-[0_4px_20px_rgba(233,75,75,0.4)]">
-                  <span className="font-serif text-4xl font-bold text-white">
+                <div className="flex h-[80px] w-[80px] shrink-0 items-center justify-center rounded-full border-4 border-background/80 bg-gradient-to-br from-primary to-primary/80 shadow-[0_4px_20px_rgba(var(--primary),0.4)]">
+                  <span className="font-serif text-4xl font-bold text-primary-foreground">
                     命
                   </span>
                 </div>
                 <div>
                   <div className="mb-1 flex items-center gap-2">
-                    <h2 className="text-[28px] font-bold tracking-tight text-[#18181B]">
+                    <h2 className="text-[28px] font-bold tracking-tight text-foreground">
                       {chartName}
                     </h2>
                     <button
                       onClick={handleEditClick}
-                      className="rounded-full p-1.5 text-[#94A3B8] transition-colors hover:bg-white/60 hover:text-[#E94B4B]"
+                      className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-background/60 hover:text-primary"
                       title="Edit Name"
                     >
                       <svg
@@ -96,7 +96,7 @@ export default function HeroForm({
                       </svg>
                     </button>
                   </div>
-                  <p className="text-[15px] font-medium text-[#71717A]">
+                  <p className="text-[15px] font-medium text-muted-foreground">
                     {new Date(date).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",
@@ -105,10 +105,10 @@ export default function HeroForm({
                     {!unknownTime && time && ` • ${time}`}
                   </p>
                   <div className="mt-3 flex items-center gap-3">
-                    <span className="rounded-full border border-white/80 bg-white/60 px-3 py-1 text-[12px] font-semibold text-[#475569] shadow-sm">
+                    <span className="rounded-full border border-border bg-background/60 px-3 py-1 text-[12px] font-semibold text-muted-foreground shadow-sm">
                       {gender === 1 ? "Male" : "Female"}
                     </span>
-                    <span className="rounded-full border border-white/80 bg-white/60 px-3 py-1 text-[12px] font-semibold text-[#475569] shadow-sm">
+                    <span className="rounded-full border border-border bg-background/60 px-3 py-1 text-[12px] font-semibold text-muted-foreground shadow-sm">
                       {timezone.split("/")[1] || timezone}
                     </span>
                   </div>
@@ -117,7 +117,7 @@ export default function HeroForm({
 
               <button
                 onClick={() => window.location.reload()}
-                className="shrink-0 rounded-[16px] bg-gradient-to-r from-[#F97316] to-[#EA580C] px-6 py-3 text-[14px] font-semibold text-white shadow-[0_4px_15px_rgba(249,115,22,0.3)] transition-all duration-200 hover:-translate-y-[1px] hover:from-[#EA580C] hover:to-[#C2410C] hover:shadow-[0_6px_20px_rgba(249,115,22,0.4)]"
+                className="shrink-0 rounded-[16px] bg-gradient-to-r from-chart-2 to-chart-2/80 px-6 py-3 text-[14px] font-semibold text-primary-foreground shadow-[0_4px_15px_rgba(var(--chart-2),0.3)] transition-all duration-200 hover:-translate-y-[1px] hover:from-chart-2/90 hover:to-chart-2/70 hover:shadow-[0_6px_20px_rgba(var(--chart-2),0.4)]"
               >
                 New Calculation
               </button>
@@ -132,30 +132,30 @@ export default function HeroForm({
             onClick={() => setIsEditingName(false)}
           >
             <div
-              className="flex w-full max-w-md flex-col overflow-hidden rounded-[24px] bg-white shadow-2xl"
+              className="flex w-full max-w-md flex-col overflow-hidden rounded-[24px] bg-background shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between border-b border-[#F1F5F9] p-6">
-                <h3 className="text-[20px] font-bold text-[#18181B]">
+              <div className="flex items-center justify-between border-b border-border p-6">
+                <h3 className="text-[20px] font-bold text-foreground">
                   Edit Chart Name
                 </h3>
                 <button
                   onClick={() => setIsEditingName(false)}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F1F5F9] text-[#475569] transition-colors hover:bg-[#E2E8F0]"
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-muted/80"
                 >
                   ✕
                 </button>
               </div>
               <form onSubmit={handleSaveName} className="p-6">
                 <div className="mb-6">
-                  <label className="mb-2 block text-[14px] font-medium text-[#71717A]">
+                  <label className="mb-2 block text-[14px] font-medium text-muted-foreground">
                     Name
                   </label>
                   <input
                     type="text"
                     value={tempName}
                     onChange={(e) => setTempName(e.target.value)}
-                    className="h-[56px] w-full rounded-[16px] border border-[#ECECEC] bg-white px-4 text-[16px] text-[#18181B] transition-all duration-200 focus:border-[#E94B4B] focus:ring-4 focus:ring-[#E94B4B]/10 focus:outline-none"
+                    className="h-[56px] w-full rounded-[16px] border border-input bg-background px-4 text-[16px] text-foreground transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none"
                     placeholder="e.g. Hendro's Chart"
                     autoFocus
                   />
@@ -164,13 +164,13 @@ export default function HeroForm({
                   <button
                     type="button"
                     onClick={() => setIsEditingName(false)}
-                    className="rounded-[12px] px-6 py-2.5 text-[14px] font-medium text-[#71717A] transition-colors hover:bg-[#F1F5F9]"
+                    className="rounded-[12px] px-6 py-2.5 text-[14px] font-medium text-muted-foreground transition-colors hover:bg-muted"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="rounded-[12px] bg-[#18181B] px-6 py-2.5 text-[14px] font-medium text-white shadow-sm transition-colors hover:bg-[#27272A]"
+                    className="rounded-[12px] bg-primary px-6 py-2.5 text-[14px] font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
                   >
                     Save Name
                   </button>
@@ -184,17 +184,19 @@ export default function HeroForm({
   }
 
   return (
-    <div className="relative flex min-h-[600px] w-full flex-col items-center justify-center overflow-hidden bg-[#FAFAFB] px-4 py-16 sm:px-6 lg:px-8">
+    <div className="relative flex min-h-[600px] w-full flex-col items-center justify-center overflow-hidden bg-background px-4 py-16 sm:px-6 lg:px-8">
       {/* Loading Overlay */}
       {loading && (
-        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm transition-all duration-300">
-          <div className="mb-6 flex h-[80px] w-[80px] animate-pulse items-center justify-center rounded-full border-4 border-white/80 bg-gradient-to-br from-[#E94B4B] to-[#c0392b] shadow-[0_4px_20px_rgba(233,75,75,0.4)]">
-            <span className="font-serif text-4xl font-bold text-white">命</span>
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm transition-all duration-300">
+          <div className="mb-6 flex h-[80px] w-[80px] animate-pulse items-center justify-center rounded-full border-4 border-border bg-gradient-to-br from-primary to-primary/80 shadow-sm">
+            <span className="font-serif text-4xl font-bold text-primary-foreground">
+              命
+            </span>
           </div>
-          <h3 className="mb-2 text-[24px] font-bold text-[#18181B]">
+          <h3 className="mb-2 text-[24px] font-bold text-foreground">
             Calculating Destiny...
           </h3>
-          <p className="text-[15px] text-[#71717A]">
+          <p className="text-[15px] text-muted-foreground">
             Analyzing heavenly stems and earthly branches
           </p>
         </div>
@@ -204,7 +206,7 @@ export default function HeroForm({
       <div className="pointer-events-none absolute top-0 left-0 z-0 h-full w-full overflow-hidden">
         {/* Subtle Cloud/Wave Pattern - Top Right */}
         <svg
-          className="absolute top-[-10%] right-[-5%] h-[50%] w-[50%] text-[#E94B4B] opacity-[0.03]"
+          className="absolute top-[-10%] right-[-5%] h-[50%] w-[50%] text-primary opacity-[0.03]"
           viewBox="0 0 200 200"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -216,7 +218,7 @@ export default function HeroForm({
         </svg>
         {/* Subtle Cloud/Wave Pattern - Bottom Left */}
         <svg
-          className="absolute bottom-[-10%] left-[-5%] h-[60%] w-[60%] text-[#E94B4B] opacity-[0.03]"
+          className="absolute bottom-[-10%] left-[-5%] h-[60%] w-[60%] text-primary opacity-[0.03]"
           viewBox="0 0 200 200"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -233,33 +235,33 @@ export default function HeroForm({
         <div className="mb-12 flex flex-col items-center text-center">
           <div className="mb-4 flex items-center justify-center">
             {/* App Mark (Seal) */}
-            <div className="mr-4 flex h-[56px] w-[56px] items-center justify-center rounded-full border-2 border-white/50 bg-gradient-to-br from-[#E94B4B] to-[#c0392b] shadow-[0_4px_15px_rgba(233,75,75,0.3)] md:h-[72px] md:w-[72px]">
-              <span className="font-serif text-2xl font-bold text-white md:text-3xl">
+            <div className="mr-4 flex h-[56px] w-[56px] items-center justify-center rounded-full border-2 border-border bg-gradient-to-br from-primary to-primary/80 shadow-sm md:h-[72px] md:w-[72px]">
+              <span className="font-serif text-2xl font-bold text-primary-foreground md:text-3xl">
                 命
               </span>
             </div>
-            <h1 className="text-[40px] leading-tight font-bold tracking-tight text-[#18181B] md:text-[48px]">
+            <h1 className="text-[40px] leading-tight font-bold tracking-tight text-foreground md:text-[48px]">
               Bazi Calculator
             </h1>
           </div>
-          <p className="text-[16px] font-medium tracking-wide text-[#71717A] md:text-[18px]">
+          <p className="text-[16px] font-medium tracking-wide text-muted-foreground md:text-[18px]">
             Chinese Four Pillars Destiny Reading
           </p>
         </div>
 
         {/* Main Form Container (Liquid Glass) */}
-        <div className="w-full rounded-[24px] border border-white/70 bg-white/75 p-6 shadow-[0_8px_32px_rgba(0,0,0,0.08)] backdrop-blur-[20px] md:p-8 lg:p-10">
+        <div className="w-full rounded-[24px] border border-border bg-card/70 p-6 shadow-sm backdrop-blur-[20px] md:p-8 lg:p-10">
           {/* Desktop: 3 columns, Mobile: 1 column */}
           <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
             {/* Date Input */}
             <div className="flex flex-col">
-              <label className="mb-2 ml-1 text-[14px] font-medium text-[#71717A]">
+              <label className="mb-2 ml-1 text-[14px] font-medium text-muted-foreground">
                 Date of Birth
               </label>
               <div className="relative">
                 <input
                   type="date"
-                  className="h-[56px] w-full appearance-none rounded-[16px] border border-[#ECECEC] bg-white px-4 text-[16px] text-[#18181B] transition-all duration-200 focus:border-[#E94B4B] focus:ring-4 focus:ring-[#E94B4B]/10 focus:outline-none"
+                  className="h-[56px] w-full appearance-none rounded-[16px] border border-input bg-background px-4 text-[16px] text-foreground transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
                 />
@@ -269,7 +271,7 @@ export default function HeroForm({
             {/* Time Input */}
             <div className="flex flex-col">
               <label
-                className="mb-2 ml-1 text-[14px] font-medium text-[#71717A] transition-opacity duration-200"
+                className="mb-2 ml-1 text-[14px] font-medium text-muted-foreground transition-opacity duration-200"
                 style={{ opacity: unknownTime ? 0.5 : 1 }}
               >
                 Time of Birth
@@ -278,7 +280,7 @@ export default function HeroForm({
                 <input
                   type="time"
                   step="1"
-                  className="h-[56px] w-full appearance-none rounded-[16px] border border-[#ECECEC] bg-white px-4 text-[16px] text-[#18181B] transition-all duration-200 focus:border-[#E94B4B] focus:ring-4 focus:ring-[#E94B4B]/10 focus:outline-none disabled:bg-gray-50 disabled:text-gray-400"
+                  className="h-[56px] w-full appearance-none rounded-[16px] border border-input bg-background px-4 text-[16px] text-foreground transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none disabled:bg-muted disabled:text-muted-foreground"
                   value={time}
                   onChange={(e) => setTime(e.target.value)}
                   disabled={unknownTime}
@@ -289,12 +291,12 @@ export default function HeroForm({
 
             {/* Timezone Input */}
             <div className="flex flex-col">
-              <label className="mb-2 ml-1 text-[14px] font-medium text-[#71717A]">
+              <label className="mb-2 ml-1 text-[14px] font-medium text-muted-foreground">
                 Timezone
               </label>
               <div className="relative">
                 <select
-                  className="h-[56px] w-full appearance-none rounded-[16px] border border-[#ECECEC] bg-white px-4 pr-10 text-[16px] text-[#18181B] transition-all duration-200 focus:border-[#E94B4B] focus:ring-4 focus:ring-[#E94B4B]/10 focus:outline-none"
+                  className="h-[56px] w-full appearance-none rounded-[16px] border border-input bg-background px-4 pr-10 text-[16px] text-foreground transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none"
                   value={timezone}
                   onChange={(e) => setTimezone(e.target.value)}
                 >
@@ -307,7 +309,7 @@ export default function HeroForm({
                   </option>
                   <option value="GMT">(UTC+00:00) UTC, GMT</option>
                 </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#71717A]">
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-muted-foreground">
                   <svg
                     className="h-4 w-4"
                     fill="none"
@@ -333,21 +335,21 @@ export default function HeroForm({
             <div className="flex w-full flex-col items-start gap-6 md:w-auto md:flex-row md:items-center">
               {/* Gender Segmented Control */}
               <div className="flex w-full flex-col md:w-auto">
-                <label className="mb-2 ml-1 text-[14px] font-medium text-[#71717A] md:hidden">
+                <label className="mb-2 ml-1 text-[14px] font-medium text-muted-foreground md:hidden">
                   Gender
                 </label>
-                <div className="flex w-full rounded-[16px] bg-gray-100/80 p-1 md:w-auto">
+                <div className="flex w-full rounded-[16px] bg-muted p-1 md:w-auto">
                   <button
                     type="button"
                     onClick={() => setGender(0)}
-                    className={`flex-1 rounded-[12px] px-6 py-2.5 text-[15px] font-medium transition-all duration-200 md:flex-none ${gender === 0 ? "bg-white text-[#E94B4B] shadow-sm" : "text-[#71717A] hover:text-[#18181B]"}`}
+                    className={`flex-1 rounded-[12px] px-6 py-2.5 text-[15px] font-medium transition-all duration-200 md:flex-none ${gender === 0 ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                   >
                     Female
                   </button>
                   <button
                     type="button"
                     onClick={() => setGender(1)}
-                    className={`flex-1 rounded-[12px] px-6 py-2.5 text-[15px] font-medium transition-all duration-200 md:flex-none ${gender === 1 ? "bg-white text-[#E94B4B] shadow-sm" : "text-[#71717A] hover:text-[#18181B]"}`}
+                    className={`flex-1 rounded-[12px] px-6 py-2.5 text-[15px] font-medium transition-all duration-200 md:flex-none ${gender === 1 ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                   >
                     Male
                   </button>
@@ -361,10 +363,10 @@ export default function HeroForm({
                     type="checkbox"
                     checked={unknownTime}
                     onChange={(e) => setUnknownTime(e.target.checked)}
-                    className="peer h-5 w-5 cursor-pointer appearance-none rounded-[6px] border-2 border-[#ECECEC] transition-all duration-200 checked:border-[#E94B4B] checked:bg-[#E94B4B] focus:ring-4 focus:ring-[#E94B4B]/10 focus:outline-none"
+                    className="peer h-5 w-5 cursor-pointer appearance-none rounded-[6px] border-2 border-input transition-all duration-200 checked:border-primary checked:bg-primary focus:ring-4 focus:ring-primary/10 focus:outline-none"
                   />
                   <svg
-                    className="pointer-events-none absolute h-3 w-3 text-white opacity-0 transition-opacity duration-200 peer-checked:opacity-100"
+                    className="pointer-events-none absolute h-3 w-3 text-primary-foreground opacity-0 transition-opacity duration-200 peer-checked:opacity-100"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -378,7 +380,7 @@ export default function HeroForm({
                     ></path>
                   </svg>
                 </div>
-                <span className="text-[15px] text-[#71717A] transition-colors duration-200 select-none group-hover:text-[#18181B]">
+                <span className="text-[15px] text-muted-foreground transition-colors duration-200 select-none group-hover:text-foreground">
                   I don&apos;t know my birth time
                 </span>
               </label>
@@ -391,12 +393,12 @@ export default function HeroForm({
             <button
               onClick={onCalculate}
               disabled={loading}
-              className="flex h-[56px] w-full min-w-[280px] items-center justify-center rounded-[18px] bg-gradient-to-r from-[#E94B4B] to-[#F97316] text-[16px] font-semibold text-white shadow-[0_10px_30px_rgba(233,75,75,0.25)] transition-all duration-200 hover:-translate-y-[2px] hover:shadow-[0_12px_35px_rgba(233,75,75,0.35)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 disabled:active:scale-100 md:w-auto"
+              className="flex h-[56px] w-full min-w-[280px] items-center justify-center rounded-[18px] bg-gradient-to-r from-primary to-secondary text-[16px] font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-[2px] hover:shadow-md active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 disabled:active:scale-100 md:w-auto"
             >
               {loading ? (
                 <div className="flex items-center gap-2">
                   <svg
-                    className="h-5 w-5 animate-spin text-white"
+                    className="h-5 w-5 animate-spin text-primary-foreground"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -423,18 +425,18 @@ export default function HeroForm({
             </button>
 
             {/* Classic / Modern Toggle (Liquid Glass) */}
-            <div className="flex rounded-[16px] border border-white/60 bg-white/50 p-1 shadow-[0_4px_15px_rgba(0,0,0,0.03)] backdrop-blur-md">
+            <div className="flex rounded-[16px] border border-border bg-card/50 p-1 shadow-sm backdrop-blur-md">
               <button
                 type="button"
                 onClick={() => setMode("classic")}
-                className={`rounded-[12px] px-6 py-2 text-[14px] font-medium transition-all duration-200 ${mode === "classic" ? "bg-gradient-to-r from-[#E94B4B] to-[#F97316] text-white shadow-md" : "text-[#71717A] hover:text-[#18181B]"}`}
+                className={`rounded-[12px] px-6 py-2 text-[14px] font-medium transition-all duration-200 ${mode === "classic" ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-md" : "text-muted-foreground hover:text-foreground"}`}
               >
                 Classic
               </button>
               <button
                 type="button"
                 onClick={() => setMode("modern")}
-                className={`rounded-[12px] px-6 py-2 text-[14px] font-medium transition-all duration-200 ${mode === "modern" ? "bg-gradient-to-r from-[#E94B4B] to-[#F97316] text-white shadow-md" : "text-[#71717A] hover:text-[#18181B]"}`}
+                className={`rounded-[12px] px-6 py-2 text-[14px] font-medium transition-all duration-200 ${mode === "modern" ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-md" : "text-muted-foreground hover:text-foreground"}`}
               >
                 Modern
               </button>

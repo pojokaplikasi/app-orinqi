@@ -165,12 +165,12 @@ export default function LuckyStars({
         activeStars.map((star) => (
           <div
             key={star.id}
-            className="flex items-center gap-4 rounded-[18px] border border-[#F1F5F9] bg-white p-[18px] shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
+            className="flex items-center gap-4 rounded-[18px] border border-border bg-card p-[18px] shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
           >
             <div
               className="flex h-[48px] w-[48px] flex-shrink-0 items-center justify-center rounded-full text-[24px]"
               style={{
-                background: "rgba(255,255,255,0.7)",
+                background: "rgba(255,255,255,0.1)",
                 backdropFilter: "blur(16px)",
                 border: `1px solid ${star.color}20`,
                 boxShadow: `0 4px 12px ${star.color}15`,
@@ -180,10 +180,10 @@ export default function LuckyStars({
             </div>
             <div className="flex flex-1 flex-col">
               <div className="flex items-center gap-2">
-                <span className="text-[15px] font-bold text-[#18181B]">
+                <span className="text-[15px] font-bold text-foreground">
                   {star.name}
                 </span>
-                <span className="text-[13px] text-[#71717A]">
+                <span className="text-[13px] text-muted-foreground">
                   {star.chinese}
                 </span>
               </div>
@@ -197,7 +197,7 @@ export default function LuckyStars({
           </div>
         ))
       ) : (
-        <div className="flex items-center justify-center rounded-[18px] border border-[#F1F5F9] bg-white p-[18px] text-[14px] text-[#71717A]">
+        <div className="flex items-center justify-center rounded-[18px] border border-border bg-card p-[18px] text-[14px] text-muted-foreground">
           No active stars found in this chart.
         </div>
       )}

@@ -38,16 +38,16 @@ export default function DetailDialog({
       onClick={onClose}
     >
       <div
-        className="flex max-h-[90vh] w-full max-w-2xl scrollbar-thin scrollbar-thumb-[#E2E8F0] scrollbar-track-transparent flex-col overflow-y-auto rounded-[24px] bg-white shadow-2xl hover:scrollbar-thumb-[#CBD5E1]"
+        className="flex max-h-[90vh] w-full max-w-2xl scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent flex-col overflow-y-auto rounded-[24px] bg-background shadow-2xl hover:scrollbar-thumb-muted-foreground/50"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Dialog Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#F1F5F9] bg-white/90 p-6 backdrop-blur-md">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/90 p-6 backdrop-blur-md">
           <div>
-            <h3 className="text-[20px] font-bold text-[#18181B]">
+            <h3 className="text-[20px] font-bold text-foreground">
               Detailed Pillar Information
             </h3>
-            <p className="mt-1 text-[13px] text-[#71717A]">
+            <p className="mt-1 text-[13px] text-muted-foreground">
               {selectedLuckData?.year_start}–{selectedLuckData?.year_end} •{" "}
               {selectedYear} • {selectedMonthData?.month_english} • Day{" "}
               {selectedDay} • {selectedHourData.hour_time}
@@ -55,7 +55,7 @@ export default function DetailDialog({
           </div>
           <button
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F1F5F9] text-[#475569] transition-colors hover:bg-[#E2E8F0]"
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-muted/80"
           >
             ✕
           </button>
@@ -90,7 +90,7 @@ export default function DetailDialog({
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="flex flex-col items-center rounded-[16px] border border-[#F1F5F9] bg-[#F8FAFC] p-3 text-center"
+                className="flex flex-col items-center rounded-[16px] border border-border bg-muted/30 p-3 text-center"
               >
                 <span
                   className="mb-2 text-[11px] font-bold tracking-wider uppercase"
@@ -100,22 +100,22 @@ export default function DetailDialog({
                 </span>
                 <div className="flex gap-2">
                   <div className="flex flex-col items-center">
-                    <span className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[20px] leading-none">
+                    <span className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[20px] leading-none text-foreground">
                       {item.data?.heavenly_stem?.character ||
                         item.data?.heavenly_stem?.name_sc ||
                         "?"}
                     </span>
-                    <span className="mt-1 text-[9px] text-[#71717A]">
+                    <span className="mt-1 text-[9px] text-muted-foreground">
                       {item.data?.heavenly_stem?.name || "?"}
                     </span>
                   </div>
                   <div className="flex flex-col items-center">
-                    <span className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[20px] leading-none">
+                    <span className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[20px] leading-none text-foreground">
                       {item.data?.earthly_branch?.character ||
                         item.data?.earthly_branch?.name_sc ||
                         "?"}
                     </span>
-                    <span className="mt-1 text-[9px] text-[#71717A]">
+                    <span className="mt-1 text-[9px] text-muted-foreground">
                       {item.data?.earthly_branch?.name || "?"}
                     </span>
                   </div>
@@ -227,7 +227,7 @@ export default function DetailDialog({
               return (
                 <div key={pIdx} className="flex flex-col gap-4">
                   <h4
-                    className="flex items-center gap-2 border-b border-[#F1F5F9] pb-2 text-[16px] font-bold"
+                    className="flex items-center gap-2 border-b border-border pb-2 text-[16px] font-bold"
                     style={{ color: pillarItem.color }}
                   >
                     <div
@@ -239,47 +239,53 @@ export default function DetailDialog({
 
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     {/* Heavenly Stem Details */}
-                    <div className="relative rounded-[16px] border border-[#E2E8F0] bg-white p-4 shadow-sm">
+                    <div className="relative rounded-[16px] border border-border bg-card p-4 shadow-sm">
                       <div className="mb-3 flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F1F5F9] font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[24px]">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[24px] text-foreground">
                           {pillarItem.data.heavenly_stem?.character ||
                             pillarItem.data.heavenly_stem?.name_sc}
                         </div>
                         <div>
-                          <h5 className="text-[14px] font-bold text-[#18181B]">
+                          <h5 className="text-[14px] font-bold text-foreground">
                             Heavenly Stem
                           </h5>
-                          <p className="text-[12px] text-[#71717A]">
+                          <p className="text-[12px] text-muted-foreground">
                             {pillarItem.data.heavenly_stem?.name}
                           </p>
                         </div>
                       </div>
                       <div className="space-y-2 text-[13px]">
                         <div className="flex justify-between">
-                          <span className="text-[#64748B]">Element:</span>{" "}
-                          <span className="font-medium">
+                          <span className="text-muted-foreground">
+                            Element:
+                          </span>{" "}
+                          <span className="font-medium text-foreground">
                             {pillarItem.data.heavenly_stem?.element}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-[#64748B]">Ten God:</span>{" "}
-                          <span className="font-medium">{hsTenGodAbbr}</span>
+                          <span className="text-muted-foreground">
+                            Ten God:
+                          </span>{" "}
+                          <span className="font-medium text-foreground">
+                            {hsTenGodAbbr}
+                          </span>
                         </div>
                       </div>
                     </div>
 
                     {/* Earthly Branch Details */}
-                    <div className="relative rounded-[16px] border border-[#E2E8F0] bg-white p-4 shadow-sm">
+                    <div className="relative rounded-[16px] border border-border bg-card p-4 shadow-sm">
                       <div className="mb-3 flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F1F5F9] font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[24px]">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[24px] text-foreground">
                           {pillarItem.data.earthly_branch?.character ||
                             pillarItem.data.earthly_branch?.name_sc}
                         </div>
                         <div>
-                          <h5 className="text-[14px] font-bold text-[#18181B]">
+                          <h5 className="text-[14px] font-bold text-foreground">
                             Earthly Branch
                           </h5>
-                          <p className="text-[12px] text-[#71717A]">
+                          <p className="text-[12px] text-muted-foreground">
                             {pillarItem.data.earthly_branch?.name} (
                             {pillarItem.data.earthly_branch?.zodiac})
                           </p>
@@ -287,23 +293,25 @@ export default function DetailDialog({
                       </div>
                       <div className="space-y-2 text-[13px]">
                         <div className="flex justify-between">
-                          <span className="text-[#64748B]">Element:</span>{" "}
-                          <span className="font-medium">
+                          <span className="text-muted-foreground">
+                            Element:
+                          </span>{" "}
+                          <span className="font-medium text-foreground">
                             {pillarItem.data.earthly_branch?.element}
                           </span>
                         </div>
                       </div>
                       {/* Lucky Stars Indicator */}
                       {starsForThisBranch.length > 0 && (
-                        <div className="mt-3 border-t border-[#F1F5F9] pt-3">
-                          <span className="mb-1 block text-[12px] text-[#64748B]">
+                        <div className="mt-3 border-t border-border pt-3">
+                          <span className="mb-1 block text-[12px] text-muted-foreground">
                             Lucky Stars:
                           </span>
                           <div className="flex flex-wrap gap-1">
                             {starsForThisBranch.map((star, idx) => (
                               <span
                                 key={idx}
-                                className="rounded-md border border-[#E2E8F0] bg-[#F8FAFC] px-2 py-0.5 text-[11px] text-[#475569]"
+                                className="rounded-md border border-border bg-muted/50 px-2 py-0.5 text-[11px] text-muted-foreground"
                               >
                                 {star}
                               </span>
@@ -316,8 +324,8 @@ export default function DetailDialog({
 
                   {/* Hidden Stems */}
                   {pillarItem.data.hidden_stems && (
-                    <div className="mt-2 rounded-[16px] border border-[#E2E8F0] bg-white p-4 shadow-sm">
-                      <h5 className="mb-3 text-[14px] font-bold text-[#18181B]">
+                    <div className="mt-2 rounded-[16px] border border-border bg-card p-4 shadow-sm">
+                      <h5 className="mb-3 text-[14px] font-bold text-foreground">
                         Hidden Stems
                       </h5>
                       <div className="flex flex-wrap gap-3">
@@ -330,16 +338,16 @@ export default function DetailDialog({
                           return (
                             <div
                               key={idx}
-                              className="flex items-center gap-2 rounded-[10px] border border-[#F1F5F9] bg-[#F8FAFC] px-3 py-2"
+                              className="flex items-center gap-2 rounded-[10px] border border-border bg-muted/30 px-3 py-2"
                             >
-                              <span className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[18px]">
+                              <span className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[18px] text-foreground">
                                 {qi.character || qi.name_sc}
                               </span>
                               <div className="flex flex-col">
-                                <span className="text-[11px] font-bold">
+                                <span className="text-[11px] font-bold text-foreground">
                                   {qi.name}
                                 </span>
-                                <span className="text-[9px] text-[#64748B] uppercase">
+                                <span className="text-[9px] text-muted-foreground uppercase">
                                   {qi.ten_gods || "-"}
                                 </span>
                               </div>
@@ -352,21 +360,21 @@ export default function DetailDialog({
 
                   {/* Additional Info */}
                   <div className="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div className="rounded-[16px] border border-[#E2E8F0] bg-white p-4 shadow-sm">
-                      <h5 className="mb-2 text-[14px] font-bold text-[#18181B]">
+                    <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
+                      <h5 className="mb-2 text-[14px] font-bold text-foreground">
                         Life Stage
                       </h5>
-                      <p className="text-[14px] font-medium text-[#7C3AED]">
+                      <p className="text-[14px] font-medium text-purple-600 dark:text-purple-400">
                         {pillarItem.data.life_stage ||
                           pillarItem.data.life_cycle ||
                           "N/A"}
                       </p>
                     </div>
-                    <div className="rounded-[16px] border border-[#E2E8F0] bg-white p-4 shadow-sm">
-                      <h5 className="mb-2 text-[14px] font-bold text-[#18181B]">
+                    <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
+                      <h5 className="mb-2 text-[14px] font-bold text-foreground">
                         Na Yin (Melodic Element)
                       </h5>
-                      <p className="text-[14px] font-medium">
+                      <p className="text-[14px] font-medium text-foreground">
                         {pillarItem.data.gan_zhi?.name || "N/A"}
                       </p>
                     </div>

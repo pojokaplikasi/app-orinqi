@@ -1,8 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import React, { useEffect, useRef } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import Chart from "chart.js/auto"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 interface ElementStructureProps {
   elementData: any
@@ -13,6 +19,102 @@ export default function ElementStructure({
 }: ElementStructureProps) {
   const chartRef = useRef<HTMLCanvasElement>(null)
   const chartInstance = useRef<Chart | null>(null)
+  const dialogChartInstance = useRef<Chart | null>(null)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+  const getChartConfig = useCallback(
+    (showTicks: boolean) => {
+      if (!elementData) return null
+
+      const labels = ["Wood", "Fire", "Earth", "Metal", "Water"]
+      const natalData = labels.map((elem) =>
+        parseFloat(elementData.natal[elem])
+      )
+      const annualData = labels.map((elem) =>
+        parseFloat(elementData.annual[elem])
+      )
+
+      return {
+        type: "radar" as const,
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Natal Chart",
+              data: natalData,
+              backgroundColor: "rgba(245, 222, 179, 0.5)",
+              borderColor: "rgba(210, 180, 140, 1)",
+              borderWidth: 2,
+              pointBackgroundColor: "rgba(210, 180, 140, 1)",
+              pointBorderColor: "#fff",
+              pointHoverBackgroundColor: "#fff",
+              pointHoverBorderColor: "rgba(210, 180, 140, 1)",
+            },
+            {
+              label: "Annual 2026",
+              data: annualData,
+              backgroundColor: "rgba(147, 112, 219, 0.4)",
+              borderColor: "rgba(138, 43, 226, 1)",
+              borderWidth: 2,
+              pointBackgroundColor: "rgba(138, 43, 226, 1)",
+              pointBorderColor: "#fff",
+              pointHoverBackgroundColor: "#fff",
+              pointHoverBorderColor: "rgba(138, 43, 226, 1)",
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 100,
+              ticks: {
+                display: showTicks,
+                stepSize: 20,
+                font: { size: showTicks ? 13 : 10 },
+                color: "#6c757d",
+              },
+              grid: { color: "rgba(0, 0, 0, 0.15)" },
+              angleLines: { color: "rgba(0, 0, 0, 0.15)" },
+              pointLabels: {
+                font: {
+                  size: showTicks ? 18 : 16,
+                  weight: "bold" as const,
+                },
+                color: "#2c3e50",
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              position: "bottom" as const,
+              labels: {
+                padding: 25,
+                font: { size: 15, weight: "bold" as const },
+                usePointStyle: true,
+                pointStyle: "circle" as const,
+              },
+            },
+            tooltip: {
+              backgroundColor: "rgba(0, 0, 0, 0.8)",
+              titleFont: { size: 14, weight: "bold" as const },
+              bodyFont: { size: 13 },
+              padding: 12,
+              cornerRadius: 8,
+              callbacks: {
+                label: function (context: any) {
+                  return context.dataset.label + ": " + context.parsed.r + "%"
+                },
+              },
+            },
+          },
+        },
+      }
+    },
+    [elementData]
+  )
 
   useEffect(() => {
     if (!chartRef.current || !elementData) return
@@ -22,113 +124,50 @@ export default function ElementStructure({
       chartInstance.current.destroy()
     }
 
-    const labels = ["Wood", "Fire", "Earth", "Metal", "Water"]
-    const natalData = labels.map((elem) => parseFloat(elementData.natal[elem]))
-    const annualData = labels.map((elem) =>
-      parseFloat(elementData.annual[elem])
-    )
+    const config = getChartConfig(false)
+    if (!config) return
 
     const ctx = chartRef.current.getContext("2d")
     if (!ctx) return
 
-    chartInstance.current = new Chart(ctx, {
-      type: "radar",
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            label: "Natal Chart",
-            data: natalData,
-            backgroundColor: "rgba(245, 222, 179, 0.5)", // Beige
-            borderColor: "rgba(210, 180, 140, 1)", // Darker beige
-            borderWidth: 2,
-            pointBackgroundColor: "rgba(210, 180, 140, 1)",
-            pointBorderColor: "#fff",
-            pointHoverBackgroundColor: "#fff",
-            pointHoverBorderColor: "rgba(210, 180, 140, 1)",
-          },
-          {
-            label: "Annual 2026",
-            data: annualData,
-            backgroundColor: "rgba(147, 112, 219, 0.4)", // Purple
-            borderColor: "rgba(138, 43, 226, 1)", // Darker purple
-            borderWidth: 2,
-            pointBackgroundColor: "rgba(138, 43, 226, 1)",
-            pointBorderColor: "#fff",
-            pointHoverBackgroundColor: "#fff",
-            pointHoverBorderColor: "rgba(138, 43, 226, 1)",
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        scales: {
-          r: {
-            beginAtZero: true,
-            max: 100,
-            ticks: {
-              stepSize: 20,
-              font: {
-                size: 13,
-              },
-              color: "#6c757d",
-            },
-            grid: {
-              color: "rgba(0, 0, 0, 0.15)",
-            },
-            angleLines: {
-              color: "rgba(0, 0, 0, 0.15)",
-            },
-            pointLabels: {
-              font: {
-                size: 16,
-                weight: "bold",
-              },
-              color: "#2c3e50",
-            },
-          },
-        },
-        plugins: {
-          legend: {
-            position: "bottom",
-            labels: {
-              padding: 25,
-              font: {
-                size: 15,
-                weight: "bold",
-              },
-              usePointStyle: true,
-              pointStyle: "circle",
-            },
-          },
-          tooltip: {
-            backgroundColor: "rgba(0, 0, 0, 0.8)",
-            titleFont: {
-              size: 14,
-              weight: "bold",
-            },
-            bodyFont: {
-              size: 13,
-            },
-            padding: 12,
-            cornerRadius: 8,
-            callbacks: {
-              label: function (context) {
-                return context.dataset.label + ": " + context.parsed.r + "%"
-              },
-            },
-          },
-        },
-      },
-    })
+    chartInstance.current = new Chart(ctx, config)
 
     return () => {
       if (chartInstance.current) {
         chartInstance.current.destroy()
       }
     }
-  }, [elementData])
+  }, [elementData, getChartConfig])
+
+  // Dialog chart: use callback ref so chart is created when canvas mounts in portal
+  const dialogCanvasRef = useCallback(
+    (node: HTMLCanvasElement | null) => {
+      // Destroy previous instance
+      if (dialogChartInstance.current) {
+        dialogChartInstance.current.destroy()
+        dialogChartInstance.current = null
+      }
+
+      if (!node || !elementData) return
+
+      const config = getChartConfig(false)
+      if (!config) return
+
+      const ctx = node.getContext("2d")
+      if (!ctx) return
+
+      dialogChartInstance.current = new Chart(ctx, config)
+    },
+    [elementData, getChartConfig]
+  )
+
+  // Cleanup dialog chart when dialog closes
+  useEffect(() => {
+    if (!isDialogOpen && dialogChartInstance.current) {
+      dialogChartInstance.current.destroy()
+      dialogChartInstance.current = null
+    }
+  }, [isDialogOpen])
 
   if (!elementData) return null
 
@@ -150,10 +189,49 @@ export default function ElementStructure({
 
   return (
     <div className="flex w-full flex-col items-center">
-      {/* Chart Container */}
-      <div className="relative mb-6 flex h-[320px] w-full max-w-[320px] items-center justify-center">
+      {/* Chart Container (Clickable) */}
+      <div
+        className="relative mb-6 flex h-[320px] w-full max-w-[320px] cursor-pointer items-center justify-center rounded-[20px] transition-all duration-200 hover:scale-[1.02] hover:shadow-md"
+        onClick={() => setIsDialogOpen(true)}
+        title="Click to enlarge chart"
+      >
         <canvas ref={chartRef} width="320" height="320"></canvas>
+        <div className="absolute right-2 bottom-2 flex items-center gap-1 rounded-full bg-muted/80 px-2 py-1 text-[10px] text-muted-foreground backdrop-blur-sm">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="15 3 21 3 21 9" />
+            <polyline points="9 21 3 21 3 15" />
+            <line x1="21" y1="3" x2="14" y2="10" />
+            <line x1="3" y1="21" x2="10" y2="14" />
+          </svg>
+          Enlarge
+        </div>
       </div>
+
+      {/* Dialog for enlarged chart */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-[calc(100%-1rem)] p-4 sm:max-w-[90vw] sm:p-6 md:max-w-[700px]">
+          <DialogHeader>
+            <DialogTitle className="text-center text-[20px] font-bold">
+              Element Composition
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex w-full items-center justify-center overflow-hidden">
+            <div className="relative flex aspect-square w-full max-w-[600px] items-center justify-center">
+              {isDialogOpen && <canvas ref={dialogCanvasRef}></canvas>}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Element Labels & Comparison Bars */}
       <div className="grid w-full grid-cols-2 gap-4">
@@ -166,12 +244,12 @@ export default function ElementStructure({
           return (
             <div
               key={elem}
-              className="flex flex-col items-center gap-3 rounded-[18px] border border-[#F1F5F9] bg-white p-[16px] text-center shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
+              className="flex flex-col items-center gap-3 rounded-[18px] border border-border bg-card p-[16px] text-center shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
             >
               <div
                 className="flex h-[40px] w-[40px] flex-shrink-0 items-center justify-center rounded-full text-[20px]"
                 style={{
-                  background: "rgba(255,255,255,0.7)",
+                  background: "rgba(255,255,255,0.1)",
                   backdropFilter: "blur(16px)",
                   border: `1px solid ${color}20`,
                   boxShadow: `0 4px 12px ${color}15`,
@@ -182,7 +260,7 @@ export default function ElementStructure({
 
               <div className="flex w-full flex-col">
                 <div
-                  className="mb-1 text-[14px] font-bold tracking-wide text-[#18181B] uppercase"
+                  className="mb-1 text-[14px] font-bold tracking-wide uppercase"
                   style={{ color }}
                 >
                   {elem}
@@ -190,14 +268,14 @@ export default function ElementStructure({
 
                 <div className="flex items-center justify-center gap-2">
                   <div className="flex items-center gap-1">
-                    <span className="text-[11px] text-[#94A3B8]">N</span>
+                    <span className="text-[11px] text-muted-foreground">N</span>
                     <span className="text-[12px] font-bold" style={{ color }}>
                       {natalPercent}%
                     </span>
                   </div>
-                  <div className="h-[3px] w-[3px] rounded-full bg-[#E5E7EB]"></div>
+                  <div className="h-[3px] w-[3px] rounded-full bg-border"></div>
                   <div className="flex items-center gap-1">
-                    <span className="text-[11px] text-[#94A3B8]">A</span>
+                    <span className="text-[11px] text-muted-foreground">A</span>
                     <span
                       className="text-[12px] font-bold"
                       style={{ color, opacity: 0.8 }}

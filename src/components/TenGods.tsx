@@ -75,12 +75,12 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
         return (
           <div
             key={godName}
-            className="flex items-center gap-4 rounded-[18px] border border-[#F1F5F9] bg-white p-[18px] shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
+            className="flex items-center gap-4 rounded-[18px] border border-border bg-card p-[18px] shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
           >
             <div
               className="flex h-[48px] w-[48px] flex-shrink-0 items-center justify-center rounded-full text-[18px] font-bold"
               style={{
-                background: "rgba(255,255,255,0.7)",
+                background: "rgba(255,255,255,0.1)",
                 backdropFilter: "blur(16px)",
                 border: `1px solid ${color}20`,
                 boxShadow: `0 4px 12px ${color}15`,
@@ -92,24 +92,28 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
 
             <div className="flex flex-1 flex-col">
               <div className="flex items-center gap-2">
-                <span className="text-[15px] font-bold text-[#18181B]">
+                <span className="text-[15px] font-bold text-foreground">
                   {godName}
                 </span>
-                <span className="text-[13px] text-[#71717A]">
+                <span className="text-[13px] text-muted-foreground">
                   {chineseChar}
                 </span>
               </div>
 
               <div className="mt-1 flex items-center gap-3">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[12px] text-[#94A3B8]">Natal</span>
+                  <span className="text-[12px] text-muted-foreground">
+                    Natal
+                  </span>
                   <span className="text-[13px] font-bold" style={{ color }}>
                     {natalPercent.toFixed(1)}%
                   </span>
                 </div>
-                <div className="h-[3px] w-[3px] rounded-full bg-[#E5E7EB]"></div>
+                <div className="h-[3px] w-[3px] rounded-full bg-border"></div>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[12px] text-[#94A3B8]">Annual</span>
+                  <span className="text-[12px] text-muted-foreground">
+                    Annual
+                  </span>
                   <span
                     className="text-[13px] font-bold"
                     style={{ color, opacity: 0.8 }}

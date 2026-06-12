@@ -320,17 +320,17 @@ export default function BaziCalculator() {
   const getSelectedDayData = () => dayPillars.find((p) => p.day === selectedDay)
 
   const steps = [
-    { id: "luck", label: "10-Year", color: "#8B5CF6" },
-    { id: "year", label: "Year", color: "#A855F7" },
-    { id: "month", label: "Month", color: "#F97316" },
-    { id: "day", label: "Day", color: "#22C55E" },
-    { id: "hour", label: "Hour", color: "#06B6D4" },
+    { id: "luck", label: "10-Year", color: "var(--color-primary)" },
+    { id: "year", label: "Year", color: "var(--color-chart-1)" },
+    { id: "month", label: "Month", color: "var(--color-chart-2)" },
+    { id: "day", label: "Day", color: "var(--color-chart-3)" },
+    { id: "hour", label: "Hour", color: "var(--color-chart-4)" },
   ]
 
   const currentStepIndex = steps.findIndex((s) => s.id === explorerStep)
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#FAFAFB]">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       <div className="container mx-auto px-4">
         <div className="row justify-center">
           <div className="col-md-10 mx-auto w-full max-w-[1400px]">
@@ -359,7 +359,7 @@ export default function BaziCalculator() {
         <div className="row justify-center">
           <div className="col-md-10 mx-auto w-full max-w-[1400px]">
             {error && (
-              <div className="mt-6 mb-6 rounded-lg border border-[#f5c6cb] bg-[#f8d7da] px-4 py-3 text-[#721c24]">
+              <div className="mt-6 mb-6 rounded-lg border border-destructive/50 bg-destructive/10 px-4 py-3 text-destructive">
                 {error}
               </div>
             )}
@@ -368,10 +368,10 @@ export default function BaziCalculator() {
             {baziData && (
               <div className="mt-8 flex flex-col gap-12">
                 {/* Combined Chart Section */}
-                <div className="relative flex w-full flex-col overflow-hidden rounded-[24px] border border-[#F1F5F9] bg-white/72 p-6 shadow-[0_8px_32px_rgba(0,0,0,0.04)] backdrop-blur-[20px] md:p-8">
+                <div className="relative flex w-full flex-col overflow-hidden rounded-[24px] border border-border bg-card/70 p-6 shadow-sm backdrop-blur-[20px] md:p-8">
                   {/* Header */}
-                  <div className="mb-3 flex flex-col items-center justify-center border-b border-[#F1F5F9] pb-4">
-                    <h3 className="text-center text-[20px] font-bold text-[#18181B] md:text-[24px]">
+                  <div className="mb-3 flex flex-col items-center justify-center border-b border-border pb-4">
+                    <h3 className="text-center text-[20px] font-bold text-foreground md:text-[24px]">
                       Natal Chart & Current Transits
                     </h3>
                   </div>
@@ -379,13 +379,13 @@ export default function BaziCalculator() {
                   {/* Horizontal Scroll Guide */}
                   <div className="mb-4 flex flex-col items-center justify-center opacity-50">
                     <div className="flex w-full max-w-[300px] items-center justify-center gap-3">
-                      <div className="h-[1px] flex-1 bg-[#E5E7EB]"></div>
-                      <span className="text-[12px] font-medium whitespace-nowrap text-[#94A3B8]">
+                      <div className="h-[1px] flex-1 bg-border"></div>
+                      <span className="text-[12px] font-medium whitespace-nowrap text-muted-foreground">
                         ← Scroll to Explore →
                       </span>
-                      <div className="h-[1px] flex-1 bg-[#E5E7EB]"></div>
+                      <div className="h-[1px] flex-1 bg-border"></div>
                     </div>
-                    <span className="mt-1 text-[11px] text-[#94A3B8]">
+                    <span className="mt-1 text-[11px] text-muted-foreground">
                       Default view is centered on the current time pillars.
                     </span>
                   </div>
@@ -413,41 +413,41 @@ export default function BaziCalculator() {
                         }
                       />
                     ) : (
-                      <div className="relative box-border flex h-auto w-[150px] flex-none flex-col gap-3 rounded-[20px] border border-t-[4px] border-[#F1F5F9] border-t-[#2563EB] bg-white/72 p-4 text-center text-[#18181B] shadow-[0_6px_24px_rgba(0,0,0,0.05)] backdrop-blur-[20px] transition-all duration-200 md:w-[180px] lg:w-[200px]">
+                      <div className="relative box-border flex h-auto w-[150px] flex-none flex-col gap-3 rounded-[20px] border border-t-[4px] border-border border-t-primary bg-card/70 p-4 text-center text-foreground shadow-sm backdrop-blur-[20px] transition-all duration-200 md:w-[180px] lg:w-[200px]">
                         <div className="relative flex w-full items-start justify-between">
                           <div className="flex flex-col items-start text-left">
-                            <span className="text-[13px] leading-tight font-semibold text-[#18181B]">
+                            <span className="text-[13px] leading-tight font-semibold text-foreground">
                               Hour Pillar
                             </span>
-                            <span className="text-[11px] text-[#71717A] opacity-50">
+                            <span className="text-[11px] text-muted-foreground opacity-50">
                               時柱
                             </span>
                           </div>
                         </div>
                         <div className="mt-2 flex flex-col items-center justify-center">
-                          <strong className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[48px] leading-none text-[#ccc] drop-shadow-sm">
+                          <strong className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[48px] leading-none text-muted-foreground drop-shadow-sm">
                             ?
                           </strong>
                         </div>
-                        <div className="my-1 h-[1px] w-full bg-[#F1F5F9]"></div>
+                        <div className="my-1 h-[1px] w-full bg-border"></div>
                         <div className="relative flex flex-col items-center justify-center">
-                          <strong className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[44px] leading-none text-[#ccc] drop-shadow-sm">
+                          <strong className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[44px] leading-none text-muted-foreground drop-shadow-sm">
                             ?
                           </strong>
                         </div>
-                        <div className="mt-1 flex min-h-[40px] w-full justify-center gap-2 rounded-[12px] bg-[#F8FAFC] p-[10px]">
-                          <span className="text-[12px] font-medium text-[#ccc]">
+                        <div className="mt-1 flex min-h-[40px] w-full justify-center gap-2 rounded-[12px] bg-muted/50 p-[10px]">
+                          <span className="text-[12px] font-medium text-muted-foreground">
                             N/A
                           </span>
                         </div>
                         <div className="mt-1 flex flex-col items-center justify-center">
-                          <span className="text-center text-[12px] leading-tight font-semibold text-[#ccc]">
+                          <span className="text-center text-[12px] leading-tight font-semibold text-muted-foreground">
                             N/A
                           </span>
                         </div>
-                        <div className="my-1 h-[1px] w-full bg-[#F1F5F9]"></div>
+                        <div className="my-1 h-[1px] w-full bg-border"></div>
                         <div className="flex items-center justify-center">
-                          <span className="text-[13px] font-bold tracking-wide text-[#ccc] uppercase">
+                          <span className="text-[13px] font-bold tracking-wide text-muted-foreground uppercase">
                             N/A
                           </span>
                         </div>
@@ -503,7 +503,7 @@ export default function BaziCalculator() {
                     />
 
                     {/* Divider */}
-                    <div className="mx-2 w-[2px] flex-shrink-0 rounded-full bg-[#F1F5F9]"></div>
+                    <div className="mx-2 w-[2px] flex-shrink-0 rounded-full bg-border"></div>
 
                     {/* Current Transits */}
                     <Pillar
@@ -586,46 +586,46 @@ export default function BaziCalculator() {
 
                   {/* Legend (Bottom Right) */}
                   <div className="mt-4 flex flex-col items-end gap-2">
-                    <div className="flex flex-wrap items-center justify-end gap-3 rounded-[12px] border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-2 text-[11px] font-medium text-[#475569]">
+                    <div className="flex flex-wrap items-center justify-end gap-3 rounded-[12px] border border-border bg-muted/30 px-3 py-2 text-[11px] font-medium text-muted-foreground">
                       <div
                         className="flex items-center gap-1.5"
                         title="Seasonal Unions, Three Harmonies, Six Harmonies, Hidden Combinations"
                       >
-                        <div className="h-2 w-2 rounded-full bg-[#16A34A]"></div>
+                        <div className="h-2 w-2 rounded-full bg-[var(--color-chart-3)]"></div>
                         <span>Positive</span>
                       </div>
                       <div
                         className="flex items-center gap-1.5"
                         title="Informational Items"
                       >
-                        <div className="h-2 w-2 rounded-full bg-[#64748B]"></div>
+                        <div className="h-2 w-2 rounded-full bg-muted-foreground"></div>
                         <span>Neutral</span>
                       </div>
                       <div
                         className="flex items-center gap-1.5"
                         title="Self Punishment, Ungrateful Punishment"
                       >
-                        <div className="h-2 w-2 rounded-full bg-[#EAB308]"></div>
+                        <div className="h-2 w-2 rounded-full bg-[var(--color-chart-2)]"></div>
                         <span>Warning</span>
                       </div>
                       <div
                         className="flex items-center gap-1.5"
                         title="Clashes, Harms, Destruction, Half Combinations"
                       >
-                        <div className="h-2 w-2 rounded-full bg-[#EF4444]"></div>
+                        <div className="h-2 w-2 rounded-full bg-destructive"></div>
                         <span>Negative</span>
                       </div>
                       <div
                         className="flex items-center gap-1.5"
                         title="Life Stage, Rare Combinations, Special Indicators"
                       >
-                        <div className="h-2 w-2 rounded-full bg-[#7C3AED]"></div>
+                        <div className="h-2 w-2 rounded-full bg-[var(--color-chart-1)]"></div>
                         <span>Special</span>
                       </div>
                     </div>
 
                     {/* Ten Gods Legend */}
-                    <div className="flex max-w-[600px] flex-wrap items-center justify-end gap-x-3 gap-y-1 text-[10px] font-medium text-[#64748B]">
+                    <div className="flex max-w-[600px] flex-wrap items-center justify-end gap-x-3 gap-y-1 text-[10px] font-medium text-muted-foreground">
                       <span title="Direct Wealth">DW: Direct Wealth</span>
                       <span title="Indirect Wealth">IW: Indirect Wealth</span>
                       <span title="Direct Officer">DO: Direct Officer</span>
@@ -643,35 +643,35 @@ export default function BaziCalculator() {
                 </div>
 
                 {/* Destiny Insights Dashboard */}
-                <div className="flex w-full flex-col rounded-[28px] border border-white/80 bg-white/72 p-8 shadow-[0_12px_40px_rgba(0,0,0,0.06)] backdrop-blur-[24px]">
+                <div className="flex w-full flex-col rounded-[28px] border border-border bg-card/70 p-8 shadow-sm backdrop-blur-[24px]">
                   {/* Dashboard Header */}
                   <div className="mb-8 flex flex-col items-center justify-center">
-                    <h3 className="text-center text-[32px] leading-tight font-bold text-[#18181B]">
+                    <h3 className="text-center text-[32px] leading-tight font-bold text-foreground">
                       Destiny Insights
                     </h3>
-                    <p className="mt-2 text-center text-[15px] text-[#71717A]">
+                    <p className="mt-2 text-center text-[15px] text-muted-foreground">
                       Understand the balance of your chart, stars, and life
                       influences.
                     </p>
                   </div>
 
                   {/* Mobile Tabs (Hidden on Desktop) */}
-                  <div className="mx-auto mb-8 flex w-full max-w-[400px] rounded-[16px] bg-[#F1F5F9] p-1 lg:hidden">
+                  <div className="mx-auto mb-8 flex w-full max-w-[400px] rounded-[16px] bg-muted p-1 lg:hidden">
                     <button
                       onClick={() => setActiveInsightTab("elements")}
-                      className={`flex-1 rounded-[12px] py-2.5 text-[14px] font-semibold transition-all duration-200 ${activeInsightTab === "elements" ? "bg-white text-[#18181B] shadow-sm" : "text-[#71717A] hover:text-[#18181B]"}`}
+                      className={`flex-1 rounded-[12px] py-2.5 text-[14px] font-semibold transition-all duration-200 ${activeInsightTab === "elements" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                     >
                       Elements
                     </button>
                     <button
                       onClick={() => setActiveInsightTab("stars")}
-                      className={`flex-1 rounded-[12px] py-2.5 text-[14px] font-semibold transition-all duration-200 ${activeInsightTab === "stars" ? "bg-white text-[#18181B] shadow-sm" : "text-[#71717A] hover:text-[#18181B]"}`}
+                      className={`flex-1 rounded-[12px] py-2.5 text-[14px] font-semibold transition-all duration-200 ${activeInsightTab === "stars" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                     >
                       Stars
                     </button>
                     <button
                       onClick={() => setActiveInsightTab("gods")}
-                      className={`flex-1 rounded-[12px] py-2.5 text-[14px] font-semibold transition-all duration-200 ${activeInsightTab === "gods" ? "bg-white text-[#18181B] shadow-sm" : "text-[#71717A] hover:text-[#18181B]"}`}
+                      className={`flex-1 rounded-[12px] py-2.5 text-[14px] font-semibold transition-all duration-200 ${activeInsightTab === "gods" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                     >
                       10 Gods
                     </button>
@@ -683,7 +683,7 @@ export default function BaziCalculator() {
                     <div
                       className={`flex-col lg:order-2 lg:col-span-4 ${activeInsightTab === "elements" ? "flex" : "hidden lg:flex"}`}
                     >
-                      <h4 className="mb-4 text-center text-[18px] font-bold text-[#18181B]">
+                      <h4 className="mb-4 text-center text-[18px] font-bold text-foreground">
                         Element Composition
                       </h4>
                       <ElementStructure elementData={elementData} />
@@ -693,7 +693,7 @@ export default function BaziCalculator() {
                     <div
                       className={`flex-col lg:order-1 lg:col-span-4 ${activeInsightTab === "stars" ? "flex" : "hidden lg:flex"}`}
                     >
-                      <h4 className="mb-4 text-center text-[18px] font-bold text-[#18181B] lg:text-left">
+                      <h4 className="mb-4 text-center text-[18px] font-bold text-foreground lg:text-left">
                         Lucky Stars
                       </h4>
                       <LuckyStars stars={luckyStars} mode={mode} />
@@ -703,7 +703,7 @@ export default function BaziCalculator() {
                     <div
                       className={`flex-col lg:order-3 lg:col-span-4 ${activeInsightTab === "gods" ? "flex" : "hidden lg:flex"}`}
                     >
-                      <h4 className="mb-4 text-center text-[18px] font-bold text-[#18181B] lg:text-left">
+                      <h4 className="mb-4 text-center text-[18px] font-bold text-foreground lg:text-left">
                         10 Gods
                       </h4>
                       <TenGods tenGodsData={tenGodsData} />
@@ -711,14 +711,14 @@ export default function BaziCalculator() {
                   </div>
 
                   {/* Insight Card (Full Width Bottom) */}
-                  <div className="mt-8 w-full rounded-[20px] border border-[#F1F5F9] bg-white/65 p-6 shadow-[0_4px_16px_rgba(0,0,0,0.02)] backdrop-blur-[20px]">
+                  <div className="mt-8 w-full rounded-[20px] border border-border bg-card/60 p-6 shadow-sm backdrop-blur-[20px]">
                     <div className="mb-3 flex items-center gap-2">
                       <span className="text-[20px]">💡</span>
-                      <span className="text-[16px] font-bold text-[#18181B]">
+                      <span className="text-[16px] font-bold text-foreground">
                         Destiny Insight
                       </span>
                     </div>
-                    <p className="text-[15px] leading-relaxed text-[#475569]">
+                    <p className="text-[15px] leading-relaxed text-muted-foreground">
                       Your chart shows a unique distribution of elements. The
                       balance between these energies shapes your approach to
                       life, relationships, and career. Pay attention to the
@@ -728,19 +728,19 @@ export default function BaziCalculator() {
                   </div>
                 </div>
 
-                <hr className="my-1 h-[1px] border-none bg-[#F1F5F9]" />
+                <hr className="my-1 h-[1px] border-none bg-border" />
 
                 {/* Interactive Explorer Experience */}
                 <div className="relative flex w-full flex-col gap-6 lg:flex-row">
                   {/* Mobile Sidebar Toggle */}
                   <button
-                    className="flex w-full items-center justify-between rounded-[16px] border border-[#F1F5F9] bg-white/72 p-4 shadow-sm backdrop-blur-[20px] lg:hidden"
+                    className="flex w-full items-center justify-between rounded-[16px] border border-border bg-card/70 p-4 shadow-sm backdrop-blur-[20px] lg:hidden"
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                   >
-                    <span className="font-bold text-[#18181B]">
+                    <span className="font-bold text-foreground">
                       Current Selection
                     </span>
-                    <span className="text-[#8B5CF6]">
+                    <span className="text-primary">
                       {isSidebarOpen ? "Close" : "View"}
                     </span>
                   </button>
@@ -750,47 +750,47 @@ export default function BaziCalculator() {
                     className={`flex flex-shrink-0 flex-col gap-4 transition-all duration-300 lg:w-[320px] ${isSidebarOpen ? "block" : "hidden lg:flex"}`}
                   >
                     {/* Sidebar Header */}
-                    <div className="rounded-[20px] border border-[#F1F5F9] bg-white/72 p-6 shadow-[0_4px_16px_rgba(0,0,0,0.02)] backdrop-blur-[20px]">
-                      <h3 className="flex items-center gap-2 text-[20px] font-bold text-[#18181B]">
+                    <div className="rounded-[20px] border border-border bg-card/70 p-6 shadow-sm backdrop-blur-[20px]">
+                      <h3 className="flex items-center gap-2 text-[20px] font-bold text-foreground">
                         <span>✨</span> Luck Pillars Explorer
                       </h3>
-                      <p className="mt-2 text-[13px] text-[#71717A]">
+                      <p className="mt-2 text-[13px] text-muted-foreground">
                         Explore your destiny cycles step by step.
                       </p>
                     </div>
 
                     {/* Current Selection Panel */}
-                    <div className="flex-1 rounded-[20px] border border-[#F1F5F9] bg-white/65 p-6 shadow-[0_4px_16px_rgba(0,0,0,0.02)] backdrop-blur-[20px]">
-                      <h4 className="mb-6 text-[16px] font-bold text-[#18181B]">
+                    <div className="flex-1 rounded-[20px] border border-border bg-card/60 p-6 shadow-sm backdrop-blur-[20px]">
+                      <h4 className="mb-6 text-[16px] font-bold text-foreground">
                         Current Selection
                       </h4>
 
                       <div className="relative flex flex-col gap-0">
                         {/* Vertical Line */}
-                        <div className="absolute top-[10px] bottom-[10px] left-[7px] z-0 w-[2px] bg-[#F1F5F9]"></div>
+                        <div className="absolute top-[10px] bottom-[10px] left-[7px] z-0 w-[2px] bg-border"></div>
 
                         {/* 10-Year Selection */}
                         <div className="relative z-10 mb-6 flex gap-4">
                           <div
-                            className={`mt-1 h-[16px] w-[16px] flex-shrink-0 rounded-full border-4 border-white shadow-sm ${selectedLuck !== null ? "bg-[#8B5CF6]" : "bg-[#E2E8F0]"}`}
+                            className={`mt-1 h-[16px] w-[16px] flex-shrink-0 rounded-full border-4 border-background shadow-sm ${selectedLuck !== null ? "bg-[var(--color-primary)]" : "bg-muted"}`}
                           ></div>
                           <div className="flex flex-col">
-                            <span className="text-[12px] font-semibold text-[#71717A]">
+                            <span className="text-[12px] font-semibold text-muted-foreground">
                               10-Year Luck
                             </span>
                             {selectedLuck !== null ? (
                               <>
-                                <span className="text-[14px] font-bold text-[#18181B]">
+                                <span className="text-[14px] font-bold text-foreground">
                                   {getSelectedLuckData()?.year_start}–
                                   {getSelectedLuckData()?.year_end}
                                 </span>
-                                <span className="mt-1 text-[13px] text-[#475569]">
+                                <span className="mt-1 text-[13px] text-muted-foreground">
                                   {getSelectedLuckData()?.heavenly_stem?.name}{" "}
                                   {getSelectedLuckData()?.earthly_branch?.name}
                                 </span>
                               </>
                             ) : (
-                              <span className="mt-1 text-[13px] text-[#94A3B8] italic">
+                              <span className="mt-1 text-[13px] text-muted-foreground italic">
                                 Not selected
                               </span>
                             )}
@@ -800,24 +800,24 @@ export default function BaziCalculator() {
                         {/* Year Selection */}
                         <div className="relative z-10 mb-6 flex gap-4">
                           <div
-                            className={`mt-1 h-[16px] w-[16px] flex-shrink-0 rounded-full border-4 border-white shadow-sm ${selectedYear !== null ? "bg-[#A855F7]" : "bg-[#E2E8F0]"}`}
+                            className={`mt-1 h-[16px] w-[16px] flex-shrink-0 rounded-full border-4 border-background shadow-sm ${selectedYear !== null ? "bg-[var(--color-chart-1)]" : "bg-muted"}`}
                           ></div>
                           <div className="flex flex-col">
-                            <span className="text-[12px] font-semibold text-[#71717A]">
+                            <span className="text-[12px] font-semibold text-muted-foreground">
                               Year Pillar
                             </span>
                             {selectedYear !== null ? (
                               <>
-                                <span className="text-[14px] font-bold text-[#18181B]">
+                                <span className="text-[14px] font-bold text-foreground">
                                   {selectedYear}
                                 </span>
-                                <span className="mt-1 text-[13px] text-[#475569]">
+                                <span className="mt-1 text-[13px] text-muted-foreground">
                                   {getSelectedYearData()?.heavenly_stem?.name}{" "}
                                   {getSelectedYearData()?.earthly_branch?.name}
                                 </span>
                               </>
                             ) : (
-                              <span className="mt-1 text-[13px] text-[#94A3B8] italic">
+                              <span className="mt-1 text-[13px] text-muted-foreground italic">
                                 Not selected
                               </span>
                             )}
@@ -827,25 +827,25 @@ export default function BaziCalculator() {
                         {/* Month Selection */}
                         <div className="relative z-10 mb-6 flex gap-4">
                           <div
-                            className={`mt-1 h-[16px] w-[16px] flex-shrink-0 rounded-full border-4 border-white shadow-sm ${selectedMonth !== null ? "bg-[#F97316]" : "bg-[#E2E8F0]"}`}
+                            className={`mt-1 h-[16px] w-[16px] flex-shrink-0 rounded-full border-4 border-background shadow-sm ${selectedMonth !== null ? "bg-[var(--color-chart-2)]" : "bg-muted"}`}
                           ></div>
                           <div className="flex flex-col">
-                            <span className="text-[12px] font-semibold text-[#71717A]">
+                            <span className="text-[12px] font-semibold text-muted-foreground">
                               Month Pillar
                             </span>
                             {selectedMonth !== null ? (
                               <>
-                                <span className="text-[14px] font-bold text-[#18181B]">
+                                <span className="text-[14px] font-bold text-foreground">
                                   {getSelectedMonthData()?.month_english}{" "}
                                   {selectedYear}
                                 </span>
-                                <span className="mt-1 text-[13px] text-[#475569]">
+                                <span className="mt-1 text-[13px] text-muted-foreground">
                                   {getSelectedMonthData()?.heavenly_stem?.name}{" "}
                                   {getSelectedMonthData()?.earthly_branch?.name}
                                 </span>
                               </>
                             ) : (
-                              <span className="mt-1 text-[13px] text-[#94A3B8] italic">
+                              <span className="mt-1 text-[13px] text-muted-foreground italic">
                                 Not selected
                               </span>
                             )}
@@ -855,24 +855,24 @@ export default function BaziCalculator() {
                         {/* Day Selection */}
                         <div className="relative z-10 mb-6 flex gap-4">
                           <div
-                            className={`mt-1 h-[16px] w-[16px] flex-shrink-0 rounded-full border-4 border-white shadow-sm ${selectedDay !== null ? "bg-[#22C55E]" : "bg-[#E2E8F0]"}`}
+                            className={`mt-1 h-[16px] w-[16px] flex-shrink-0 rounded-full border-4 border-background shadow-sm ${selectedDay !== null ? "bg-[var(--color-chart-3)]" : "bg-muted"}`}
                           ></div>
                           <div className="flex flex-col">
-                            <span className="text-[12px] font-semibold text-[#71717A]">
+                            <span className="text-[12px] font-semibold text-muted-foreground">
                               Day Pillar
                             </span>
                             {selectedDay !== null ? (
                               <>
-                                <span className="text-[14px] font-bold text-[#18181B]">
+                                <span className="text-[14px] font-bold text-foreground">
                                   Day {selectedDay}
                                 </span>
-                                <span className="mt-1 text-[13px] text-[#475569]">
+                                <span className="mt-1 text-[13px] text-muted-foreground">
                                   {getSelectedDayData()?.heavenly_stem?.name}{" "}
                                   {getSelectedDayData()?.earthly_branch?.name}
                                 </span>
                               </>
                             ) : (
-                              <span className="mt-1 text-[13px] text-[#94A3B8] italic">
+                              <span className="mt-1 text-[13px] text-muted-foreground italic">
                                 Not selected
                               </span>
                             )}
@@ -882,13 +882,13 @@ export default function BaziCalculator() {
                         {/* Hour Selection */}
                         <div className="relative z-10 flex gap-4">
                           <div
-                            className={`mt-1 h-[16px] w-[16px] flex-shrink-0 rounded-full border-4 border-white bg-[#E2E8F0] shadow-sm`}
+                            className={`mt-1 h-[16px] w-[16px] flex-shrink-0 rounded-full border-4 border-background bg-muted shadow-sm`}
                           ></div>
                           <div className="flex flex-col">
-                            <span className="text-[12px] font-semibold text-[#71717A]">
+                            <span className="text-[12px] font-semibold text-muted-foreground">
                               Hour Pillar
                             </span>
-                            <span className="mt-1 text-[13px] text-[#94A3B8] italic">
+                            <span className="mt-1 text-[13px] text-muted-foreground italic">
                               Not selected
                             </span>
                           </div>
@@ -897,11 +897,11 @@ export default function BaziCalculator() {
                     </div>
 
                     {/* Sidebar Footer */}
-                    <div className="rounded-[20px] border border-[#F1F5F9] bg-white/55 p-5 backdrop-blur-[20px]">
-                      <h4 className="mb-3 text-[14px] font-bold text-[#18181B]">
+                    <div className="rounded-[20px] border border-border bg-card/50 p-5 backdrop-blur-[20px]">
+                      <h4 className="mb-3 text-[14px] font-bold text-foreground">
                         How to Use
                       </h4>
-                      <ol className="list-decimal space-y-2 pl-4 text-[12px] text-[#475569]">
+                      <ol className="list-decimal space-y-2 pl-4 text-[12px] text-muted-foreground">
                         <li>Start from 10-Year Luck Pillars</li>
                         <li>Select a specific Year</li>
                         <li>Select Month</li>
@@ -915,9 +915,9 @@ export default function BaziCalculator() {
                   {/* Main Explorer Area */}
                   <div className="flex min-w-0 flex-1 flex-col">
                     {/* Top Breadcrumb */}
-                    <div className="mb-4 flex flex-wrap items-center gap-2 px-2 text-[14px] text-[#64748B]">
+                    <div className="mb-4 flex flex-wrap items-center gap-2 px-2 text-[14px] text-muted-foreground">
                       <span
-                        className={`cursor-pointer hover:text-[#18181B] ${explorerStep === "luck" ? "font-semibold text-[#18181B]" : ""}`}
+                        className={`cursor-pointer hover:text-foreground ${explorerStep === "luck" ? "font-semibold text-foreground" : ""}`}
                         onClick={() => setExplorerStep("luck")}
                       >
                         10-Year Luck Breadcrumb
@@ -954,16 +954,16 @@ export default function BaziCalculator() {
                                   backgroundColor:
                                     index <= currentStepIndex
                                       ? step.color
-                                      : "#94A3B8",
+                                      : "var(--muted-foreground)",
                                 }}
                               ></div>
                               <span
                                 className={`hidden text-[13px] transition-all duration-300 sm:block ${
                                   index === currentStepIndex
-                                    ? "font-bold text-[#18181B]"
+                                    ? "font-bold text-foreground"
                                     : index < currentStepIndex
-                                      ? "font-medium text-[#475569]"
-                                      : "text-[#94A3B8]"
+                                      ? "font-medium text-muted-foreground"
+                                      : "text-muted-foreground opacity-50"
                                 }`}
                               >
                                 {step.label}
@@ -971,7 +971,7 @@ export default function BaziCalculator() {
                             </div>
                           </div>
                           {index < steps.length - 1 && (
-                            <div className="relative mx-2 h-[2px] flex-1 overflow-hidden rounded-full bg-[#F1F5F9] sm:mx-4">
+                            <div className="relative mx-2 h-[2px] flex-1 overflow-hidden rounded-full bg-border sm:mx-4">
                               <div
                                 className="absolute top-0 bottom-0 left-0 transition-all duration-500"
                                 style={{
@@ -988,10 +988,10 @@ export default function BaziCalculator() {
 
                     {/* Explorer Hero Area */}
                     <div
-                      className="relative mb-8 flex h-[180px] flex-col justify-center overflow-hidden rounded-[24px] border border-white/80 p-6 shadow-[0_8px_32px_rgba(0,0,0,0.04)] sm:h-[220px] sm:p-8"
+                      className="relative mb-8 flex h-[180px] flex-col justify-center overflow-hidden rounded-[24px] border border-border/50 p-6 shadow-sm sm:h-[220px] sm:p-8"
                       style={{
                         background:
-                          "linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 100%)",
+                          "linear-gradient(180deg, hsl(var(--card) / 0.8) 0%, hsl(var(--card) / 0.4) 100%)",
                       }}
                     >
                       {/* Abstract Background Elements */}
@@ -1015,14 +1015,14 @@ export default function BaziCalculator() {
                         >
                           Step {currentStepIndex + 1} of 5
                         </span>
-                        <h2 className="mb-3 text-[24px] font-bold text-[#18181B] sm:text-[32px]">
+                        <h2 className="mb-3 text-[24px] font-bold text-foreground sm:text-[32px]">
                           {explorerStep === "luck" && "Select 10-Year Luck"}
                           {explorerStep === "year" && "Select Year Pillar"}
                           {explorerStep === "month" && "Select Month Pillar"}
                           {explorerStep === "day" && "Select Day Pillar"}
                           {explorerStep === "hour" && "Select Hour Pillar"}
                         </h2>
-                        <p className="max-w-[400px] text-[14px] leading-relaxed text-[#475569] sm:text-[15px]">
+                        <p className="max-w-[400px] text-[14px] leading-relaxed text-muted-foreground sm:text-[15px]">
                           {explorerStep === "luck" &&
                             "Choose a 10-year period to explore the overarching themes and energies of that decade."}
                           {explorerStep === "year" &&
@@ -1063,7 +1063,7 @@ export default function BaziCalculator() {
                                       300
                                     )
                                   }}
-                                  color="#8B5CF6"
+                                  color="var(--color-primary)"
                                   dayMasterName={
                                     baziData.four_pillars.day_pillar
                                       ?.heavenly_stem?.name
@@ -1093,7 +1093,7 @@ export default function BaziCalculator() {
                                     300
                                   )
                                 }}
-                                color="#A855F7"
+                                color="var(--color-chart-1)"
                                 dayMasterName={
                                   baziData.four_pillars.day_pillar
                                     ?.heavenly_stem?.name
@@ -1119,7 +1119,7 @@ export default function BaziCalculator() {
                                   setSelectedMonth(pillar.month)
                                   setTimeout(() => setExplorerStep("day"), 300)
                                 }}
-                                color="#F97316"
+                                color="var(--color-chart-2)"
                                 dayMasterName={
                                   baziData.four_pillars.day_pillar
                                     ?.heavenly_stem?.name
@@ -1147,7 +1147,7 @@ export default function BaziCalculator() {
                                   setSelectedDay(pillar.day)
                                   setTimeout(() => setExplorerStep("hour"), 300)
                                 }}
-                                color="#22C55E"
+                                color="var(--color-chart-3)"
                                 dayMasterName={
                                   baziData.four_pillars.day_pillar
                                     ?.heavenly_stem?.name
@@ -1170,7 +1170,7 @@ export default function BaziCalculator() {
                                   setSelectedHourData(pillar)
                                   setIsDialogOpen(true)
                                 }}
-                                color="#06B6D4"
+                                color="var(--color-chart-4)"
                                 dayMasterName={
                                   baziData.four_pillars.day_pillar
                                     ?.heavenly_stem?.name
@@ -1183,24 +1183,24 @@ export default function BaziCalculator() {
                         {/* Empty States */}
                         {explorerStep === "year" &&
                           yearPillars.length === 0 && (
-                            <div className="w-full py-12 text-center text-[#71717A]">
+                            <div className="w-full py-12 text-center text-muted-foreground">
                               Please select a 10-Year Luck Pillar first.
                             </div>
                           )}
                         {explorerStep === "month" &&
                           monthPillars.length === 0 && (
-                            <div className="w-full py-12 text-center text-[#71717A]">
+                            <div className="w-full py-12 text-center text-muted-foreground">
                               Please select a Year Pillar first.
                             </div>
                           )}
                         {explorerStep === "day" && dayPillars.length === 0 && (
-                          <div className="w-full py-12 text-center text-[#71717A]">
+                          <div className="w-full py-12 text-center text-muted-foreground">
                             Please select a Month Pillar first.
                           </div>
                         )}
                         {explorerStep === "hour" &&
                           hourPillars.length === 0 && (
-                            <div className="w-full py-12 text-center text-[#71717A]">
+                            <div className="w-full py-12 text-center text-muted-foreground">
                               Please select a Day Pillar first.
                             </div>
                           )}
@@ -1208,7 +1208,7 @@ export default function BaziCalculator() {
                     </div>
 
                     {/* Navigation Actions */}
-                    <div className="mt-4 flex items-center justify-between border-t border-[#F1F5F9] pt-6">
+                    <div className="mt-4 flex items-center justify-between border-t border-border pt-6">
                       <button
                         onClick={() => {
                           if (explorerStep === "year") setExplorerStep("luck")
@@ -1219,7 +1219,7 @@ export default function BaziCalculator() {
                         className={`rounded-[12px] px-5 py-2.5 text-[14px] font-medium transition-all duration-200 ${
                           explorerStep === "luck"
                             ? "pointer-events-none opacity-0"
-                            : "border border-[#E2E8F0] bg-white text-[#475569] hover:bg-[#F8FAFC] hover:text-[#18181B]"
+                            : "border border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground"
                         }`}
                       >
                         ← Change{" "}
@@ -1255,8 +1255,8 @@ export default function BaziCalculator() {
                             selectedMonth === null) ||
                           (explorerStep === "day" && selectedDay === null) ||
                           explorerStep === "hour"
-                            ? "cursor-not-allowed bg-[#F1F5F9] text-[#94A3B8] opacity-50"
-                            : "bg-[#18181B] text-white shadow-sm hover:bg-[#27272A]"
+                            ? "cursor-not-allowed bg-muted text-muted-foreground opacity-50"
+                            : "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90"
                         }`}
                       >
                         Next →
@@ -1264,10 +1264,10 @@ export default function BaziCalculator() {
                     </div>
 
                     {/* Floating Tip Card */}
-                    <div className="mt-8 flex items-start gap-3 rounded-[20px] border border-[#F1F5F9] bg-white/70 p-4 shadow-sm backdrop-blur-[20px]">
+                    <div className="mt-8 flex items-start gap-3 rounded-[20px] border border-border bg-card/70 p-4 shadow-sm backdrop-blur-[20px]">
                       <span className="text-[20px] leading-none">💡</span>
-                      <p className="text-[13px] leading-relaxed text-[#475569]">
-                        <strong className="text-[#18181B]">Tip:</strong> Start
+                      <p className="text-[13px] leading-relaxed text-muted-foreground">
+                        <strong className="text-foreground">Tip:</strong> Start
                         from 10-Year Luck Pillars and drill down to see more
                         specific influences. Your selections are saved in the
                         sidebar.

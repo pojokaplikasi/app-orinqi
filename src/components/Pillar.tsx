@@ -186,21 +186,20 @@ export default function Pillar({
 
   // Base classes
   let pillarClass =
-    "flex-none w-[150px] md:w-[180px] lg:w-[200px] h-auto p-4 rounded-[20px] bg-white/72 backdrop-blur-[20px] border border-[#F1F5F9] shadow-[0_6px_24px_rgba(0,0,0,0.05)] text-[#18181B] text-center box-border transition-all duration-200 relative flex flex-col gap-3"
+    "flex-none w-[150px] md:w-[180px] lg:w-[200px] h-auto p-4 rounded-[20px] bg-card/70 backdrop-blur-[20px] border border-border shadow-sm text-foreground text-center box-border transition-all duration-200 relative flex flex-col gap-3"
 
   if (isCurrent) {
-    pillarClass += " border-t-[4px] border-t-[#F97316]"
+    pillarClass += " border-t-[4px] border-t-orange-500"
   } else {
-    pillarClass += " border-t-[4px] border-t-[#2563EB]"
+    pillarClass += " border-t-[4px] border-t-blue-600"
   }
 
   if (isSelected) {
-    pillarClass += " ring-2 ring-[#E94B4B] ring-offset-2"
+    pillarClass += " ring-2 ring-primary ring-offset-2 ring-offset-background"
   }
 
   if (onClick) {
-    pillarClass +=
-      " cursor-pointer hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
+    pillarClass += " cursor-pointer hover:-translate-y-1 hover:shadow-md"
   }
 
   // Extract Chinese title if available (e.g., "Hour Pillar (時柱)" -> "Hour Pillar", "時柱")
@@ -217,22 +216,22 @@ export default function Pillar({
       {/* Header & Ten Gods Badge */}
       <div className="relative flex w-full items-start justify-between">
         <div className="flex flex-col items-start text-left">
-          <span className="text-[13px] leading-tight font-semibold text-[#18181B]">
+          <span className="text-[13px] leading-tight font-semibold text-foreground">
             {mainTitle}
           </span>
           {chineseTitle && (
-            <span className="text-[11px] text-[#71717A] opacity-50">
+            <span className="text-[11px] text-muted-foreground opacity-50">
               {chineseTitle}
             </span>
           )}
           {periodLabel && periodValue && (
-            <span className="mt-1 text-[11px] font-medium text-[#E94B4B]">
+            <span className="mt-1 text-[11px] font-medium text-primary">
               {periodValue}
             </span>
           )}
         </div>
         {hsTenGodAbbr && (
-          <div className="flex h-[22px] items-center justify-center rounded-full bg-[#F3E8FF] px-2 text-[11px] font-bold whitespace-nowrap text-[#7C3AED]">
+          <div className="flex h-[22px] items-center justify-center rounded-full bg-purple-100 px-2 text-[11px] font-bold whitespace-nowrap text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
             {hsTenGodAbbr}
           </div>
         )}
@@ -255,7 +254,7 @@ export default function Pillar({
       </div>
 
       {/* Separator */}
-      <div className="my-1 h-[1px] w-full bg-[#F1F5F9]"></div>
+      <div className="my-1 h-[1px] w-full bg-border"></div>
 
       {/* Earthly Branch */}
       <div className="relative flex flex-col items-center justify-center">
@@ -274,7 +273,7 @@ export default function Pillar({
 
         {/* Lucky Stars Indicator */}
         {starsForThisBranch.length > 0 && (
-          <div className="absolute top-0 right-[-5px] z-10 flex flex-col items-center rounded-md bg-white/90 p-1 shadow-sm">
+          <div className="absolute top-0 right-[-5px] z-10 flex flex-col items-center rounded-md bg-background/90 p-1 shadow-sm">
             {starsForThisBranch.map((star, idx) => (
               <div key={idx} className="text-[12px] leading-tight">
                 {star}
@@ -285,7 +284,7 @@ export default function Pillar({
       </div>
 
       {/* Hidden Stems (Mini Chips) */}
-      <div className="mt-1 flex w-full justify-center gap-2 rounded-[12px] bg-[#F8FAFC] p-[10px]">
+      <div className="mt-1 flex w-full justify-center gap-2 rounded-[12px] bg-muted/50 p-[10px]">
         {[
           hidden_stems?.residual_qi,
           hidden_stems?.main_qi,
@@ -300,7 +299,7 @@ export default function Pillar({
               >
                 {qi.character}
               </span>
-              <span className="text-[9px] font-bold text-[#64748B] uppercase">
+              <span className="text-[9px] font-bold text-muted-foreground uppercase">
                 {qi.ten_gods || "-"}
               </span>
             </div>
@@ -310,17 +309,17 @@ export default function Pillar({
 
       {/* Element Section (Nayin) */}
       <div className="mt-1 flex flex-col items-center justify-center">
-        <span className="text-center text-[12px] leading-tight font-semibold text-[#18181B]">
+        <span className="text-center text-[12px] leading-tight font-semibold text-foreground">
           {gan_zhi?.name || "N/A"}
         </span>
       </div>
 
       {/* Separator */}
-      <div className="my-1 h-[1px] w-full bg-[#F1F5F9]"></div>
+      <div className="my-1 h-[1px] w-full bg-border"></div>
 
       {/* Life Stage */}
       <div className="flex items-center justify-center">
-        <span className="text-[13px] font-bold tracking-wide text-[#7C3AED] uppercase">
+        <span className="text-[13px] font-bold tracking-wide text-purple-600 uppercase dark:text-purple-400">
           {life_cycle || "N/A"}
         </span>
       </div>
@@ -333,7 +332,7 @@ export default function Pillar({
               e.stopPropagation()
               if (onToggleExpand) onToggleExpand()
             }}
-            className="flex h-[36px] w-full items-center justify-center gap-2 rounded-[12px] border border-[#E5E7EB] bg-[#F8FAFC] text-[12px] font-semibold text-[#475569] transition-colors hover:bg-[#F1F5F9]"
+            className="flex h-[36px] w-full items-center justify-center gap-2 rounded-[12px] border border-border bg-muted/50 text-[12px] font-semibold text-muted-foreground transition-colors hover:bg-muted"
           >
             +{branchLabels.length + (hsLabel ? 1 : 0)} Indicators{" "}
             {isExpanded ? "▲" : "▼"}
@@ -342,26 +341,27 @@ export default function Pillar({
           <div
             className={`overflow-hidden transition-all duration-200 ease-in-out ${isExpanded ? "mt-2 max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}
           >
-            <div className="flex w-full flex-col gap-1 rounded-[12px] border border-[#F1F5F9] bg-white/50 p-2 text-left">
+            <div className="flex w-full flex-col gap-1 rounded-[12px] border border-border bg-background/50 p-2 text-left">
               {hsLabel && (
                 <div
                   className="flex items-start gap-1 text-[11px] leading-[1.5] font-medium"
-                  style={{ color: "#16A34A" }}
+                  style={{ color: "var(--color-chart-3)" }}
                 >
                   <span className="mt-[2px]">🔥</span>
                   <span className="break-words">{hsLabel}</span>
                 </div>
               )}
               {branchLabels.map((label, idx) => {
-                let color = "#64748B" // Neutral
-                if (label.category === "positive") color = "#16A34A"
+                let color = "var(--color-muted-foreground)" // Neutral
+                if (label.category === "positive")
+                  color = "var(--color-chart-3)"
                 else if (label.category === "negative") {
                   if (
                     label.text.includes("Punishment") ||
                     label.text.includes("Harm")
                   )
-                    color = "#EAB308" // Warning
-                  else color = "#EF4444" // Negative
+                    color = "var(--color-chart-2)" // Warning
+                  else color = "var(--color-destructive)" // Negative
                 }
 
                 return (

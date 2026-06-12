@@ -20,7 +20,7 @@ export default function CompactPillarCard({
   pillarData,
   isSelected,
   onClick,
-  color = "#8B5CF6",
+  color = "var(--color-primary)",
   dayMasterName,
   luckyStars,
 }: CompactPillarCardProps) {
@@ -88,10 +88,10 @@ export default function CompactPillarCard({
   return (
     <div
       onClick={onClick}
-      className={`group relative flex h-[280px] w-[160px] flex-none cursor-pointer flex-col items-center justify-between rounded-[20px] border bg-white/72 p-4 backdrop-blur-[20px] transition-all duration-300 md:w-[180px] ${
+      className={`group relative flex h-[280px] w-[160px] flex-none cursor-pointer flex-col items-center justify-between rounded-[20px] border bg-card/70 p-4 backdrop-blur-[20px] transition-all duration-300 md:w-[180px] ${
         isSelected
-          ? "shadow-[0_12px_40px_rgba(0,0,0,0.08)]"
-          : "border-[#F1F5F9] hover:border-[#CBD5E1] hover:shadow-md"
+          ? "shadow-md"
+          : "border-border hover:border-border/80 hover:shadow-sm"
       }`}
       style={{
         borderColor: isSelected ? color : undefined,
@@ -100,12 +100,12 @@ export default function CompactPillarCard({
     >
       {/* Header */}
       <div className="relative flex w-full flex-col items-center text-center">
-        <span className="text-[14px] font-bold text-[#18181B]">{title}</span>
-        <span className="text-[12px] text-[#71717A]">{subtitle}</span>
+        <span className="text-[14px] font-bold text-foreground">{title}</span>
+        <span className="text-[12px] text-muted-foreground">{subtitle}</span>
 
         {/* Ten God Badge */}
         {hsTenGodAbbr && (
-          <div className="absolute top-0 right-0 flex h-[22px] items-center justify-center rounded-full bg-[#F3E8FF] px-2 text-[11px] font-bold whitespace-nowrap text-[#7C3AED]">
+          <div className="absolute top-0 right-0 flex h-[22px] items-center justify-center rounded-full bg-purple-100 px-2 text-[11px] font-bold whitespace-nowrap text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
             {hsTenGodAbbr}
           </div>
         )}
@@ -115,13 +115,19 @@ export default function CompactPillarCard({
       <div className="mt-2 flex flex-col items-center">
         <strong
           className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[36px] leading-none"
-          style={{ color: ELEMENT_COLORS[hsElement] || hs?.color || "#18181B" }}
+          style={{
+            color:
+              ELEMENT_COLORS[hsElement] || hs?.color || "var(--foreground)",
+          }}
         >
           {hs?.character || hs?.name_sc || hs?.name}
         </strong>
         <div
           className="mt-1 text-[10px] font-bold tracking-wider uppercase"
-          style={{ color: ELEMENT_COLORS[hsElement] || hs?.color || "#18181B" }}
+          style={{
+            color:
+              ELEMENT_COLORS[hsElement] || hs?.color || "var(--foreground)",
+          }}
         >
           {hs?.name || "N/A"}
         </div>
@@ -131,20 +137,26 @@ export default function CompactPillarCard({
       <div className="relative mt-2 flex flex-col items-center">
         <strong
           className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[36px] leading-none"
-          style={{ color: ELEMENT_COLORS[ebElement] || eb?.color || "#18181B" }}
+          style={{
+            color:
+              ELEMENT_COLORS[ebElement] || eb?.color || "var(--foreground)",
+          }}
         >
           {eb?.character || eb?.name_sc || eb?.name}
         </strong>
         <div
           className="mt-1 text-[10px] font-bold tracking-wider uppercase"
-          style={{ color: ELEMENT_COLORS[ebElement] || eb?.color || "#18181B" }}
+          style={{
+            color:
+              ELEMENT_COLORS[ebElement] || eb?.color || "var(--foreground)",
+          }}
         >
           {eb?.name || "N/A"}
         </div>
 
         {/* Lucky Stars Indicator */}
         {starsForThisBranch.length > 0 && (
-          <div className="absolute top-0 right-[-15px] z-10 flex flex-col items-center rounded-md bg-white/90 p-1 shadow-sm">
+          <div className="absolute top-0 right-[-15px] z-10 flex flex-col items-center rounded-md bg-background/90 p-1 shadow-sm">
             {starsForThisBranch.map((star, idx) => (
               <div key={idx} className="text-[12px] leading-tight">
                 {star}
@@ -156,7 +168,7 @@ export default function CompactPillarCard({
 
       {/* Life Stage */}
       {pillarData.life_stage && (
-        <div className="mt-auto w-full border-t border-[#F1F5F9] pt-3 text-center">
+        <div className="mt-auto w-full border-t border-border pt-3 text-center">
           <span
             className="text-[11px] font-semibold tracking-wide uppercase"
             style={{ color }}
