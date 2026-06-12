@@ -19,7 +19,7 @@ export default function Page() {
         </CardHeader>
         <CardContent className="flex flex-col gap-4 text-sm leading-loose">
           <div>
-            <p>We've added the following tools:</p>
+            <p>Weve added the following tools:</p>
             <ul className="mt-2 list-disc space-y-1 pl-5">
               <li>shadcn/ui components (Button, Card, Form, etc.)</li>
               <li>Firebase (Auth, Firestore, Storage)</li>

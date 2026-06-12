@@ -1,155 +1,206 @@
-import React from 'react';
+import React from "react"
 
 interface LuckyStarsProps {
-  stars: any;
-  mode?: 'classic' | 'modern';
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  stars: any
+  mode?: "classic" | "modern"
 }
 
-export default function LuckyStars({ stars, mode = 'modern' }: LuckyStarsProps) {
-  if (!stars) return null;
+export default function LuckyStars({
+  stars,
+  mode = "modern",
+}: LuckyStarsProps) {
+  if (!stars) return null
 
   const getBranchInfo = (branchTraditionalName: string) => {
-    if (!branchTraditionalName) return { character: '', english: '' };
-    
+    if (!branchTraditionalName) return { character: "", english: "" }
+
     const traditionalToEnglishMap: Record<string, string> = {
-        'Zi': 'Rat', 'Chou': 'Ox', 'Yin': 'Tiger', 'Mao': 'Rabbit',
-        'Chen': 'Dragon', 'Si': 'Snake', 'Wu': 'Horse', 'Wei': 'Goat',
-        'Shen': 'Monkey', 'You': 'Rooster', 'Xu': 'Dog', 'Hai': 'Pig'
-    };
-    
-    const englishName = traditionalToEnglishMap[branchTraditionalName] || branchTraditionalName;
-    
+      Zi: "Rat",
+      Chou: "Ox",
+      Yin: "Tiger",
+      Mao: "Rabbit",
+      Chen: "Dragon",
+      Si: "Snake",
+      Wu: "Horse",
+      Wei: "Goat",
+      Shen: "Monkey",
+      You: "Rooster",
+      Xu: "Dog",
+      Hai: "Pig",
+    }
+
+    const englishName =
+      traditionalToEnglishMap[branchTraditionalName] || branchTraditionalName
+
     // Hardcode characters to avoid importing EARTHLY_BRANCHES
     const branchChars: Record<string, string> = {
-      'Rat': '子', 'Ox': '丑', 'Tiger': '寅', 'Rabbit': '卯',
-      'Dragon': '辰', 'Snake': '巳', 'Horse': '午', 'Goat': '未',
-      'Monkey': '申', 'Rooster': '酉', 'Dog': '戌', 'Pig': '亥'
-    };
-    
-    return { character: branchChars[englishName] || branchTraditionalName, english: englishName };
-  };
+      Rat: "子",
+      Ox: "丑",
+      Tiger: "寅",
+      Rabbit: "卯",
+      Dragon: "辰",
+      Snake: "巳",
+      Horse: "午",
+      Goat: "未",
+      Monkey: "申",
+      Rooster: "酉",
+      Dog: "戌",
+      Pig: "亥",
+    }
+
+    return {
+      character: branchChars[englishName] || branchTraditionalName,
+      english: englishName,
+    }
+  }
 
   const starConfig = [
     {
-      id: 'nobleman',
-      name: 'Noble People',
-      chinese: '贵人',
-      icon: '👑',
-      color: '#16A34A',
-      branches: stars.nobleman && stars.nobleman.length > 0 
-        ? stars.nobleman.map((b: string) => {
-            const info = getBranchInfo(b);
-            return `${info.character} ${info.english}`;
-          }).join(', ') 
-        : null
+      id: "nobleman",
+      name: "Noble People",
+      chinese: "贵人",
+      icon: "👑",
+      color: "#16A34A",
+      branches:
+        stars.nobleman && stars.nobleman.length > 0
+          ? stars.nobleman
+              .map((b: string) => {
+                const info = getBranchInfo(b)
+                return `${info.character} ${info.english}`
+              })
+              .join(", ")
+          : null,
     },
     {
-      id: 'intelligence',
-      name: 'Intelligence',
-      chinese: '文昌',
-      icon: '🎓',
-      color: '#2563EB',
-      branches: stars.intelligence ? (() => {
-        const info = getBranchInfo(stars.intelligence);
-        return `${info.character} ${info.english}`;
-      })() : null
+      id: "intelligence",
+      name: "Intelligence",
+      chinese: "文昌",
+      icon: "🎓",
+      color: "#2563EB",
+      branches: stars.intelligence
+        ? (() => {
+            const info = getBranchInfo(stars.intelligence)
+            return `${info.character} ${info.english}`
+          })()
+        : null,
     },
     {
-      id: 'peachBlossom',
-      name: 'Peach Blossom',
-      chinese: '桃花',
-      icon: '🌸',
-      color: '#EC4899',
-      branches: stars.peachBlossom ? (() => {
-        const info = getBranchInfo(stars.peachBlossom);
-        return `${info.character} ${info.english}`;
-      })() : null
+      id: "peachBlossom",
+      name: "Peach Blossom",
+      chinese: "桃花",
+      icon: "🌸",
+      color: "#EC4899",
+      branches: stars.peachBlossom
+        ? (() => {
+            const info = getBranchInfo(stars.peachBlossom)
+            return `${info.character} ${info.english}`
+          })()
+        : null,
     },
     {
-      id: 'skyHorse',
-      name: 'Sky Horse',
-      chinese: '驿马',
-      icon: '🦄',
-      color: '#F97316',
-      branches: stars.skyHorse ? (() => {
-        const info = getBranchInfo(stars.skyHorse);
-        return `${info.character} ${info.english}`;
-      })() : null
+      id: "skyHorse",
+      name: "Sky Horse",
+      chinese: "驿马",
+      icon: "🦄",
+      color: "#F97316",
+      branches: stars.skyHorse
+        ? (() => {
+            const info = getBranchInfo(stars.skyHorse)
+            return `${info.character} ${info.english}`
+          })()
+        : null,
     },
     {
-      id: 'solitary',
-      name: 'Solitary',
-      chinese: '孤辰',
-      icon: '🌙',
-      color: '#9333EA',
-      branches: stars.solitary ? (() => {
-        const info = getBranchInfo(stars.solitary);
-        return `${info.character} ${info.english}`;
-      })() : null
+      id: "solitary",
+      name: "Solitary",
+      chinese: "孤辰",
+      icon: "🌙",
+      color: "#9333EA",
+      branches: stars.solitary
+        ? (() => {
+            const info = getBranchInfo(stars.solitary)
+            return `${info.character} ${info.english}`
+          })()
+        : null,
     },
     {
-      id: 'heavenlyDoctor',
-      name: 'Heavenly Doctor',
-      chinese: '天医',
-      icon: '⚕️',
-      color: '#10B981',
-      branches: stars.heavenlyDoctor ? (() => {
-        const info = getBranchInfo(stars.heavenlyDoctor);
-        return `${info.character} ${info.english}`;
-      })() : null
+      id: "heavenlyDoctor",
+      name: "Heavenly Doctor",
+      chinese: "天医",
+      icon: "⚕️",
+      color: "#10B981",
+      branches: stars.heavenlyDoctor
+        ? (() => {
+            const info = getBranchInfo(stars.heavenlyDoctor)
+            return `${info.character} ${info.english}`
+          })()
+        : null,
     },
     {
-      id: 'kongwang',
-      name: mode === 'modern' ? 'Dead Emptiness' : 'Kong Wang',
-      chinese: '空亡',
-      icon: '🌪️',
-      color: '#8B5CF6',
-      branches: stars.kongwang && stars.kongwang.length > 0 
-        ? stars.kongwang.map((kw: string) => {
-            const kwInfo = getBranchInfo(kw);
-            return kwInfo.character ? `${kwInfo.character} ${kwInfo.english}` : '';
-          }).join(', ')
-        : null
-    }
-  ];
+      id: "kongwang",
+      name: mode === "modern" ? "Dead Emptiness" : "Kong Wang",
+      chinese: "空亡",
+      icon: "🌪️",
+      color: "#8B5CF6",
+      branches:
+        stars.kongwang && stars.kongwang.length > 0
+          ? stars.kongwang
+              .map((kw: string) => {
+                const kwInfo = getBranchInfo(kw)
+                return kwInfo.character
+                  ? `${kwInfo.character} ${kwInfo.english}`
+                  : ""
+              })
+              .join(", ")
+          : null,
+    },
+  ]
 
-  const activeStars = starConfig.filter(star => star.branches);
+  const activeStars = starConfig.filter((star) => star.branches)
 
   return (
     <div className="flex flex-col gap-4">
       {activeStars.length > 0 ? (
         activeStars.map((star) => (
-          <div 
+          <div
             key={star.id}
-            className="bg-white rounded-[18px] p-[18px] flex items-center gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#F1F5F9]"
+            className="flex items-center gap-4 rounded-[18px] border border-[#F1F5F9] bg-white p-[18px] shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
           >
-            <div 
-              className="w-[48px] h-[48px] rounded-full flex items-center justify-center text-[24px] flex-shrink-0"
-              style={{ 
-                background: 'rgba(255,255,255,0.7)',
-                backdropFilter: 'blur(16px)',
+            <div
+              className="flex h-[48px] w-[48px] flex-shrink-0 items-center justify-center rounded-full text-[24px]"
+              style={{
+                background: "rgba(255,255,255,0.7)",
+                backdropFilter: "blur(16px)",
                 border: `1px solid ${star.color}20`,
-                boxShadow: `0 4px 12px ${star.color}15`
+                boxShadow: `0 4px 12px ${star.color}15`,
               }}
             >
               {star.icon}
             </div>
-            <div className="flex flex-col flex-1">
+            <div className="flex flex-1 flex-col">
               <div className="flex items-center gap-2">
-                <span className="font-bold text-[#18181B] text-[15px]">{star.name}</span>
-                <span className="text-[13px] text-[#71717A]">{star.chinese}</span>
+                <span className="text-[15px] font-bold text-[#18181B]">
+                  {star.name}
+                </span>
+                <span className="text-[13px] text-[#71717A]">
+                  {star.chinese}
+                </span>
               </div>
-              <div className="text-[14px] font-medium mt-1" style={{ color: star.color }}>
+              <div
+                className="mt-1 text-[14px] font-medium"
+                style={{ color: star.color }}
+              >
                 {star.branches}
               </div>
             </div>
           </div>
         ))
       ) : (
-        <div className="bg-white rounded-[18px] p-[18px] flex items-center justify-center text-[#71717A] text-[14px] border border-[#F1F5F9]">
+        <div className="flex items-center justify-center rounded-[18px] border border-[#F1F5F9] bg-white p-[18px] text-[14px] text-[#71717A]">
           No active stars found in this chart.
         </div>
       )}
     </div>
-  );
+  )
 }
