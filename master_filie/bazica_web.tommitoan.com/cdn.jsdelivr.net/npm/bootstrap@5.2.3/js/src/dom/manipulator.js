@@ -6,11 +6,11 @@
  */
 
 function normalizeData(value) {
-  if (value === 'true') {
+  if (value === "true") {
     return true
   }
 
-  if (value === 'false') {
+  if (value === "false") {
     return false
   }
 
@@ -18,11 +18,11 @@ function normalizeData(value) {
     return Number(value)
   }
 
-  if (value === '' || value === 'null') {
+  if (value === "" || value === "null") {
     return null
   }
 
-  if (typeof value !== 'string') {
+  if (typeof value !== "string") {
     return value
   }
 
@@ -34,7 +34,7 @@ function normalizeData(value) {
 }
 
 function normalizeDataKey(key) {
-  return key.replace(/[A-Z]/g, chr => `-${chr.toLowerCase()}`)
+  return key.replace(/[A-Z]/g, (chr) => `-${chr.toLowerCase()}`)
 }
 
 const Manipulator = {
@@ -52,11 +52,14 @@ const Manipulator = {
     }
 
     const attributes = {}
-    const bsKeys = Object.keys(element.dataset).filter(key => key.startsWith('bs') && !key.startsWith('bsConfig'))
+    const bsKeys = Object.keys(element.dataset).filter(
+      (key) => key.startsWith("bs") && !key.startsWith("bsConfig")
+    )
 
     for (const key of bsKeys) {
-      let pureKey = key.replace(/^bs/, '')
-      pureKey = pureKey.charAt(0).toLowerCase() + pureKey.slice(1, pureKey.length)
+      let pureKey = key.replace(/^bs/, "")
+      pureKey =
+        pureKey.charAt(0).toLowerCase() + pureKey.slice(1, pureKey.length)
       attributes[pureKey] = normalizeData(element.dataset[key])
     }
 
@@ -64,8 +67,10 @@ const Manipulator = {
   },
 
   getDataAttribute(element, key) {
-    return normalizeData(element.getAttribute(`data-bs-${normalizeDataKey(key)}`))
-  }
+    return normalizeData(
+      element.getAttribute(`data-bs-${normalizeDataKey(key)}`)
+    )
+  },
 }
 
 export default Manipulator

@@ -4,9 +4,8 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  * --------------------------------------------------------------------------
  */
-
-import { isElement, toType } from './index'
-import Manipulator from '../dom/manipulator'
+import Manipulator from "../dom/manipulator"
+import { isElement, toType } from "./index"
 
 /**
  * Class definition
@@ -23,7 +22,9 @@ class Config {
   }
 
   static get NAME() {
-    throw new Error('You have to implement the static method "NAME", for each component!')
+    throw new Error(
+      'You have to implement the static method "NAME", for each component!'
+    )
   }
 
   _getConfig(config) {
@@ -38,13 +39,15 @@ class Config {
   }
 
   _mergeConfigObj(config, element) {
-    const jsonConfig = isElement(element) ? Manipulator.getDataAttribute(element, 'config') : {} // try to parse
+    const jsonConfig = isElement(element)
+      ? Manipulator.getDataAttribute(element, "config")
+      : {} // try to parse
 
     return {
       ...this.constructor.Default,
-      ...(typeof jsonConfig === 'object' ? jsonConfig : {}),
+      ...(typeof jsonConfig === "object" ? jsonConfig : {}),
       ...(isElement(element) ? Manipulator.getDataAttributes(element) : {}),
-      ...(typeof config === 'object' ? config : {})
+      ...(typeof config === "object" ? config : {}),
     }
   }
 
@@ -52,7 +55,7 @@ class Config {
     for (const property of Object.keys(configTypes)) {
       const expectedTypes = configTypes[property]
       const value = config[property]
-      const valueType = isElement(value) ? 'element' : toType(value)
+      const valueType = isElement(value) ? "element" : toType(value)
 
       if (!new RegExp(expectedTypes).test(valueType)) {
         throw new TypeError(

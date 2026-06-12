@@ -56,8 +56,8 @@ export default function HeroForm({
   // If data is present, show the info card instead of the form
   if (baziData) {
     return (
-      <div className="relative flex w-full flex-col items-center justify-center overflow-hidden bg-[#FAFAFB] px-4 py-8 sm:px-6 lg:px-8">
-        <div className="relative z-10 mx-auto w-full max-w-[1400px]">
+      <div className="relative flex w-full flex-col items-center justify-center overflow-hidden bg-[#FAFAFB] py-8">
+        <div className="relative z-10 mx-auto w-full">
           <div className="group relative overflow-hidden rounded-[32px] border border-white/60 bg-white/40 p-8 shadow-[0_8px_32px_rgba(0,0,0,0.05)] backdrop-blur-[30px]">
             {/* Liquid Background Effects */}
             <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-gradient-to-br from-[#E94B4B]/20 to-[#F97316]/20 opacity-70 mix-blend-multiply blur-3xl transition-opacity duration-700 group-hover:opacity-100"></div>

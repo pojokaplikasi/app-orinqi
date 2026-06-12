@@ -4,7 +4,10 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  * --------------------------------------------------------------------------
  */
-
+import BaseComponent from "./base-component"
+import EventHandler from "./dom/event-handler"
+import Manipulator from "./dom/manipulator"
+import SelectorEngine from "./dom/selector-engine"
 import {
   defineJQueryPlugin,
   getElementFromSelector,
@@ -12,31 +15,27 @@ import {
   isRTL,
   isVisible,
   reflow,
-  triggerTransitionEnd
-} from './util/index'
-import EventHandler from './dom/event-handler'
-import Manipulator from './dom/manipulator'
-import SelectorEngine from './dom/selector-engine'
-import Swipe from './util/swipe'
-import BaseComponent from './base-component'
+  triggerTransitionEnd,
+} from "./util/index"
+import Swipe from "./util/swipe"
 
 /**
  * Constants
  */
 
-const NAME = 'carousel'
-const DATA_KEY = 'bs.carousel'
+const NAME = "carousel"
+const DATA_KEY = "bs.carousel"
 const EVENT_KEY = `.${DATA_KEY}`
-const DATA_API_KEY = '.data-api'
+const DATA_API_KEY = ".data-api"
 
-const ARROW_LEFT_KEY = 'ArrowLeft'
-const ARROW_RIGHT_KEY = 'ArrowRight'
+const ARROW_LEFT_KEY = "ArrowLeft"
+const ARROW_RIGHT_KEY = "ArrowRight"
 const TOUCHEVENT_COMPAT_WAIT = 500 // Time for mouse compat events to fire after touch
 
-const ORDER_NEXT = 'next'
-const ORDER_PREV = 'prev'
-const DIRECTION_LEFT = 'left'
-const DIRECTION_RIGHT = 'right'
+const ORDER_NEXT = "next"
+const ORDER_PREV = "prev"
+const DIRECTION_LEFT = "left"
+const DIRECTION_RIGHT = "right"
 
 const EVENT_SLIDE = `slide${EVENT_KEY}`
 const EVENT_SLID = `slid${EVENT_KEY}`
@@ -47,43 +46,43 @@ const EVENT_DRAG_START = `dragstart${EVENT_KEY}`
 const EVENT_LOAD_DATA_API = `load${EVENT_KEY}${DATA_API_KEY}`
 const EVENT_CLICK_DATA_API = `click${EVENT_KEY}${DATA_API_KEY}`
 
-const CLASS_NAME_CAROUSEL = 'carousel'
-const CLASS_NAME_ACTIVE = 'active'
-const CLASS_NAME_SLIDE = 'slide'
-const CLASS_NAME_END = 'carousel-item-end'
-const CLASS_NAME_START = 'carousel-item-start'
-const CLASS_NAME_NEXT = 'carousel-item-next'
-const CLASS_NAME_PREV = 'carousel-item-prev'
+const CLASS_NAME_CAROUSEL = "carousel"
+const CLASS_NAME_ACTIVE = "active"
+const CLASS_NAME_SLIDE = "slide"
+const CLASS_NAME_END = "carousel-item-end"
+const CLASS_NAME_START = "carousel-item-start"
+const CLASS_NAME_NEXT = "carousel-item-next"
+const CLASS_NAME_PREV = "carousel-item-prev"
 
-const SELECTOR_ACTIVE = '.active'
-const SELECTOR_ITEM = '.carousel-item'
+const SELECTOR_ACTIVE = ".active"
+const SELECTOR_ITEM = ".carousel-item"
 const SELECTOR_ACTIVE_ITEM = SELECTOR_ACTIVE + SELECTOR_ITEM
-const SELECTOR_ITEM_IMG = '.carousel-item img'
-const SELECTOR_INDICATORS = '.carousel-indicators'
-const SELECTOR_DATA_SLIDE = '[data-bs-slide], [data-bs-slide-to]'
+const SELECTOR_ITEM_IMG = ".carousel-item img"
+const SELECTOR_INDICATORS = ".carousel-indicators"
+const SELECTOR_DATA_SLIDE = "[data-bs-slide], [data-bs-slide-to]"
 const SELECTOR_DATA_RIDE = '[data-bs-ride="carousel"]'
 
 const KEY_TO_DIRECTION = {
   [ARROW_LEFT_KEY]: DIRECTION_RIGHT,
-  [ARROW_RIGHT_KEY]: DIRECTION_LEFT
+  [ARROW_RIGHT_KEY]: DIRECTION_LEFT,
 }
 
 const Default = {
   interval: 5000,
   keyboard: true,
-  pause: 'hover',
+  pause: "hover",
   ride: false,
   touch: true,
-  wrap: true
+  wrap: true,
 }
 
 const DefaultType = {
-  interval: '(number|boolean)', // TODO:v6 remove boolean support
-  keyboard: 'boolean',
-  pause: '(string|boolean)',
-  ride: '(boolean|string)',
-  touch: 'boolean',
-  wrap: 'boolean'
+  interval: "(number|boolean)", // TODO:v6 remove boolean support
+  keyboard: "boolean",
+  pause: "(string|boolean)",
+  ride: "(boolean|string)",
+  touch: "boolean",
+  wrap: "boolean",
 }
 
 /**
@@ -100,7 +99,10 @@ class Carousel extends BaseComponent {
     this.touchTimeout = null
     this._swipeHelper = null
 
-    this._indicatorsElement = SelectorEngine.findOne(SELECTOR_INDICATORS, this._element)
+    this._indicatorsElement = SelectorEngine.findOne(
+      SELECTOR_INDICATORS,
+      this._element
+    )
     this._addEventListeners()
 
     if (this._config.ride === CLASS_NAME_CAROUSEL) {
@@ -151,7 +153,10 @@ class Carousel extends BaseComponent {
     this._clearInterval()
     this._updateInterval()
 
-    this._interval = setInterval(() => this.nextWhenVisible(), this._config.interval)
+    this._interval = setInterval(
+      () => this.nextWhenVisible(),
+      this._config.interval
+    )
   }
 
   _maybeEnableCycle() {
@@ -204,12 +209,16 @@ class Carousel extends BaseComponent {
 
   _addEventListeners() {
     if (this._config.keyboard) {
-      EventHandler.on(this._element, EVENT_KEYDOWN, event => this._keydown(event))
+      EventHandler.on(this._element, EVENT_KEYDOWN, (event) =>
+        this._keydown(event)
+      )
     }
 
-    if (this._config.pause === 'hover') {
+    if (this._config.pause === "hover") {
       EventHandler.on(this._element, EVENT_MOUSEENTER, () => this.pause())
-      EventHandler.on(this._element, EVENT_MOUSELEAVE, () => this._maybeEnableCycle())
+      EventHandler.on(this._element, EVENT_MOUSELEAVE, () =>
+        this._maybeEnableCycle()
+      )
     }
 
     if (this._config.touch && Swipe.isSupported()) {
@@ -219,11 +228,11 @@ class Carousel extends BaseComponent {
 
   _addTouchEventListeners() {
     for (const img of SelectorEngine.find(SELECTOR_ITEM_IMG, this._element)) {
-      EventHandler.on(img, EVENT_DRAG_START, event => event.preventDefault())
+      EventHandler.on(img, EVENT_DRAG_START, (event) => event.preventDefault())
     }
 
     const endCallBack = () => {
-      if (this._config.pause !== 'hover') {
+      if (this._config.pause !== "hover") {
         return
       }
 
@@ -240,13 +249,16 @@ class Carousel extends BaseComponent {
         clearTimeout(this.touchTimeout)
       }
 
-      this.touchTimeout = setTimeout(() => this._maybeEnableCycle(), TOUCHEVENT_COMPAT_WAIT + this._config.interval)
+      this.touchTimeout = setTimeout(
+        () => this._maybeEnableCycle(),
+        TOUCHEVENT_COMPAT_WAIT + this._config.interval
+      )
     }
 
     const swipeConfig = {
       leftCallback: () => this._slide(this._directionToOrder(DIRECTION_LEFT)),
       rightCallback: () => this._slide(this._directionToOrder(DIRECTION_RIGHT)),
-      endCallback: endCallBack
+      endCallback: endCallBack,
     }
 
     this._swipeHelper = new Swipe(this._element, swipeConfig)
@@ -273,16 +285,22 @@ class Carousel extends BaseComponent {
       return
     }
 
-    const activeIndicator = SelectorEngine.findOne(SELECTOR_ACTIVE, this._indicatorsElement)
+    const activeIndicator = SelectorEngine.findOne(
+      SELECTOR_ACTIVE,
+      this._indicatorsElement
+    )
 
     activeIndicator.classList.remove(CLASS_NAME_ACTIVE)
-    activeIndicator.removeAttribute('aria-current')
+    activeIndicator.removeAttribute("aria-current")
 
-    const newActiveIndicator = SelectorEngine.findOne(`[data-bs-slide-to="${index}"]`, this._indicatorsElement)
+    const newActiveIndicator = SelectorEngine.findOne(
+      `[data-bs-slide-to="${index}"]`,
+      this._indicatorsElement
+    )
 
     if (newActiveIndicator) {
       newActiveIndicator.classList.add(CLASS_NAME_ACTIVE)
-      newActiveIndicator.setAttribute('aria-current', 'true')
+      newActiveIndicator.setAttribute("aria-current", "true")
     }
   }
 
@@ -293,7 +311,10 @@ class Carousel extends BaseComponent {
       return
     }
 
-    const elementInterval = Number.parseInt(element.getAttribute('data-bs-interval'), 10)
+    const elementInterval = Number.parseInt(
+      element.getAttribute("data-bs-interval"),
+      10
+    )
 
     this._config.interval = elementInterval || this._config.defaultInterval
   }
@@ -305,7 +326,14 @@ class Carousel extends BaseComponent {
 
     const activeElement = this._getActive()
     const isNext = order === ORDER_NEXT
-    const nextElement = element || getNextActiveElement(this._getItems(), activeElement, isNext, this._config.wrap)
+    const nextElement =
+      element ||
+      getNextActiveElement(
+        this._getItems(),
+        activeElement,
+        isNext,
+        this._config.wrap
+      )
 
     if (nextElement === activeElement) {
       return
@@ -313,12 +341,12 @@ class Carousel extends BaseComponent {
 
     const nextElementIndex = this._getItemIndex(nextElement)
 
-    const triggerEvent = eventName => {
+    const triggerEvent = (eventName) => {
       return EventHandler.trigger(this._element, eventName, {
         relatedTarget: nextElement,
         direction: this._orderToDirection(order),
         from: this._getItemIndex(activeElement),
-        to: nextElementIndex
+        to: nextElementIndex,
       })
     }
 
@@ -356,7 +384,11 @@ class Carousel extends BaseComponent {
       nextElement.classList.remove(directionalClassName, orderClassName)
       nextElement.classList.add(CLASS_NAME_ACTIVE)
 
-      activeElement.classList.remove(CLASS_NAME_ACTIVE, orderClassName, directionalClassName)
+      activeElement.classList.remove(
+        CLASS_NAME_ACTIVE,
+        orderClassName,
+        directionalClassName
+      )
 
       this._isSliding = false
 
@@ -410,13 +442,17 @@ class Carousel extends BaseComponent {
     return this.each(function () {
       const data = Carousel.getOrCreateInstance(this, config)
 
-      if (typeof config === 'number') {
+      if (typeof config === "number") {
         data.to(config)
         return
       }
 
-      if (typeof config === 'string') {
-        if (data[config] === undefined || config.startsWith('_') || config === 'constructor') {
+      if (typeof config === "string") {
+        if (
+          data[config] === undefined ||
+          config.startsWith("_") ||
+          config === "constructor"
+        ) {
           throw new TypeError(`No method named "${config}"`)
         }
 
@@ -430,33 +466,38 @@ class Carousel extends BaseComponent {
  * Data API implementation
  */
 
-EventHandler.on(document, EVENT_CLICK_DATA_API, SELECTOR_DATA_SLIDE, function (event) {
-  const target = getElementFromSelector(this)
+EventHandler.on(
+  document,
+  EVENT_CLICK_DATA_API,
+  SELECTOR_DATA_SLIDE,
+  function (event) {
+    const target = getElementFromSelector(this)
 
-  if (!target || !target.classList.contains(CLASS_NAME_CAROUSEL)) {
-    return
-  }
+    if (!target || !target.classList.contains(CLASS_NAME_CAROUSEL)) {
+      return
+    }
 
-  event.preventDefault()
+    event.preventDefault()
 
-  const carousel = Carousel.getOrCreateInstance(target)
-  const slideIndex = this.getAttribute('data-bs-slide-to')
+    const carousel = Carousel.getOrCreateInstance(target)
+    const slideIndex = this.getAttribute("data-bs-slide-to")
 
-  if (slideIndex) {
-    carousel.to(slideIndex)
+    if (slideIndex) {
+      carousel.to(slideIndex)
+      carousel._maybeEnableCycle()
+      return
+    }
+
+    if (Manipulator.getDataAttribute(this, "slide") === "next") {
+      carousel.next()
+      carousel._maybeEnableCycle()
+      return
+    }
+
+    carousel.prev()
     carousel._maybeEnableCycle()
-    return
   }
-
-  if (Manipulator.getDataAttribute(this, 'slide') === 'next') {
-    carousel.next()
-    carousel._maybeEnableCycle()
-    return
-  }
-
-  carousel.prev()
-  carousel._maybeEnableCycle()
-})
+)
 
 EventHandler.on(window, EVENT_LOAD_DATA_API, () => {
   const carousels = SelectorEngine.find(SELECTOR_DATA_RIDE)

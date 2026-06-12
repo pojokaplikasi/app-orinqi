@@ -4,35 +4,35 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  * --------------------------------------------------------------------------
  */
-
-import { defineJQueryPlugin } from './util/index'
-import Tooltip from './tooltip'
+import Tooltip from "./tooltip"
+import { defineJQueryPlugin } from "./util/index"
 
 /**
  * Constants
  */
 
-const NAME = 'popover'
+const NAME = "popover"
 
-const SELECTOR_TITLE = '.popover-header'
-const SELECTOR_CONTENT = '.popover-body'
+const SELECTOR_TITLE = ".popover-header"
+const SELECTOR_CONTENT = ".popover-body"
 
 const Default = {
   ...Tooltip.Default,
-  content: '',
+  content: "",
   offset: [0, 8],
-  placement: 'right',
-  template: '<div class="popover" role="tooltip">' +
+  placement: "right",
+  template:
+    '<div class="popover" role="tooltip">' +
     '<div class="popover-arrow"></div>' +
     '<h3 class="popover-header"></h3>' +
     '<div class="popover-body"></div>' +
-    '</div>',
-  trigger: 'click'
+    "</div>",
+  trigger: "click",
 }
 
 const DefaultType = {
   ...Tooltip.DefaultType,
-  content: '(null|string|element|function)'
+  content: "(null|string|element|function)",
 }
 
 /**
@@ -62,7 +62,7 @@ class Popover extends Tooltip {
   _getContentForTemplate() {
     return {
       [SELECTOR_TITLE]: this._getTitle(),
-      [SELECTOR_CONTENT]: this._getContent()
+      [SELECTOR_CONTENT]: this._getContent(),
     }
   }
 
@@ -75,11 +75,11 @@ class Popover extends Tooltip {
     return this.each(function () {
       const data = Popover.getOrCreateInstance(this, config)
 
-      if (typeof config !== 'string') {
+      if (typeof config !== "string") {
         return
       }
 
-      if (typeof data[config] === 'undefined') {
+      if (typeof data[config] === "undefined") {
         throw new TypeError(`No method named "${config}"`)
       }
 

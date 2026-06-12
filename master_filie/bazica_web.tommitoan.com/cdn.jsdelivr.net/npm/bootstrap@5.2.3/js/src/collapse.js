@@ -4,26 +4,25 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  * --------------------------------------------------------------------------
  */
-
+import BaseComponent from "./base-component"
+import EventHandler from "./dom/event-handler"
+import SelectorEngine from "./dom/selector-engine"
 import {
   defineJQueryPlugin,
   getElement,
   getElementFromSelector,
   getSelectorFromElement,
-  reflow
-} from './util/index'
-import EventHandler from './dom/event-handler'
-import SelectorEngine from './dom/selector-engine'
-import BaseComponent from './base-component'
+  reflow,
+} from "./util/index"
 
 /**
  * Constants
  */
 
-const NAME = 'collapse'
-const DATA_KEY = 'bs.collapse'
+const NAME = "collapse"
+const DATA_KEY = "bs.collapse"
 const EVENT_KEY = `.${DATA_KEY}`
-const DATA_API_KEY = '.data-api'
+const DATA_API_KEY = ".data-api"
 
 const EVENT_SHOW = `show${EVENT_KEY}`
 const EVENT_SHOWN = `shown${EVENT_KEY}`
@@ -31,27 +30,27 @@ const EVENT_HIDE = `hide${EVENT_KEY}`
 const EVENT_HIDDEN = `hidden${EVENT_KEY}`
 const EVENT_CLICK_DATA_API = `click${EVENT_KEY}${DATA_API_KEY}`
 
-const CLASS_NAME_SHOW = 'show'
-const CLASS_NAME_COLLAPSE = 'collapse'
-const CLASS_NAME_COLLAPSING = 'collapsing'
-const CLASS_NAME_COLLAPSED = 'collapsed'
+const CLASS_NAME_SHOW = "show"
+const CLASS_NAME_COLLAPSE = "collapse"
+const CLASS_NAME_COLLAPSING = "collapsing"
+const CLASS_NAME_COLLAPSED = "collapsed"
 const CLASS_NAME_DEEPER_CHILDREN = `:scope .${CLASS_NAME_COLLAPSE} .${CLASS_NAME_COLLAPSE}`
-const CLASS_NAME_HORIZONTAL = 'collapse-horizontal'
+const CLASS_NAME_HORIZONTAL = "collapse-horizontal"
 
-const WIDTH = 'width'
-const HEIGHT = 'height'
+const WIDTH = "width"
+const HEIGHT = "height"
 
-const SELECTOR_ACTIVES = '.collapse.show, .collapse.collapsing'
+const SELECTOR_ACTIVES = ".collapse.show, .collapse.collapsing"
 const SELECTOR_DATA_TOGGLE = '[data-bs-toggle="collapse"]'
 
 const Default = {
   parent: null,
-  toggle: true
+  toggle: true,
 }
 
 const DefaultType = {
-  parent: '(null|element)',
-  toggle: 'boolean'
+  parent: "(null|element)",
+  toggle: "boolean",
 }
 
 /**
@@ -69,8 +68,9 @@ class Collapse extends BaseComponent {
 
     for (const elem of toggleList) {
       const selector = getSelectorFromElement(elem)
-      const filterElement = SelectorEngine.find(selector)
-        .filter(foundElement => foundElement === this._element)
+      const filterElement = SelectorEngine.find(selector).filter(
+        (foundElement) => foundElement === this._element
+      )
 
       if (selector !== null && filterElement.length) {
         this._triggerArray.push(elem)
@@ -120,8 +120,10 @@ class Collapse extends BaseComponent {
     // find active children
     if (this._config.parent) {
       activeChildren = this._getFirstLevelChildren(SELECTOR_ACTIVES)
-        .filter(element => element !== this._element)
-        .map(element => Collapse.getOrCreateInstance(element, { toggle: false }))
+        .filter((element) => element !== this._element)
+        .map((element) =>
+          Collapse.getOrCreateInstance(element, { toggle: false })
+        )
     }
 
     if (activeChildren.length && activeChildren[0]._isTransitioning) {
@@ -153,7 +155,7 @@ class Collapse extends BaseComponent {
       this._element.classList.remove(CLASS_NAME_COLLAPSING)
       this._element.classList.add(CLASS_NAME_COLLAPSE, CLASS_NAME_SHOW)
 
-      this._element.style[dimension] = ''
+      this._element.style[dimension] = ""
 
       EventHandler.trigger(this._element, EVENT_SHOWN)
     }
@@ -177,7 +179,8 @@ class Collapse extends BaseComponent {
 
     const dimension = this._getDimension()
 
-    this._element.style[dimension] = `${this._element.getBoundingClientRect()[dimension]}px`
+    this._element.style[dimension] =
+      `${this._element.getBoundingClientRect()[dimension]}px`
 
     reflow(this._element)
 
@@ -201,7 +204,7 @@ class Collapse extends BaseComponent {
       EventHandler.trigger(this._element, EVENT_HIDDEN)
     }
 
-    this._element.style[dimension] = ''
+    this._element.style[dimension] = ""
 
     this._queueCallback(complete, this._element, true)
   }
@@ -218,7 +221,9 @@ class Collapse extends BaseComponent {
   }
 
   _getDimension() {
-    return this._element.classList.contains(CLASS_NAME_HORIZONTAL) ? WIDTH : HEIGHT
+    return this._element.classList.contains(CLASS_NAME_HORIZONTAL)
+      ? WIDTH
+      : HEIGHT
   }
 
   _initializeChildren() {
@@ -238,9 +243,14 @@ class Collapse extends BaseComponent {
   }
 
   _getFirstLevelChildren(selector) {
-    const children = SelectorEngine.find(CLASS_NAME_DEEPER_CHILDREN, this._config.parent)
+    const children = SelectorEngine.find(
+      CLASS_NAME_DEEPER_CHILDREN,
+      this._config.parent
+    )
     // remove children if greater depth
-    return SelectorEngine.find(selector, this._config.parent).filter(element => !children.includes(element))
+    return SelectorEngine.find(selector, this._config.parent).filter(
+      (element) => !children.includes(element)
+    )
   }
 
   _addAriaAndCollapsedClass(triggerArray, isOpen) {
@@ -250,22 +260,22 @@ class Collapse extends BaseComponent {
 
     for (const element of triggerArray) {
       element.classList.toggle(CLASS_NAME_COLLAPSED, !isOpen)
-      element.setAttribute('aria-expanded', isOpen)
+      element.setAttribute("aria-expanded", isOpen)
     }
   }
 
   // Static
   static jQueryInterface(config) {
     const _config = {}
-    if (typeof config === 'string' && /show|hide/.test(config)) {
+    if (typeof config === "string" && /show|hide/.test(config)) {
       _config.toggle = false
     }
 
     return this.each(function () {
       const data = Collapse.getOrCreateInstance(this, _config)
 
-      if (typeof config === 'string') {
-        if (typeof data[config] === 'undefined') {
+      if (typeof config === "string") {
+        if (typeof data[config] === "undefined") {
           throw new TypeError(`No method named "${config}"`)
         }
 
@@ -279,19 +289,27 @@ class Collapse extends BaseComponent {
  * Data API implementation
  */
 
-EventHandler.on(document, EVENT_CLICK_DATA_API, SELECTOR_DATA_TOGGLE, function (event) {
-  // preventDefault only for <a> elements (which change the URL) not inside the collapsible element
-  if (event.target.tagName === 'A' || (event.delegateTarget && event.delegateTarget.tagName === 'A')) {
-    event.preventDefault()
-  }
+EventHandler.on(
+  document,
+  EVENT_CLICK_DATA_API,
+  SELECTOR_DATA_TOGGLE,
+  function (event) {
+    // preventDefault only for <a> elements (which change the URL) not inside the collapsible element
+    if (
+      event.target.tagName === "A" ||
+      (event.delegateTarget && event.delegateTarget.tagName === "A")
+    ) {
+      event.preventDefault()
+    }
 
-  const selector = getSelectorFromElement(this)
-  const selectorElements = SelectorEngine.find(selector)
+    const selector = getSelectorFromElement(this)
+    const selectorElements = SelectorEngine.find(selector)
 
-  for (const element of selectorElements) {
-    Collapse.getOrCreateInstance(element, { toggle: false }).toggle()
+    for (const element of selectorElements) {
+      Collapse.getOrCreateInstance(element, { toggle: false }).toggle()
+    }
   }
-})
+)
 
 /**
  * jQuery

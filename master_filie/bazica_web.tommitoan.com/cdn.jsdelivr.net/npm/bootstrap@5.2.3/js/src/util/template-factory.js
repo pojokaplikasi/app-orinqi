@@ -4,41 +4,40 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  * --------------------------------------------------------------------------
  */
-
-import { DefaultAllowlist, sanitizeHtml } from './sanitizer'
-import { getElement, isElement } from '../util/index'
-import SelectorEngine from '../dom/selector-engine'
-import Config from './config'
+import SelectorEngine from "../dom/selector-engine"
+import { getElement, isElement } from "../util/index"
+import Config from "./config"
+import { DefaultAllowlist, sanitizeHtml } from "./sanitizer"
 
 /**
  * Constants
  */
 
-const NAME = 'TemplateFactory'
+const NAME = "TemplateFactory"
 
 const Default = {
   allowList: DefaultAllowlist,
   content: {}, // { selector : text ,  selector2 : text2 , }
-  extraClass: '',
+  extraClass: "",
   html: false,
   sanitize: true,
   sanitizeFn: null,
-  template: '<div></div>'
+  template: "<div></div>",
 }
 
 const DefaultType = {
-  allowList: 'object',
-  content: 'object',
-  extraClass: '(string|function)',
-  html: 'boolean',
-  sanitize: 'boolean',
-  sanitizeFn: '(null|function)',
-  template: 'string'
+  allowList: "object",
+  content: "object",
+  extraClass: "(string|function)",
+  html: "boolean",
+  sanitize: "boolean",
+  sanitizeFn: "(null|function)",
+  template: "string",
 }
 
 const DefaultContentType = {
-  entry: '(string|element|function|null)',
-  selector: '(string|element)'
+  entry: "(string|element|function|null)",
+  selector: "(string|element)",
 }
 
 /**
@@ -67,7 +66,7 @@ class TemplateFactory extends Config {
   // Public
   getContent() {
     return Object.values(this._config.content)
-      .map(config => this._resolvePossibleFunction(config))
+      .map((config) => this._resolvePossibleFunction(config))
       .filter(Boolean)
   }
 
@@ -82,7 +81,7 @@ class TemplateFactory extends Config {
   }
 
   toHtml() {
-    const templateWrapper = document.createElement('div')
+    const templateWrapper = document.createElement("div")
     templateWrapper.innerHTML = this._maybeSanitize(this._config.template)
 
     for (const [selector, text] of Object.entries(this._config.content)) {
@@ -93,7 +92,7 @@ class TemplateFactory extends Config {
     const extraClass = this._resolvePossibleFunction(this._config.extraClass)
 
     if (extraClass) {
-      template.classList.add(...extraClass.split(' '))
+      template.classList.add(...extraClass.split(" "))
     }
 
     return template
@@ -139,16 +138,18 @@ class TemplateFactory extends Config {
   }
 
   _maybeSanitize(arg) {
-    return this._config.sanitize ? sanitizeHtml(arg, this._config.allowList, this._config.sanitizeFn) : arg
+    return this._config.sanitize
+      ? sanitizeHtml(arg, this._config.allowList, this._config.sanitizeFn)
+      : arg
   }
 
   _resolvePossibleFunction(arg) {
-    return typeof arg === 'function' ? arg(this) : arg
+    return typeof arg === "function" ? arg(this) : arg
   }
 
   _putElementInTemplate(element, templateElement) {
     if (this._config.html) {
-      templateElement.innerHTML = ''
+      templateElement.innerHTML = ""
       templateElement.append(element)
       return
     }

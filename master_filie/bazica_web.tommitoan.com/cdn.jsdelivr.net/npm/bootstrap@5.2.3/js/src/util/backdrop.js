@@ -4,34 +4,33 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  * --------------------------------------------------------------------------
  */
-
-import EventHandler from '../dom/event-handler'
-import { execute, executeAfterTransition, getElement, reflow } from './index'
-import Config from './config'
+import EventHandler from "../dom/event-handler"
+import Config from "./config"
+import { execute, executeAfterTransition, getElement, reflow } from "./index"
 
 /**
  * Constants
  */
 
-const NAME = 'backdrop'
-const CLASS_NAME_FADE = 'fade'
-const CLASS_NAME_SHOW = 'show'
+const NAME = "backdrop"
+const CLASS_NAME_FADE = "fade"
+const CLASS_NAME_SHOW = "show"
 const EVENT_MOUSEDOWN = `mousedown.bs.${NAME}`
 
 const Default = {
-  className: 'modal-backdrop',
+  className: "modal-backdrop",
   clickCallback: null,
   isAnimated: false,
   isVisible: true, // if false, we use the backdrop helper without adding any element to the dom
-  rootElement: 'body' // give the choice to place backdrop under different elements
+  rootElement: "body", // give the choice to place backdrop under different elements
 }
 
 const DefaultType = {
-  className: 'string',
-  clickCallback: '(function|null)',
-  isAnimated: 'boolean',
-  isVisible: 'boolean',
-  rootElement: '(element|string)'
+  className: "string",
+  clickCallback: "(function|null)",
+  isAnimated: "boolean",
+  isVisible: "boolean",
+  rootElement: "(element|string)",
 }
 
 /**
@@ -108,7 +107,7 @@ class Backdrop extends Config {
   // Private
   _getElement() {
     if (!this._element) {
-      const backdrop = document.createElement('div')
+      const backdrop = document.createElement("div")
       backdrop.className = this._config.className
       if (this._config.isAnimated) {
         backdrop.classList.add(CLASS_NAME_FADE)
@@ -142,7 +141,11 @@ class Backdrop extends Config {
   }
 
   _emulateAnimation(callback) {
-    executeAfterTransition(callback, this._getElement(), this._config.isAnimated)
+    executeAfterTransition(
+      callback,
+      this._getElement(),
+      this._config.isAnimated
+    )
   }
 }
 
