@@ -392,7 +392,7 @@ export default function BaziCalculator() {
 
                   <div
                     ref={scrollContainerRef}
-                    className="flex w-full scrollbar-thin flex-row flex-nowrap items-start gap-4 overflow-x-auto pb-6"
+                    className="flex w-full scrollbar-thin flex-row flex-nowrap items-stretch gap-4 overflow-x-auto pb-6"
                   >
                     {/* Natal Chart */}
                     {!unknownTime ? (
@@ -413,8 +413,8 @@ export default function BaziCalculator() {
                         }
                       />
                     ) : (
-                      <div className="relative box-border flex h-auto w-[150px] flex-none flex-col gap-3 rounded-[20px] border border-t-[4px] border-border border-t-primary bg-card/70 p-4 text-center text-foreground shadow-sm backdrop-blur-[20px] transition-all duration-200 md:w-[180px] lg:w-[200px]">
-                        <div className="relative flex w-full items-start justify-between">
+                      <div className="relative box-border flex h-full min-h-[450px] w-[150px] flex-none flex-col gap-3 rounded-[20px] border border-t-[4px] border-border border-t-primary bg-card/70 p-4 text-center text-foreground shadow-sm backdrop-blur-[20px] transition-all duration-200 md:w-[180px] lg:w-[200px]">
+                        <div className="relative flex w-full items-start justify-between min-h-[40px]">
                           <div className="flex flex-col items-start text-left">
                             <span className="text-[13px] leading-tight font-semibold text-foreground">
                               Hour Pillar
@@ -507,7 +507,7 @@ export default function BaziCalculator() {
 
                     {/* Current Transits */}
                     <Pillar
-                      title="Current Luck Cycle"
+                      title="Current Cycle"
                       pillarData={currentPillars?.luck}
                       isCurrent
                       luckyStars={luckyStars}

@@ -12,16 +12,16 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
   const tenGodsStems = tenGodsData.stems
 
   const tenGodsChinese: Record<string, string> = {
-    Friend: "比肩",
-    "Rob Wealth": "劫财",
-    "Eating God": "食神",
-    "Hurting Officer": "伤官",
-    "Direct Wealth": "正财",
-    "Indirect Wealth": "偏财",
-    "Direct Officer": "正官",
-    "Seven Killings": "七杀",
-    "Direct Resource": "正印",
-    "Indirect Resource": "偏印",
+    Friend: "Bi Jian 比肩",
+    "Rob Wealth": "Jie Cai 劫财",
+    "Eating God": "Shi Shen 食神",
+    "Hurting Officer": "Shang Guan 伤官",
+    "Direct Wealth": "Zheng Cai 正财",
+    "Indirect Wealth": "Pian Cai 偏财",
+    "Direct Officer": "Zheng Guan 正官",
+    "Seven Killings": "Qi Sha 七杀",
+    "Direct Resource": "Zheng Yin 正印",
+    "Indirect Resource": "Pian Yin 偏印",
   }
 
   const tenGodsColors: Record<string, string> = {
@@ -69,9 +69,6 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
         const annualPercent =
           totalAnnual > 0 ? (annualPoints / totalAnnual) * 100 : 0
 
-        // Only show gods that have some presence
-        if (natalPercent === 0 && annualPercent === 0) return null
-
         return (
           <div
             key={godName}
@@ -87,7 +84,7 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
                 color: color,
               }}
             >
-              {allStems || chineseChar[0]}
+              {allStems || chineseChar.split(" ").pop()?.[0] || "?"}
             </div>
 
             <div className="flex flex-1 flex-col">
@@ -96,7 +93,7 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
                   {godName}
                 </span>
                 <span className="text-[13px] text-muted-foreground">
-                  {chineseChar}
+                  ({chineseChar})
                 </span>
               </div>
 

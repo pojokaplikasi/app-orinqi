@@ -10,6 +10,30 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 
+const ELEMENT_COLORS: Record<string, string> = {
+  Wood: "#28a745",
+  Fire: "#dc3545",
+  Earth: "#ffc107",
+  Metal: "#6c757d",
+  Water: "#007bff",
+}
+
+const ELEMENT_WORDS: Record<string, string> = {
+  Wood: "Growth",
+  Fire: "Passion",
+  Earth: "Stability",
+  Metal: "Structure",
+  Water: "Wisdom",
+}
+
+const ELEMENT_ICONS: Record<string, string> = {
+  Wood: "🌳",
+  Fire: "🔥",
+  Earth: "🌍",
+  Metal: "⚙️",
+  Water: "💧",
+}
+
 interface ElementStructureProps {
   elementData: any
 }
@@ -26,11 +50,14 @@ export default function ElementStructure({
     (showTicks: boolean) => {
       if (!elementData) return null
 
-      const labels = ["Wood", "Fire", "Earth", "Metal", "Water"]
-      const natalData = labels.map((elem) =>
+      const baseLabels = ["Wood", "Fire", "Earth", "Metal", "Water"]
+      const labels = baseLabels.map((elem) => [elem, ELEMENT_WORDS[elem]])
+      const labelColors = baseLabels.map((elem) => ELEMENT_COLORS[elem])
+
+      const natalData = baseLabels.map((elem) =>
         parseFloat(elementData.natal[elem])
       )
-      const annualData = labels.map((elem) =>
+      const annualData = baseLabels.map((elem) =>
         parseFloat(elementData.annual[elem])
       )
 
@@ -80,10 +107,13 @@ export default function ElementStructure({
               angleLines: { color: "rgba(0, 0, 0, 0.15)" },
               pointLabels: {
                 font: {
-                  size: showTicks ? 18 : 16,
+                  size: showTicks ? 14 : 12,
                   weight: "bold" as const,
                 },
-                color: "#2c3e50",
+                color: "#ffffff",
+                backdropColor: (context: any) => labelColors[context.index],
+                backdropPadding: { top: 4, bottom: 4, left: 8, right: 8 },
+                borderRadius: 6,
               },
             },
           },
@@ -104,6 +134,10 @@ export default function ElementStructure({
               padding: 12,
               cornerRadius: 8,
               callbacks: {
+                title: function (context: any) {
+                  const label = context[0].label || ""
+                  return Array.isArray(label) ? label[0] : label.split(',')[0]
+                },
                 label: function (context: any) {
                   return context.dataset.label + ": " + context.parsed.r + "%"
                 },
@@ -171,22 +205,6 @@ export default function ElementStructure({
 
   if (!elementData) return null
 
-  const elementColors: Record<string, string> = {
-    Wood: "#28a745",
-    Fire: "#dc3545",
-    Earth: "#ffc107",
-    Metal: "#6c757d",
-    Water: "#007bff",
-  }
-
-  const elementIcons: Record<string, string> = {
-    Wood: "🌳",
-    Fire: "🔥",
-    Earth: "🌍",
-    Metal: "⚙️",
-    Water: "💧",
-  }
-
   return (
     <div className="flex w-full flex-col items-center">
       {/* Chart Container (Clickable) */}
@@ -238,8 +256,8 @@ export default function ElementStructure({
         {Object.keys(elementData.natal).map((elem) => {
           const natalPercent = elementData.natal[elem]
           const annualPercent = elementData.annual[elem]
-          const color = elementColors[elem]
-          const icon = elementIcons[elem]
+          const color = ELEMENT_COLORS[elem]
+          const icon = ELEMENT_ICONS[elem]
 
           return (
             <div
@@ -258,12 +276,15 @@ export default function ElementStructure({
                 {icon}
               </div>
 
-              <div className="flex w-full flex-col">
+              <div className="flex w-full flex-col items-center">
                 <div
-                  className="mb-1 text-[14px] font-bold tracking-wide uppercase"
-                  style={{ color }}
+                  className="mb-1 rounded-full px-3 py-0.5 text-[12px] font-bold tracking-wide text-white uppercase shadow-sm"
+                  style={{ backgroundColor: color }}
                 >
                   {elem}
+                </div>
+                <div className="mb-2 text-[11px] italic text-muted-foreground">
+                  {ELEMENT_WORDS[elem]}
                 </div>
 
                 <div className="flex items-center justify-center gap-2">

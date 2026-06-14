@@ -29,8 +29,25 @@ export default function CompactPillarCard({
   const hs = pillarData.heavenly_stem
   const eb = pillarData.earthly_branch
 
-  const hsElement = hs?.element || "Wood"
-  const ebElement = eb?.element || "Wood"
+  const hsElement =
+    hs?.element || (hs?.name ? hs.name.split(" ")[1] : "Wood")
+
+  const BRANCH_ASSOCIATIONS: Record<string, string> = {
+    Tiger: "Wood",
+    Rabbit: "Wood",
+    Snake: "Fire",
+    Horse: "Fire",
+    Monkey: "Metal",
+    Rooster: "Metal",
+    Pig: "Water",
+    Rat: "Water",
+    Dragon: "Earth",
+    Goat: "Earth",
+    Dog: "Earth",
+    Ox: "Earth",
+  }
+  const ebElement =
+    eb?.element || (eb?.name ? BRANCH_ASSOCIATIONS[eb.name] : "Wood") || "Wood"
 
   // Calculate 10 God abbreviation for heavenly stem (if dayMasterName provided)
   let hsTenGodAbbr = ""
