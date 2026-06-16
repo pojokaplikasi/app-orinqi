@@ -669,7 +669,10 @@ export function calculatePillars(birthTime: dayjs.Dayjs): any {
       GANZHI_COMBINATIONS[
         (yearStemIndex * 6 + Math.floor(yearBranchIndex / 2)) % 60
       ],
-    life_cycle: LIFE_CYCLES[(yearStemIndex + yearBranchIndex) % 12],
+    life_cycle: formatLifeCycleName(
+      HEAVENLY_STEMS[dayStemIndex].name,
+      EARTHLY_BRANCHES[yearBranchIndex].name
+    ),
   }
 
   const monthPillar = {
@@ -686,7 +689,10 @@ export function calculatePillars(birthTime: dayjs.Dayjs): any {
       GANZHI_COMBINATIONS[
         (monthStemIndex * 6 + Math.floor(monthBranchIndex / 2)) % 60
       ],
-    life_cycle: LIFE_CYCLES[(monthStemIndex + monthBranchIndex) % 12],
+    life_cycle: formatLifeCycleName(
+      HEAVENLY_STEMS[dayStemIndex].name,
+      EARTHLY_BRANCHES[monthBranchIndex].name
+    ),
   }
 
   const dayPillar = {
@@ -703,7 +709,10 @@ export function calculatePillars(birthTime: dayjs.Dayjs): any {
       GANZHI_COMBINATIONS[
         (dayStemIndex * 6 + Math.floor(dayBranchIndex / 2)) % 60
       ],
-    life_cycle: LIFE_CYCLES[(dayStemIndex + dayBranchIndex) % 12],
+    life_cycle: formatLifeCycleName(
+      HEAVENLY_STEMS[dayStemIndex].name,
+      EARTHLY_BRANCHES[dayBranchIndex].name
+    ),
   }
 
   const hourPillar = {
@@ -720,7 +729,10 @@ export function calculatePillars(birthTime: dayjs.Dayjs): any {
       GANZHI_COMBINATIONS[
         (hourStemIndex * 6 + Math.floor(hourBranchIndex / 2)) % 60
       ],
-    life_cycle: LIFE_CYCLES[(hourStemIndex + hourBranchIndex) % 12],
+    life_cycle: formatLifeCycleName(
+      HEAVENLY_STEMS[dayStemIndex].name,
+      EARTHLY_BRANCHES[hourBranchIndex].name
+    ),
   }
 
   return {

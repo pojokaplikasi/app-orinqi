@@ -111,7 +111,7 @@ export function calculateCurrentYearPillar(
         (yearStemIndex * 6 + Math.floor(yearBranchIndex / 2)) % 60
       ],
     life_cycle: formatLifeCycleName(
-      HEAVENLY_STEMS[yearStemIndex].name,
+      fourPillarsData.day_pillar.heavenly_stem.name,
       EARTHLY_BRANCHES[yearBranchIndex].name
     ),
   }
@@ -189,7 +189,7 @@ export function calculateCurrentMonthPillar(
         (monthStemIndex * 6 + Math.floor(monthBranchIndex / 2)) % 60
       ],
     life_cycle: formatLifeCycleName(
-      HEAVENLY_STEMS[monthStemIndex].name,
+      fourPillarsData.day_pillar.heavenly_stem.name,
       EARTHLY_BRANCHES[monthBranchIndex].name
     ),
   }
@@ -242,7 +242,7 @@ export function calculateCurrentDayPillar(
         (dayStemIndex * 6 + Math.floor(dayBranchIndex / 2)) % 60
       ],
     life_cycle: formatLifeCycleName(
-      HEAVENLY_STEMS[dayStemIndex].name,
+      fourPillarsData.day_pillar.heavenly_stem.name,
       EARTHLY_BRANCHES[dayBranchIndex].name
     ),
   }
@@ -280,7 +280,7 @@ export function calculateCurrentLuckPillar(
       activeLuckPillar.earthly_branch.name
     )
     const phrase12 = formatLifeCycleName(
-      activeLuckPillar.heavenly_stem.name,
+      fourPillarsData.day_pillar.heavenly_stem.name,
       activeLuckPillar.earthly_branch.name
     )
 
