@@ -306,7 +306,7 @@ export default function ElementStructure({ elementData }: ElementStructureProps)
       </div>
 
       {/* ── Element Cards ── */}
-      <div className="mt-2 grid w-full grid-cols-2 gap-2">
+      <div className="mt-2 grid w-full grid-cols-1 gap-2">
         {ELEMENT_ORDER.map((elem) => {
           const meta = ELEMENT_META[elem]
           const color = ELEMENT_COLORS[elem] ?? "#888"

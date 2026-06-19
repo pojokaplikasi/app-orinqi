@@ -171,7 +171,7 @@ export default function BaziCalculator() {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <div className="container mx-auto px-4">
         <div className="row justify-center">
-          <div className="col-md-10 mx-auto w-full max-w-[1400px]">
+          <div className="col-md-10 mx-auto w-full max-w-[1800px]">
             <HeroForm
               date={date}
               setDate={setDate}
@@ -195,7 +195,7 @@ export default function BaziCalculator() {
 
       <div className="container mx-auto mb-8 flex-1 px-4">
         <div className="row justify-center">
-          <div className="col-md-10 mx-auto w-full max-w-[1400px]">
+          <div className="col-md-10 mx-auto w-full max-w-[1800px]">
             {error && (
               <div className="mt-6 mb-6 rounded-lg border border-destructive/50 bg-destructive/10 px-4 py-3 text-destructive">
                 {error}
@@ -212,21 +212,9 @@ export default function BaziCalculator() {
                       Natal Chart &amp; Current Transits
                     </h3>
                   </div>
-                  <div className="mb-4 flex flex-col items-center justify-center opacity-50">
-                    <div className="flex w-full max-w-[300px] items-center justify-center gap-3">
-                      <div className="h-[1px] flex-1 bg-border"></div>
-                      <span className="text-[12px] font-medium whitespace-nowrap text-muted-foreground">
-                        ← Scroll to Explore →
-                      </span>
-                      <div className="h-[1px] flex-1 bg-border"></div>
-                    </div>
-                    <span className="mt-1 text-[11px] text-muted-foreground">
-                      Default view is centered on the current time pillars.
-                    </span>
-                  </div>
                   <div
                     ref={scrollContainerRef}
-                    className="flex w-full scrollbar-thin flex-row flex-nowrap items-stretch gap-4 overflow-x-auto pb-6 pt-1 px-1"
+                    className="grid w-full gap-3 pb-2 pt-1 px-1" style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr)) 2px repeat(4, minmax(0, 1fr))' }}
                   >
                     {!unknownTime ? (
                       <Pillar
@@ -241,7 +229,7 @@ export default function BaziCalculator() {
                         mode={mode}
                       />
                     ) : (
-                      <div className="relative box-border flex h-full min-h-[450px] w-[150px] flex-none flex-col gap-3 rounded-[20px] border border-t-[4px] border-border border-t-primary bg-card/70 p-4 text-center text-foreground shadow-sm backdrop-blur-[20px] transition-all duration-200 md:w-[180px] lg:w-[200px]">
+                      <div className="relative box-border flex h-full min-h-[420px] w-full flex-col gap-3 rounded-[18px] border border-white/20 bg-gradient-to-b from-card/80 to-card/40 p-3 pt-4 text-center text-foreground backdrop-blur-[24px] transition-all duration-200">
                         <div className="relative flex w-full items-start justify-between min-h-[40px]">
                           <div className="flex flex-col items-start text-left">
                             <span className="text-[13px] leading-tight font-semibold text-foreground">Hour Pillar</span>
@@ -300,7 +288,7 @@ export default function BaziCalculator() {
                       onToggleExpand={() => setExpandedPillarId(expandedPillarId === "natal-Y" ? null : "natal-Y")}
                       mode={mode}
                     />
-                    <div className="mx-2 w-[2px] flex-shrink-0 rounded-full bg-border"></div>
+                    <div className="self-stretch rounded-full bg-border"></div>
                     <Pillar
                       title="Current Cycle"
                       pillarData={currentPillars?.luck}

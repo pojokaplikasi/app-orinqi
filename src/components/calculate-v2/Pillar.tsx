@@ -214,7 +214,7 @@ export default function Pillar({
 
   // Base classes
   let pillarClass =
-    "flex-none w-[150px] md:w-[180px] lg:w-[200px] h-full min-h-[450px] p-5 pt-6 rounded-[24px] bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-[24px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.04)] text-foreground text-center box-border transition-all duration-300 relative flex flex-col gap-4"
+    "w-full h-full min-h-[420px] p-3 pt-4 rounded-[18px] bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-[24px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.04)] text-foreground text-center box-border transition-all duration-300 relative flex flex-col gap-2.5"
 
   if (isCurrent) {
     pillarClass += " ring-1 ring-orange-500/50 shadow-[0_8px_32px_rgba(249,115,22,0.1)]"
@@ -242,18 +242,18 @@ export default function Pillar({
   return (
     <div className={pillarClass} onClick={onClick}>
       {/* Header & Ten Gods Badge */}
-      <div className="relative flex w-full items-start justify-between mb-1 min-h-[40px]">
+      <div className="relative flex w-full items-start justify-between mb-0.5 min-h-[32px]">
         <div className="flex flex-col items-start text-left">
-          <span className="text-[14px] tracking-tight font-semibold text-foreground/90 line-clamp-2">
+          <span className="text-[12px] tracking-tight font-semibold text-foreground/90 line-clamp-2">
             {mainTitle}
           </span>
           {chineseTitle && (
-            <span className="text-[12px] font-medium text-muted-foreground/60 mt-0.5">
+            <span className="text-[10px] font-medium text-muted-foreground/60 mt-0.5">
               {chineseTitle}
             </span>
           )}
           {periodLabel && periodValue && (
-            <span className="mt-1.5 inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold tracking-wide text-primary">
+            <span className="mt-1 inline-flex items-center rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-primary">
               {periodValue}
             </span>
           )}
@@ -269,13 +269,13 @@ export default function Pillar({
       <div className="flex flex-col items-center justify-center relative group">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/5 dark:to-white/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         <strong
-          className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[56px] leading-none drop-shadow-sm transition-transform duration-300 group-hover:scale-105"
+          className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[42px] leading-none drop-shadow-sm transition-transform duration-300 group-hover:scale-105"
           style={{ color: ELEMENT_COLORS[hsElement] }}
         >
           {heavenly_stem?.character || "?"}
         </strong>
         <div
-          className="mt-2 text-[10px] font-bold tracking-[0.2em] uppercase opacity-80"
+          className="mt-1 text-[9px] font-bold tracking-[0.2em] uppercase opacity-80"
           style={{ color: ELEMENT_COLORS[hsElement] }}
         >
           {heavenly_stem?.name || "N/A"}
@@ -283,21 +283,21 @@ export default function Pillar({
       </div>
 
       {/* Separator */}
-      <div className="my-2 flex items-center justify-center w-full">
-        <div className="h-[1px] w-12 bg-gradient-to-r from-transparent via-border to-transparent"></div>
+      <div className="my-1 flex items-center justify-center w-full">
+        <div className="h-[1px] w-8 bg-gradient-to-r from-transparent via-border to-transparent"></div>
       </div>
 
       {/* Earthly Branch */}
       <div className="relative flex flex-col items-center justify-center group">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/5 dark:to-white/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         <strong
-          className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[52px] leading-none drop-shadow-sm transition-transform duration-300 group-hover:scale-105"
+          className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[38px] leading-none drop-shadow-sm transition-transform duration-300 group-hover:scale-105"
           style={{ color: ELEMENT_COLORS[ebElement] }}
         >
           {earthly_branch?.character || "?"}
         </strong>
         <div
-          className="mt-2 text-[10px] font-bold tracking-[0.2em] uppercase opacity-80"
+          className="mt-1 text-[9px] font-bold tracking-[0.2em] uppercase opacity-80"
           style={{ color: ELEMENT_COLORS[ebElement] }}
         >
           {earthly_branch?.name || "N/A"}
@@ -316,7 +316,7 @@ export default function Pillar({
       </div>
 
       {/* Hidden Stems (Mini Chips) */}
-      <div className="mt-2 flex w-full justify-center gap-1.5">
+      <div className="mt-1 flex w-full justify-center gap-1">
         {[
           hidden_stems?.residual_qi,
           hidden_stems?.main_qi,
@@ -324,14 +324,14 @@ export default function Pillar({
         ].map((qi, idx) => {
           if (!qi) return null
           return (
-            <div key={idx} className="flex flex-col items-center justify-center rounded-[14px] bg-black/[0.02] dark:bg-white/[0.02] border border-black/[0.04] dark:border-white/[0.04] px-3 py-2 flex-1">
+            <div key={idx} className="flex flex-col items-center justify-center rounded-[10px] bg-black/[0.02] dark:bg-white/[0.02] border border-black/[0.04] dark:border-white/[0.04] px-1.5 py-1.5 flex-1">
               <span
-                className="mb-1 font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[16px] leading-none font-bold drop-shadow-sm"
+                className="mb-0.5 font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[13px] leading-none font-bold drop-shadow-sm"
                 style={{ color: ELEMENT_COLORS[qi.element] }}
               >
                 {qi.character}
               </span>
-              <span className="text-[8px] font-bold tracking-wider text-muted-foreground/70 uppercase">
+              <span className="text-[7px] font-bold tracking-wider text-muted-foreground/70 uppercase">
                 {qi.ten_gods || "-"}
               </span>
             </div>
@@ -340,8 +340,8 @@ export default function Pillar({
       </div>
 
       {/* Element Section (Nayin) & Life Stage */}
-      <div className="mt-2 flex items-center justify-between w-full px-1 min-h-[24px]">
-        <span className="text-[11px] font-medium text-muted-foreground/80 text-left line-clamp-2 flex-1 pr-2">
+      <div className="mt-1 flex items-center justify-between w-full px-0.5 min-h-[20px]">
+        <span className="text-[10px] font-medium text-muted-foreground/80 text-left line-clamp-2 flex-1 pr-1">
           {heavenly_stem?.name && earthly_branch?.name
             ? formatNayinName(
                 getNayinFromStemBranch(heavenly_stem.name, earthly_branch.name),
@@ -349,7 +349,7 @@ export default function Pillar({
               )
             : gan_zhi?.name || "N/A"}
         </span>
-        <span className="text-[10px] font-bold tracking-wider text-purple-500/80 uppercase bg-purple-500/10 px-2 py-0.5 rounded-full whitespace-nowrap">
+        <span className="text-[9px] font-bold tracking-wider text-purple-500/80 uppercase bg-purple-500/10 px-1.5 py-0.5 rounded-full whitespace-nowrap">
           {heavenly_stem?.name && earthly_branch?.name && dayMasterName
             ? formatLifeCycleName(dayMasterName, earthly_branch.name, mode)
             : life_cycle || "N/A"}
@@ -361,19 +361,19 @@ export default function Pillar({
 
       {/* Relationship Indicators (Always Visible) */}
       {(hsLabel || branchLabels.length > 0) && (
-        <div className="mt-auto w-full pt-4 mt-3 border-t border-border/50">
-          <div className="flex w-full flex-col gap-2 text-left">
+        <div className="mt-auto w-full pt-2 border-t border-border/50">
+          <div className="flex w-full flex-col gap-1.5 text-left">
             {hsLabel && (
               <div
-                className="flex items-center gap-2 text-[11px] font-medium bg-black/[0.02] dark:bg-white/[0.02] rounded-lg px-2.5 py-1.5"
+                className="flex items-center gap-1.5 text-[10px] font-medium bg-black/[0.02] dark:bg-white/[0.02] rounded-lg px-2 py-1"
                 style={{ color: "var(--color-chart-3)" }}
               >
-                <div className="w-1 h-1 rounded-full bg-current opacity-50"></div>
+                <div className="w-1 h-1 rounded-full bg-current opacity-50 shrink-0"></div>
                 <span className="break-words">{hsLabel}</span>
               </div>
             )}
             {branchLabels.map((label, idx) => {
-              let color = "var(--color-muted-foreground)" // Neutral
+              let color = "var(--color-muted-foreground)"
               let bgColor = "bg-black/[0.02] dark:bg-white/[0.02]"
               
               if (label.category === "positive") {
@@ -384,10 +384,10 @@ export default function Pillar({
                   label.text.includes("Punishment") ||
                   label.text.includes("Harm")
                 ) {
-                  color = "var(--color-chart-2)" // Warning
+                  color = "var(--color-chart-2)"
                   bgColor = "bg-orange-500/5 dark:bg-orange-500/10"
                 } else {
-                  color = "var(--color-destructive)" // Negative
+                  color = "var(--color-destructive)"
                   bgColor = "bg-red-500/5 dark:bg-red-500/10"
                 }
               }
@@ -395,10 +395,10 @@ export default function Pillar({
               return (
                 <div
                   key={idx}
-                  className={`flex items-center gap-2 text-[11px] font-medium rounded-lg px-2.5 py-1.5 ${bgColor}`}
+                  className={`flex items-center gap-1.5 text-[10px] font-medium rounded-lg px-2 py-1 ${bgColor}`}
                   style={{ color }}
                 >
-                  <div className="w-1 h-1 rounded-full bg-current opacity-50"></div>
+                  <div className="w-1 h-1 rounded-full bg-current opacity-50 shrink-0"></div>
                   <span className="break-words">{label.text}</span>
                 </div>
               )
