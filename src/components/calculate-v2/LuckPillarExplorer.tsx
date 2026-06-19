@@ -478,7 +478,7 @@ export default function LuckPillarExplorer({
         </div>
         <button
           onClick={handleReset}
-          className="flex items-center gap-2 rounded-[12px] border border-border bg-background/60 px-4 py-2 text-[13px] font-medium text-muted-foreground shadow-sm transition-all duration-200 hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
+          className="flex items-center gap-2 rounded-[12px] border border-primary/50 bg-primary/5 px-4 py-2 text-[13px] font-medium text-primary shadow-sm transition-all duration-200 hover:border-primary hover:bg-primary hover:text-white hover:shadow-md"
         >
           <svg
             className="h-3.5 w-3.5"
