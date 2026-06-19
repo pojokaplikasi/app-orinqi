@@ -22,7 +22,7 @@ export async function POST(request: Request) {
       birthTime = dayjs(dateTimeStr, "YYYY-MM-DD HH:mm")
     }
 
-    if (timezoneStr && timezoneStr !== "GMT") {
+    if (timezoneStr) {
       try {
         birthTime = birthTime.tz(timezoneStr, true)
       } catch (e) {

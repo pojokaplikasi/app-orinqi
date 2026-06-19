@@ -6,6 +6,7 @@ import timezone from "dayjs/plugin/timezone"
 import utc from "dayjs/plugin/utc"
 import fs from "fs"
 import path from "path"
+import { formatLifeCycleName } from "./bazi/pillar-calculations"
 
 dayjs.extend(utc)
 dayjs.extend(timezone)

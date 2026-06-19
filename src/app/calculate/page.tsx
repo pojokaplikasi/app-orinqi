@@ -368,7 +368,7 @@ export default function BaziCalculator() {
             {baziData && (
               <div className="mt-8 flex flex-col gap-12">
                 {/* Combined Chart Section */}
-                <div className="relative flex w-full flex-col overflow-hidden rounded-[24px] border border-border bg-card/70 p-6 shadow-sm backdrop-blur-[20px] md:p-8">
+                <div className="relative flex w-full flex-col rounded-[24px] border border-border bg-card/70 p-6 shadow-sm backdrop-blur-[20px] md:p-8">
                   {/* Header */}
                   <div className="mb-3 flex flex-col items-center justify-center border-b border-border pb-4">
                     <h3 className="text-center text-[20px] font-bold text-foreground md:text-[24px]">
@@ -392,7 +392,7 @@ export default function BaziCalculator() {
 
                   <div
                     ref={scrollContainerRef}
-                    className="flex w-full scrollbar-thin flex-row flex-nowrap items-stretch gap-4 overflow-x-auto pb-6"
+                    className="flex w-full scrollbar-thin flex-row flex-nowrap items-stretch gap-4 overflow-x-auto pb-6 pt-1 px-1"
                   >
                     {/* Natal Chart */}
                     {!unknownTime ? (

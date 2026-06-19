@@ -211,7 +211,7 @@ export default function Pillar({
 
   // Base classes
   let pillarClass =
-    "flex-none w-[150px] md:w-[180px] lg:w-[200px] h-full min-h-[450px] p-5 rounded-[24px] bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-[24px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.04)] text-foreground text-center box-border transition-all duration-300 relative flex flex-col gap-4"
+    "flex-none w-[150px] md:w-[180px] lg:w-[200px] h-full min-h-[450px] p-5 pt-6 rounded-[24px] bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-[24px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.04)] text-foreground text-center box-border transition-all duration-300 relative flex flex-col gap-4"
 
   if (isCurrent) {
     pillarClass += " ring-1 ring-orange-500/50 shadow-[0_8px_32px_rgba(249,115,22,0.1)]"
@@ -351,7 +351,7 @@ export default function Pillar({
 
       {/* Relationship Indicators (Always Visible) */}
       {(hsLabel || branchLabels.length > 0) && (
-        <div className="mt-auto w-full pt-3 border-t border-border/50">
+        <div className="mt-auto w-full pt-4 mt-3 border-t border-border/50">
           <div className="flex w-full flex-col gap-2 text-left">
             {hsLabel && (
               <div
