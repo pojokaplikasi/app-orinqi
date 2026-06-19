@@ -160,15 +160,15 @@ export default function LuckyStars({
   const activeStars = starConfig.filter((star) => star.branches)
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-2">
       {activeStars.length > 0 ? (
         activeStars.map((star) => (
           <div
             key={star.id}
-            className="flex items-center gap-4 rounded-[18px] border border-border bg-card p-[18px] shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
+            className="flex items-center gap-3 rounded-[12px] border border-border bg-card p-3 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
           >
             <div
-              className="flex h-[48px] w-[48px] flex-shrink-0 items-center justify-center rounded-full text-[24px]"
+              className="flex h-[36px] w-[36px] flex-shrink-0 items-center justify-center rounded-full text-[18px]"
               style={{
                 background: "rgba(255,255,255,0.1)",
                 backdropFilter: "blur(16px)",
@@ -179,16 +179,16 @@ export default function LuckyStars({
               {star.icon}
             </div>
             <div className="flex flex-1 flex-col">
-              <div className="flex items-center gap-2">
-                <span className="text-[15px] font-bold text-foreground">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[13px] font-bold text-foreground">
                   {star.name}
                 </span>
-                <span className="text-[13px] text-muted-foreground">
+                <span className="text-[11px] text-muted-foreground">
                   {star.chinese}
                 </span>
               </div>
               <div
-                className="mt-1 text-[14px] font-medium"
+                className="mt-0.5 text-[12px] font-medium"
                 style={{ color: star.color }}
               >
                 {star.branches}

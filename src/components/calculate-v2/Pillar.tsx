@@ -214,7 +214,7 @@ export default function Pillar({
 
   // Base classes
   let pillarClass =
-    "w-full h-full min-h-[420px] p-3 pt-4 rounded-[18px] bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-[24px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.04)] text-foreground text-center box-border transition-all duration-300 relative flex flex-col gap-2.5"
+    "w-full h-full min-h-[320px] p-3 pt-4 rounded-[18px] bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-[24px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.04)] text-foreground text-center box-border transition-all duration-300 relative flex flex-col gap-2.5"
 
   if (isCurrent) {
     pillarClass += " ring-1 ring-orange-500/50 shadow-[0_8px_32px_rgba(249,115,22,0.1)]"

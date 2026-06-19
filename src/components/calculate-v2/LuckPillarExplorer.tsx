@@ -467,7 +467,7 @@ export default function LuckPillarExplorer({
     <>
       <div className="flex w-full flex-col gap-0 overflow-hidden rounded-[28px] border border-border bg-card/70 shadow-sm backdrop-blur-[24px]">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-border px-6 py-5">
+        <div className="flex items-center justify-between border-b border-border px-5 py-3">
         <div>
           <h3 className="flex items-center gap-2 text-[20px] font-bold text-foreground">
             <span>✨</span> Luck Pillars Explorer
@@ -510,7 +510,7 @@ export default function LuckPillarExplorer({
           >
             {/* Row Label */}
             <div
-              className="flex items-center gap-3 px-6 py-3"
+              className="flex items-center gap-3 px-5 py-2"
               style={{ borderLeft: `3px solid ${color}` }}
             >
               <span className="text-[16px] leading-none">{meta.icon}</span>
@@ -588,7 +588,8 @@ export default function LuckPillarExplorer({
             {/* Horizontal scroll area */}
             <div
               ref={rowRefs[rowIndex]}
-              className="flex flex-row flex-nowrap items-stretch gap-3 overflow-x-auto scroll-smooth px-6 pb-5 pt-3 scrollbar-thin"
+              className="flex flex-row flex-nowrap items-stretch gap-3 overflow-x-auto scroll-smooth px-5 pb-3 pt-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-border/40 hover:scrollbar-thumb-border/70"
+              style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(0,0,0,0.15) transparent' }}
             >
               {row.loading ? (
                 // Skeleton placeholders

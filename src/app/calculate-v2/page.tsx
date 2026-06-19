@@ -204,10 +204,10 @@ export default function BaziCalculator() {
 
             {/* Results Section */}
             {baziData && (
-              <div className="mt-8 flex flex-col gap-8">
+              <div id="bazi-result-area" className="mt-5 flex flex-col gap-4">
                 {/* Natal Chart Section */}
-                <div className="relative flex w-full flex-col rounded-[24px] border border-border bg-card/70 p-6 shadow-sm backdrop-blur-[20px] md:p-8">
-                  <div className="mb-3 flex flex-col items-center justify-center border-b border-border pb-4">
+                <div className="relative flex w-full flex-col rounded-[16px] border border-border bg-card/70 p-4 shadow-sm backdrop-blur-[20px] md:p-5">
+                  <div className="mb-2 flex flex-col items-center justify-center border-b border-border pb-3">
                     <h3 className="text-center text-[20px] font-bold text-foreground md:text-[24px]">
                       Natal Chart &amp; Current Transits
                     </h3>
@@ -229,7 +229,7 @@ export default function BaziCalculator() {
                         mode={mode}
                       />
                     ) : (
-                      <div className="relative box-border flex h-full min-h-[420px] w-full flex-col gap-3 rounded-[18px] border border-white/20 bg-gradient-to-b from-card/80 to-card/40 p-3 pt-4 text-center text-foreground backdrop-blur-[24px] transition-all duration-200">
+                      <div className="relative box-border flex h-full min-h-[320px] w-full flex-col gap-3 rounded-[18px] border border-white/20 bg-gradient-to-b from-card/80 to-card/40 p-3 pt-4 text-center text-foreground backdrop-blur-[24px] transition-all duration-200">
                         <div className="relative flex w-full items-start justify-between min-h-[40px]">
                           <div className="flex flex-col items-start text-left">
                             <span className="text-[13px] leading-tight font-semibold text-foreground">Hour Pillar</span>
@@ -359,27 +359,27 @@ export default function BaziCalculator() {
                 </div>
 
                 {/* ── Dashboard: 2-Column Layout ── */}
-                <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-6">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:gap-4">
 
                   {/* ── LEFT SIDEBAR ── */}
                   <aside className="w-full shrink-0 lg:w-80 xl:w-96">
-                    <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-3">
 
                       {/* Lucky Stars */}
-                      <div className="rounded-[24px] border border-border bg-card/70 p-6 shadow-sm backdrop-blur-[20px]">
-                        <h4 className="mb-4 text-[16px] font-bold text-foreground">✨ Lucky Stars</h4>
+                      <div className="rounded-[16px] border border-border bg-card/70 p-4 shadow-sm backdrop-blur-[20px]">
+                        <h4 className="mb-2 text-[14px] font-bold text-foreground">✨ Lucky Stars</h4>
                         <LuckyStars stars={luckyStars} mode={mode} />
                       </div>
 
                       {/* Ten Gods */}
-                      <div className="rounded-[24px] border border-border bg-card/70 p-6 shadow-sm backdrop-blur-[20px]">
-                        <h4 className="mb-4 text-[16px] font-bold text-foreground">⚖️ Ten Gods</h4>
+                      <div className="rounded-[16px] border border-border bg-card/70 p-4 shadow-sm backdrop-blur-[20px]">
+                        <h4 className="mb-2 text-[14px] font-bold text-foreground">⚖️ Ten Gods</h4>
                         <TenGods tenGodsData={tenGodsData} />
                       </div>
 
                       {/* Element Structure */}
-                      <div className="rounded-[24px] border border-border bg-card/70 p-6 shadow-sm backdrop-blur-[20px]">
-                        <h4 className="mb-4 text-[16px] font-bold text-foreground">🌐 Element Structure</h4>
+                      <div className="rounded-[16px] border border-border bg-card/70 p-4 shadow-sm backdrop-blur-[20px]">
+                        <h4 className="mb-2 text-[14px] font-bold text-foreground">🌐 Element Structure</h4>
                         <ElementStructure elementData={elementData} />
                       </div>
 

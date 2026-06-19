@@ -52,7 +52,7 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
   ) as number
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-2">
       {sortedGods.map(([godName, natalPoints]: [string, any]) => {
         const annualPoints = tenGodsPoints.annual[godName] || 0
         const chineseChar = tenGodsChinese[godName] || ""
@@ -72,10 +72,10 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
         return (
           <div
             key={godName}
-            className="flex items-center gap-4 rounded-[18px] border border-border bg-card p-[18px] shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
+            className="flex items-center gap-3 rounded-[12px] border border-border bg-card p-3 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
           >
             <div
-              className="flex h-[48px] w-[48px] flex-shrink-0 items-center justify-center rounded-full text-[18px] font-bold"
+              className="flex h-[36px] w-[36px] flex-shrink-0 items-center justify-center rounded-full text-[14px] font-bold"
               style={{
                 background: "rgba(255,255,255,0.1)",
                 backdropFilter: "blur(16px)",
@@ -88,11 +88,11 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
             </div>
 
             <div className="flex flex-1 flex-col">
-              <div className="flex items-center gap-2">
-                <span className="text-[15px] font-bold text-foreground">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[13px] font-bold text-foreground">
                   {godName}
                 </span>
-                <span className="text-[13px] text-muted-foreground">
+                <span className="text-[11px] text-muted-foreground">
                   ({chineseChar})
                 </span>
               </div>

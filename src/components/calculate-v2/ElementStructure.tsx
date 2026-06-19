@@ -220,7 +220,7 @@ export default function ElementStructure({ elementData }: ElementStructureProps)
       </div>
 
       {/* ── Legend ── */}
-      <div className="flex items-center justify-center gap-6 py-3">
+      <div className="flex items-center justify-center gap-4 py-2">
         <button
           onClick={() => setShowNatal((v) => !v)}
           className="flex items-center gap-2 rounded-full px-3 py-1 text-[12px] font-semibold transition-all"
@@ -256,11 +256,11 @@ export default function ElementStructure({ elementData }: ElementStructureProps)
       </div>
 
       {/* ── Radar Chart ── */}
-      <div className="w-full" style={{ height: 420 }}>
+      <div className="w-full" style={{ height: 340 }}>
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart
             data={data}
-            margin={{ top: 60, right: 80, bottom: 60, left: 80 }}
+            margin={{ top: 50, right: 70, bottom: 50, left: 70 }}
           >
             <PolarGrid gridType="polygon" stroke="#ccc" strokeWidth={1} />
             <PolarAngleAxis
@@ -315,14 +315,14 @@ export default function ElementStructure({ elementData }: ElementStructureProps)
           return (
             <div
               key={elem}
-              className="flex flex-col rounded-[14px] border border-border bg-card overflow-hidden shadow-sm"
+              className="flex flex-col rounded-[10px] border border-border bg-card overflow-hidden shadow-sm"
             >
               {/* Header strip */}
               <div
-                className="flex items-center gap-2 px-3 py-2"
+                className="flex items-center gap-2 px-2.5 py-1.5"
                 style={{ backgroundColor: color + "22" }}
               >
-                <span className="text-[20px] leading-none">{meta.icon}</span>
+                <span className="text-[16px] leading-none">{meta.icon}</span>
                 <div>
                   <div className="text-[12px] font-bold text-foreground leading-tight">
                     {meta.bold}
@@ -341,19 +341,19 @@ export default function ElementStructure({ elementData }: ElementStructureProps)
 
               {/* Values row */}
               <div className="flex divide-x divide-border">
-                <div className="flex flex-1 flex-col items-center py-2">
+                <div className="flex flex-1 flex-col items-center py-1.5">
                   <span className="text-[9px] font-semibold uppercase text-muted-foreground tracking-wide">
                     Natal
                   </span>
-                  <span className="text-[15px] font-bold" style={{ color }}>
+                  <span className="text-[13px] font-bold" style={{ color }}>
                     {natal}%
                   </span>
                 </div>
-                <div className="flex flex-1 flex-col items-center py-2">
+                <div className="flex flex-1 flex-col items-center py-1.5">
                   <span className="text-[9px] font-semibold uppercase text-muted-foreground tracking-wide">
                     Annual
                   </span>
-                  <span className="text-[15px] font-bold" style={{ color: "#9B59B6" }}>
+                  <span className="text-[13px] font-bold" style={{ color: "#9B59B6" }}>
                     {annual}%
                   </span>
                 </div>
