@@ -588,7 +588,7 @@ export default function LuckPillarExplorer({
             {/* Horizontal scroll area */}
             <div
               ref={rowRefs[rowIndex]}
-              className="flex flex-row flex-nowrap items-stretch gap-3 overflow-x-auto scroll-smooth px-6 pb-5 pt-1 scrollbar-thin"
+              className="flex flex-row flex-nowrap items-stretch gap-3 overflow-x-auto scroll-smooth px-6 pb-5 pt-3 scrollbar-thin"
             >
               {row.loading ? (
                 // Skeleton placeholders

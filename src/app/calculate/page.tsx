@@ -577,6 +577,7 @@ export default function BaziCalculator() {
                 <hr className="my-1 h-[1px] border-none bg-border" />
 
                 {/* Interactive Explorer Experience */}
+                <div className="mt-6">
                 <LuckPillarExplorer
                   baziData={baziData}
                   luckyStars={luckyStars}
@@ -586,6 +587,7 @@ export default function BaziCalculator() {
                   unknownTime={unknownTime}
                   mode={mode}
                 />
+                </div>
               </div>
             )}
           </div>

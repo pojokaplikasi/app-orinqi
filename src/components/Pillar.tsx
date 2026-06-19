@@ -223,7 +223,7 @@ export default function Pillar({
   }
 
   if (isSelected) {
-    pillarClass += " ring-2 ring-primary shadow-[0_8px_32px_rgba(233,75,75,0.15)] scale-[1.02]"
+    pillarClass += " ring-2 ring-primary shadow-[0_8px_32px_rgba(233,75,75,0.15)]"
   }
 
   if (onClick) {
