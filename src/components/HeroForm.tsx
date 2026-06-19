@@ -64,7 +64,8 @@ export default function HeroForm({
             <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-gradient-to-tr from-chart-1/20 to-chart-5/20 opacity-70 mix-blend-multiply blur-3xl transition-opacity duration-700 group-hover:opacity-100 dark:mix-blend-screen"></div>
 
             <div className="relative z-10 flex flex-col items-center justify-between gap-6 md:flex-row">
-              <div className="flex items-center gap-6">
+              {/* Left: Avatar + Info + Toggle */}
+              <div className="flex flex-1 items-center gap-6">
                 <div className="flex h-[80px] w-[80px] shrink-0 items-center justify-center rounded-full border-4 border-background/80 bg-gradient-to-br from-primary to-primary/80 shadow-[0_4px_20px_rgba(var(--primary),0.4)]">
                   <span className="font-serif text-4xl font-bold text-primary-foreground">
                     命
@@ -104,17 +105,35 @@ export default function HeroForm({
                     })}
                     {!unknownTime && time && ` • ${time}`}
                   </p>
-                  <div className="mt-3 flex items-center gap-3">
+                  <div className="mt-3 flex flex-wrap items-center gap-3">
                     <span className="rounded-full border border-border bg-background/60 px-3 py-1 text-[12px] font-semibold text-muted-foreground shadow-sm">
                       {gender === 1 ? "Male" : "Female"}
                     </span>
                     <span className="rounded-full border border-border bg-background/60 px-3 py-1 text-[12px] font-semibold text-muted-foreground shadow-sm">
                       {timezone.split("/").pop()?.replace(/_/g, " ") || timezone}
                     </span>
+                    {/* Classic / Modern Toggle */}
+                    <div className="flex rounded-[12px] border border-border bg-background/60 p-0.5 shadow-sm">
+                      <button
+                        type="button"
+                        onClick={() => setMode("classic")}
+                        className={`rounded-[10px] px-3 py-1 text-[12px] font-semibold transition-all duration-200 ${mode === "classic" ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                      >
+                        Classic
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setMode("modern")}
+                        className={`rounded-[10px] px-3 py-1 text-[12px] font-semibold transition-all duration-200 ${mode === "modern" ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                      >
+                        Modern
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
 
+              {/* Right: New Calculation button */}
               <button
                 onClick={() => window.location.reload()}
                 className="shrink-0 rounded-[16px] bg-gradient-to-r from-chart-2 to-chart-2/80 px-6 py-3 text-[14px] font-semibold text-primary-foreground shadow-[0_4px_15px_rgba(var(--chart-2),0.3)] transition-all duration-200 hover:-translate-y-[1px] hover:from-chart-2/90 hover:to-chart-2/70 hover:shadow-[0_6px_20px_rgba(var(--chart-2),0.4)]"

@@ -17,8 +17,7 @@ import {
   calculateCurrentMonthPillar,
   calculateCurrentYearPillar,
 } from "@/lib/bazi/pillar-calculations"
-import CompactPillarCard from "@/components/CompactPillarCard"
-import DetailDialog from "@/components/DetailDialog"
+import LuckPillarExplorer from "@/components/LuckPillarExplorer"
 import ElementStructure from "@/components/ElementStructure"
 import HeroForm from "@/components/HeroForm"
 import LuckyStars from "@/components/LuckyStars"
@@ -45,17 +44,7 @@ export default function BaziCalculator() {
   const [branchInteractions, setBranchInteractions] = useState<any>(null)
   const [currentPillars, setCurrentPillars] = useState<any>(null)
 
-  // Selection state for drill-down
-  const [selectedLuck, setSelectedLuck] = useState<number | null>(null)
-  const [selectedYear, setSelectedYear] = useState<number | null>(null)
-  const [selectedMonth, setSelectedMonth] = useState<number | null>(null)
-  const [selectedDay, setSelectedDay] = useState<number | null>(null)
-
-  // Time period data
-  const [yearPillars, setYearPillars] = useState<any[]>([])
-  const [monthPillars, setMonthPillars] = useState<any[]>([])
-  const [dayPillars, setDayPillars] = useState<any[]>([])
-  const [hourPillars, setHourPillars] = useState<any[]>([])
+  // Selection state for drill-down (managed inside LuckPillarExplorer)
 
   // Expanded Pillar State
   const [expandedPillarId, setExpandedPillarId] = useState<string | null>(null)
@@ -65,19 +54,9 @@ export default function BaziCalculator() {
     "elements" | "stars" | "gods"
   >("elements")
 
-  // Explorer State
-  const [explorerStep, setExplorerStep] = useState<
-    "luck" | "year" | "month" | "day" | "hour"
-  >("luck")
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-
-  // Dialog State
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-
-  const [selectedHourData, setSelectedHourData] = useState<any>(null)
+  // Explorer state is managed inside LuckPillarExplorer
 
   const scrollContainerRef = useRef<HTMLDivElement>(null)
-  const explorerScrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (baziData && scrollContainerRef.current) {
@@ -180,154 +159,13 @@ export default function BaziCalculator() {
       )
       setBranchInteractions(interactions)
 
-      // Reset selections
-      handleResetSelection()
+      // Reset selections (explorer manages its own state now)
     } catch (err: any) {
       setError(err.message)
     } finally {
       setLoading(false)
     }
   }
-
-  const handleResetSelection = () => {
-    setSelectedLuck(null)
-    setSelectedYear(null)
-    setSelectedMonth(null)
-    setSelectedDay(null)
-    setYearPillars([])
-    setMonthPillars([])
-    setDayPillars([])
-    setHourPillars([])
-    setExplorerStep("luck")
-  }
-
-  // Fetch Year Pillars when Luck Pillar is selected
-  useEffect(() => {
-    if (selectedLuck !== null && baziData) {
-      const luckPillar = baziData.luck_pillars.luck_pillars[selectedLuck]
-      const actualDateTime = unknownTime ? `${date}T12:00` : `${date}T${time}`
-
-      fetch("/api/calculate_yearly", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          start_year: luckPillar.year_start,
-          end_year: luckPillar.year_end,
-          birth_time: actualDateTime,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => setYearPillars(data.yearly_pillars))
-        .catch(console.error)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedLuck, baziData])
-
-  // Fetch Month Pillars when Year Pillar is selected
-  useEffect(() => {
-    if (selectedYear !== null && baziData) {
-      const actualDateTime = unknownTime ? `${date}T12:00` : `${date}T${time}`
-
-      fetch("/api/calculate_monthly", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          year: selectedYear,
-          birth_time: actualDateTime,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => setMonthPillars(data.monthly_pillars))
-        .catch(console.error)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedYear, baziData])
-
-  // Fetch Day Pillars when Month Pillar is selected
-  useEffect(() => {
-    if (selectedMonth !== null && selectedYear !== null && baziData) {
-      const actualDateTime = unknownTime ? `${date}T12:00` : `${date}T${time}`
-
-      fetch("/api/calculate_daily", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          year: selectedYear,
-          month: selectedMonth,
-          birth_time: actualDateTime,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => setDayPillars(data.daily_pillars))
-        .catch(console.error)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedMonth, selectedYear, baziData])
-
-  // Fetch Hour Pillars when Day Pillar is selected
-  useEffect(() => {
-    if (
-      selectedDay !== null &&
-      selectedMonth !== null &&
-      selectedYear !== null &&
-      baziData
-    ) {
-      const actualDateTime = unknownTime ? `${date}T12:00` : `${date}T${time}`
-
-      fetch("/api/calculate_hourly", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          year: selectedYear,
-          month: selectedMonth,
-          day: selectedDay,
-          birth_time: actualDateTime,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => setHourPillars(data.hourly_pillars))
-        .catch(console.error)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDay, selectedMonth, selectedYear, baziData])
-
-  // Auto-scroll explorer to center selected item
-  useEffect(() => {
-    if (explorerScrollRef.current) {
-      const container = explorerScrollRef.current
-      const selectedElement = container.querySelector('[data-selected="true"]')
-      if (selectedElement) {
-        const containerWidth = container.clientWidth
-        const elementOffset = (selectedElement as HTMLElement).offsetLeft
-        const elementWidth = (selectedElement as HTMLElement).clientWidth
-        container.scrollTo({
-          left: elementOffset - containerWidth / 2 + elementWidth / 2,
-          behavior: "smooth",
-        })
-      }
-    }
-  }, [explorerStep, selectedLuck, selectedYear, selectedMonth, selectedDay])
-
-  // Helper to get selected pillar data
-  const getSelectedLuckData = () =>
-    selectedLuck !== null
-      ? baziData?.luck_pillars?.luck_pillars[selectedLuck]
-      : null
-  const getSelectedYearData = () =>
-    yearPillars.find((p) => p.year === selectedYear)
-  const getSelectedMonthData = () =>
-    monthPillars.find((p) => p.month === selectedMonth)
-  const getSelectedDayData = () => dayPillars.find((p) => p.day === selectedDay)
-
-  const steps = [
-    { id: "luck", label: "10-Year", color: "var(--color-primary)" },
-    { id: "year", label: "Year", color: "var(--color-chart-1)" },
-    { id: "month", label: "Month", color: "var(--color-chart-2)" },
-    { id: "day", label: "Day", color: "var(--color-chart-3)" },
-    { id: "hour", label: "Hour", color: "var(--color-chart-4)" },
-  ]
-
-  const currentStepIndex = steps.findIndex((s) => s.id === explorerStep)
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
@@ -411,6 +249,7 @@ export default function BaziCalculator() {
                             expandedPillarId === "natal-H" ? null : "natal-H"
                           )
                         }
+                        mode={mode}
                       />
                     ) : (
                       <div className="relative box-border flex h-full min-h-[450px] w-[150px] flex-none flex-col gap-3 rounded-[20px] border border-t-[4px] border-border border-t-primary bg-card/70 p-4 text-center text-foreground shadow-sm backdrop-blur-[20px] transition-all duration-200 md:w-[180px] lg:w-[200px]">
@@ -468,6 +307,7 @@ export default function BaziCalculator() {
                           expandedPillarId === "natal-D" ? null : "natal-D"
                         )
                       }
+                      mode={mode}
                     />
                     <Pillar
                       title="Month Pillar (月柱)"
@@ -484,6 +324,7 @@ export default function BaziCalculator() {
                           expandedPillarId === "natal-M" ? null : "natal-M"
                         )
                       }
+                      mode={mode}
                     />
                     <Pillar
                       title="Year Pillar (年柱)"
@@ -500,6 +341,7 @@ export default function BaziCalculator() {
                           expandedPillarId === "natal-Y" ? null : "natal-Y"
                         )
                       }
+                      mode={mode}
                     />
 
                     {/* Divider */}
@@ -524,6 +366,7 @@ export default function BaziCalculator() {
                           expandedPillarId === "transit-L" ? null : "transit-L"
                         )
                       }
+                      mode={mode}
                     />
                     <Pillar
                       title="Current Year"
@@ -543,6 +386,7 @@ export default function BaziCalculator() {
                           expandedPillarId === "transit-Y" ? null : "transit-Y"
                         )
                       }
+                      mode={mode}
                     />
                     <Pillar
                       title="Current Month"
@@ -562,6 +406,7 @@ export default function BaziCalculator() {
                           expandedPillarId === "transit-M" ? null : "transit-M"
                         )
                       }
+                      mode={mode}
                     />
                     <Pillar
                       title="Current Day"
@@ -581,6 +426,7 @@ export default function BaziCalculator() {
                           expandedPillarId === "transit-D" ? null : "transit-D"
                         )
                       }
+                      mode={mode}
                     />
                   </div>
 
@@ -731,570 +577,20 @@ export default function BaziCalculator() {
                 <hr className="my-1 h-[1px] border-none bg-border" />
 
                 {/* Interactive Explorer Experience */}
-                <div className="relative flex w-full flex-col gap-6 lg:flex-row">
-                  {/* Mobile Sidebar Toggle */}
-                  <button
-                    className="flex w-full items-center justify-between rounded-[16px] border border-border bg-card/70 p-4 shadow-sm backdrop-blur-[20px] lg:hidden"
-                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                  >
-                    <span className="font-bold text-foreground">
-                      Current Selection
-                    </span>
-                    <span className="text-primary">
-                      {isSidebarOpen ? "Close" : "View"}
-                    </span>
-                  </button>
-
-                  {/* Sidebar */}
-                  <div
-                    className={`flex flex-shrink-0 flex-col gap-4 transition-all duration-300 lg:w-[320px] ${isSidebarOpen ? "block" : "hidden lg:flex"}`}
-                  >
-                    {/* Sidebar Header */}
-                    <div className="rounded-[20px] border border-border bg-card/70 p-6 shadow-sm backdrop-blur-[20px]">
-                      <h3 className="flex items-center gap-2 text-[20px] font-bold text-foreground">
-                        <span>✨</span> Luck Pillars Explorer
-                      </h3>
-                      <p className="mt-2 text-[13px] text-muted-foreground">
-                        Explore your destiny cycles step by step.
-                      </p>
-                    </div>
-
-                    {/* Current Selection Panel */}
-                    <div className="flex-1 rounded-[20px] border border-border bg-card/60 p-6 shadow-sm backdrop-blur-[20px]">
-                      <h4 className="mb-6 text-[16px] font-bold text-foreground">
-                        Current Selection
-                      </h4>
-
-                      <div className="relative flex flex-col gap-0">
-                        {/* Vertical Line */}
-                        <div className="absolute top-[10px] bottom-[10px] left-[7px] z-0 w-[2px] bg-border"></div>
-
-                        {/* 10-Year Selection */}
-                        <div className="relative z-10 mb-6 flex gap-4">
-                          <div
-                            className={`mt-1 h-[16px] w-[16px] flex-shrink-0 rounded-full border-4 border-background shadow-sm ${selectedLuck !== null ? "bg-[var(--color-primary)]" : "bg-muted"}`}
-                          ></div>
-                          <div className="flex flex-col">
-                            <span className="text-[12px] font-semibold text-muted-foreground">
-                              10-Year Luck
-                            </span>
-                            {selectedLuck !== null ? (
-                              <>
-                                <span className="text-[14px] font-bold text-foreground">
-                                  {getSelectedLuckData()?.year_start}–
-                                  {getSelectedLuckData()?.year_end}
-                                </span>
-                                <span className="mt-1 text-[13px] text-muted-foreground">
-                                  {getSelectedLuckData()?.heavenly_stem?.name}{" "}
-                                  {getSelectedLuckData()?.earthly_branch?.name}
-                                </span>
-                              </>
-                            ) : (
-                              <span className="mt-1 text-[13px] text-muted-foreground italic">
-                                Not selected
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Year Selection */}
-                        <div className="relative z-10 mb-6 flex gap-4">
-                          <div
-                            className={`mt-1 h-[16px] w-[16px] flex-shrink-0 rounded-full border-4 border-background shadow-sm ${selectedYear !== null ? "bg-[var(--color-chart-1)]" : "bg-muted"}`}
-                          ></div>
-                          <div className="flex flex-col">
-                            <span className="text-[12px] font-semibold text-muted-foreground">
-                              Year Pillar
-                            </span>
-                            {selectedYear !== null ? (
-                              <>
-                                <span className="text-[14px] font-bold text-foreground">
-                                  {selectedYear}
-                                </span>
-                                <span className="mt-1 text-[13px] text-muted-foreground">
-                                  {getSelectedYearData()?.heavenly_stem?.name}{" "}
-                                  {getSelectedYearData()?.earthly_branch?.name}
-                                </span>
-                              </>
-                            ) : (
-                              <span className="mt-1 text-[13px] text-muted-foreground italic">
-                                Not selected
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Month Selection */}
-                        <div className="relative z-10 mb-6 flex gap-4">
-                          <div
-                            className={`mt-1 h-[16px] w-[16px] flex-shrink-0 rounded-full border-4 border-background shadow-sm ${selectedMonth !== null ? "bg-[var(--color-chart-2)]" : "bg-muted"}`}
-                          ></div>
-                          <div className="flex flex-col">
-                            <span className="text-[12px] font-semibold text-muted-foreground">
-                              Month Pillar
-                            </span>
-                            {selectedMonth !== null ? (
-                              <>
-                                <span className="text-[14px] font-bold text-foreground">
-                                  {getSelectedMonthData()?.month_english}{" "}
-                                  {selectedYear}
-                                </span>
-                                <span className="mt-1 text-[13px] text-muted-foreground">
-                                  {getSelectedMonthData()?.heavenly_stem?.name}{" "}
-                                  {getSelectedMonthData()?.earthly_branch?.name}
-                                </span>
-                              </>
-                            ) : (
-                              <span className="mt-1 text-[13px] text-muted-foreground italic">
-                                Not selected
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Day Selection */}
-                        <div className="relative z-10 mb-6 flex gap-4">
-                          <div
-                            className={`mt-1 h-[16px] w-[16px] flex-shrink-0 rounded-full border-4 border-background shadow-sm ${selectedDay !== null ? "bg-[var(--color-chart-3)]" : "bg-muted"}`}
-                          ></div>
-                          <div className="flex flex-col">
-                            <span className="text-[12px] font-semibold text-muted-foreground">
-                              Day Pillar
-                            </span>
-                            {selectedDay !== null ? (
-                              <>
-                                <span className="text-[14px] font-bold text-foreground">
-                                  Day {selectedDay}
-                                </span>
-                                <span className="mt-1 text-[13px] text-muted-foreground">
-                                  {getSelectedDayData()?.heavenly_stem?.name}{" "}
-                                  {getSelectedDayData()?.earthly_branch?.name}
-                                </span>
-                              </>
-                            ) : (
-                              <span className="mt-1 text-[13px] text-muted-foreground italic">
-                                Not selected
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Hour Selection */}
-                        <div className="relative z-10 flex gap-4">
-                          <div
-                            className={`mt-1 h-[16px] w-[16px] flex-shrink-0 rounded-full border-4 border-background bg-muted shadow-sm`}
-                          ></div>
-                          <div className="flex flex-col">
-                            <span className="text-[12px] font-semibold text-muted-foreground">
-                              Hour Pillar
-                            </span>
-                            <span className="mt-1 text-[13px] text-muted-foreground italic">
-                              Not selected
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Sidebar Footer */}
-                    <div className="rounded-[20px] border border-border bg-card/50 p-5 backdrop-blur-[20px]">
-                      <h4 className="mb-3 text-[14px] font-bold text-foreground">
-                        How to Use
-                      </h4>
-                      <ol className="list-decimal space-y-2 pl-4 text-[12px] text-muted-foreground">
-                        <li>Start from 10-Year Luck Pillars</li>
-                        <li>Select a specific Year</li>
-                        <li>Select Month</li>
-                        <li>Select Day</li>
-                        <li>Select Hour</li>
-                        <li>Explore detailed influence</li>
-                      </ol>
-                    </div>
-                  </div>
-
-                  {/* Main Explorer Area */}
-                  <div className="flex min-w-0 flex-1 flex-col">
-                    {/* Top Breadcrumb */}
-                    <div className="mb-4 flex flex-wrap items-center gap-2 px-2 text-[14px] text-muted-foreground">
-                      <span
-                        className={`cursor-pointer hover:text-foreground ${explorerStep === "luck" ? "font-semibold text-foreground" : ""}`}
-                        onClick={() => setExplorerStep("luck")}
-                      >
-                        10-Year Luck Breadcrumb
-                      </span>
-                    </div>
-
-                    {/* Progress Navigation */}
-                    <div className="mb-8 flex items-center justify-between px-2">
-                      {steps.map((step, index) => (
-                        <React.Fragment key={step.id}>
-                          <div
-                            className="flex cursor-pointer flex-col items-center gap-2"
-                            onClick={() => {
-                              // Only allow clicking if previous steps are completed
-                              if (index === 0) setExplorerStep("luck")
-                              if (index === 1 && selectedLuck !== null)
-                                setExplorerStep("year")
-                              if (index === 2 && selectedYear !== null)
-                                setExplorerStep("month")
-                              if (index === 3 && selectedMonth !== null)
-                                setExplorerStep("day")
-                              if (index === 4 && selectedDay !== null)
-                                setExplorerStep("hour")
-                            }}
-                          >
-                            <div className="flex items-center gap-2">
-                              <div
-                                className={`h-2.5 w-2.5 rounded-full transition-all duration-300 ${
-                                  index <= currentStepIndex
-                                    ? "scale-125"
-                                    : "opacity-30"
-                                }`}
-                                style={{
-                                  backgroundColor:
-                                    index <= currentStepIndex
-                                      ? step.color
-                                      : "var(--muted-foreground)",
-                                }}
-                              ></div>
-                              <span
-                                className={`hidden text-[13px] transition-all duration-300 sm:block ${
-                                  index === currentStepIndex
-                                    ? "font-bold text-foreground"
-                                    : index < currentStepIndex
-                                      ? "font-medium text-muted-foreground"
-                                      : "text-muted-foreground opacity-50"
-                                }`}
-                              >
-                                {step.label}
-                              </span>
-                            </div>
-                          </div>
-                          {index < steps.length - 1 && (
-                            <div className="relative mx-2 h-[2px] flex-1 overflow-hidden rounded-full bg-border sm:mx-4">
-                              <div
-                                className="absolute top-0 bottom-0 left-0 transition-all duration-500"
-                                style={{
-                                  width:
-                                    index < currentStepIndex ? "100%" : "0%",
-                                  backgroundColor: steps[index].color,
-                                }}
-                              ></div>
-                            </div>
-                          )}
-                        </React.Fragment>
-                      ))}
-                    </div>
-
-                    {/* Explorer Hero Area */}
-                    <div
-                      className="relative mb-8 flex h-[180px] flex-col justify-center overflow-hidden rounded-[24px] border border-border/50 p-6 shadow-sm sm:h-[220px] sm:p-8"
-                      style={{
-                        background:
-                          "linear-gradient(180deg, hsl(var(--card) / 0.8) 0%, hsl(var(--card) / 0.4) 100%)",
-                      }}
-                    >
-                      {/* Abstract Background Elements */}
-                      <div
-                        className="absolute -top-10 -right-10 h-40 w-40 rounded-full opacity-20 blur-[40px]"
-                        style={{
-                          backgroundColor: steps[currentStepIndex].color,
-                        }}
-                      ></div>
-                      <div
-                        className="absolute right-20 -bottom-10 h-32 w-32 rounded-full opacity-10 blur-[30px]"
-                        style={{
-                          backgroundColor: steps[currentStepIndex].color,
-                        }}
-                      ></div>
-
-                      <div className="relative z-10">
-                        <span
-                          className="mb-2 block text-[12px] font-bold tracking-wider uppercase"
-                          style={{ color: steps[currentStepIndex].color }}
-                        >
-                          Step {currentStepIndex + 1} of 5
-                        </span>
-                        <h2 className="mb-3 text-[24px] font-bold text-foreground sm:text-[32px]">
-                          {explorerStep === "luck" && "Select 10-Year Luck"}
-                          {explorerStep === "year" && "Select Year Pillar"}
-                          {explorerStep === "month" && "Select Month Pillar"}
-                          {explorerStep === "day" && "Select Day Pillar"}
-                          {explorerStep === "hour" && "Select Hour Pillar"}
-                        </h2>
-                        <p className="max-w-[400px] text-[14px] leading-relaxed text-muted-foreground sm:text-[15px]">
-                          {explorerStep === "luck" &&
-                            "Choose a 10-year period to explore the overarching themes and energies of that decade."}
-                          {explorerStep === "year" &&
-                            `Choose a year within the ${getSelectedLuckData()?.year_start}–${getSelectedLuckData()?.year_end} period to explore annual influences.`}
-                          {explorerStep === "month" &&
-                            `Choose a month within ${selectedYear} to explore more detailed seasonal influences.`}
-                          {explorerStep === "day" &&
-                            `Choose a specific day in ${getSelectedMonthData()?.month_english} ${selectedYear} to see daily energies.`}
-                          {explorerStep === "hour" &&
-                            `Explore the two-hour periods for Day ${selectedDay}.`}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Pillar Cards Area */}
-                    <div className="relative w-full">
-                      <div
-                        ref={explorerScrollRef}
-                        className="-mx-4 flex scrollbar-thin flex-row flex-nowrap items-stretch gap-4 overflow-x-auto scroll-smooth px-4 pt-4 pb-8"
-                      >
-                        {/* 10-Year Luck Pillars */}
-                        {explorerStep === "luck" &&
-                          baziData.luck_pillars.luck_pillars.map(
-                            (pillar: any, index: number) => (
-                              <div
-                                key={index}
-                                data-selected={selectedLuck === index}
-                              >
-                                <CompactPillarCard
-                                  title={`Luck ${pillar.number}`}
-                                  subtitle={`${pillar.year_start}-${pillar.year_end}`}
-                                  pillarData={pillar}
-                                  isSelected={selectedLuck === index}
-                                  onClick={() => {
-                                    setSelectedLuck(index)
-                                    setTimeout(
-                                      () => setExplorerStep("year"),
-                                      300
-                                    )
-                                  }}
-                                  color="var(--color-primary)"
-                                  dayMasterName={
-                                    baziData.four_pillars.day_pillar
-                                      ?.heavenly_stem?.name
-                                  }
-                                  luckyStars={luckyStars}
-                                />
-                              </div>
-                            )
-                          )}
-
-                        {/* Year Pillars */}
-                        {explorerStep === "year" &&
-                          yearPillars.map((pillar, index) => (
-                            <div
-                              key={index}
-                              data-selected={selectedYear === pillar.year}
-                            >
-                              <CompactPillarCard
-                                title={pillar.year.toString()}
-                                subtitle={`Age ${pillar.age}`}
-                                pillarData={pillar}
-                                isSelected={selectedYear === pillar.year}
-                                onClick={() => {
-                                  setSelectedYear(pillar.year)
-                                  setTimeout(
-                                    () => setExplorerStep("month"),
-                                    300
-                                  )
-                                }}
-                                color="var(--color-chart-1)"
-                                dayMasterName={
-                                  baziData.four_pillars.day_pillar
-                                    ?.heavenly_stem?.name
-                                }
-                                luckyStars={luckyStars}
-                              />
-                            </div>
-                          ))}
-
-                        {/* Month Pillars */}
-                        {explorerStep === "month" &&
-                          monthPillars.map((pillar, index) => (
-                            <div
-                              key={index}
-                              data-selected={selectedMonth === pillar.month}
-                            >
-                              <CompactPillarCard
-                                title={pillar.month_english}
-                                subtitle={`Month ${pillar.month}`}
-                                pillarData={pillar}
-                                isSelected={selectedMonth === pillar.month}
-                                onClick={() => {
-                                  setSelectedMonth(pillar.month)
-                                  setTimeout(() => setExplorerStep("day"), 300)
-                                }}
-                                color="var(--color-chart-2)"
-                                dayMasterName={
-                                  baziData.four_pillars.day_pillar
-                                    ?.heavenly_stem?.name
-                                }
-                                luckyStars={luckyStars}
-                              />
-                            </div>
-                          ))}
-
-                        {/* Day Pillars */}
-                        {explorerStep === "day" &&
-                          dayPillars.map((pillar, index) => (
-                            <div
-                              key={index}
-                              data-selected={selectedDay === pillar.day}
-                            >
-                              <CompactPillarCard
-                                title={`Day ${pillar.day}`}
-                                subtitle={
-                                  getSelectedMonthData()?.month_english || ""
-                                }
-                                pillarData={pillar}
-                                isSelected={selectedDay === pillar.day}
-                                onClick={() => {
-                                  setSelectedDay(pillar.day)
-                                  setTimeout(() => setExplorerStep("hour"), 300)
-                                }}
-                                color="var(--color-chart-3)"
-                                dayMasterName={
-                                  baziData.four_pillars.day_pillar
-                                    ?.heavenly_stem?.name
-                                }
-                                luckyStars={luckyStars}
-                              />
-                            </div>
-                          ))}
-
-                        {/* Hour Pillars */}
-                        {explorerStep === "hour" &&
-                          hourPillars.map((pillar, index) => (
-                            <div key={index}>
-                              <CompactPillarCard
-                                title={pillar.hour_time}
-                                subtitle={`Hour`}
-                                pillarData={pillar}
-                                isSelected={selectedHourData === pillar}
-                                onClick={() => {
-                                  setSelectedHourData(pillar)
-                                  setIsDialogOpen(true)
-                                }}
-                                color="var(--color-chart-4)"
-                                dayMasterName={
-                                  baziData.four_pillars.day_pillar
-                                    ?.heavenly_stem?.name
-                                }
-                                luckyStars={luckyStars}
-                              />
-                            </div>
-                          ))}
-
-                        {/* Empty States */}
-                        {explorerStep === "year" &&
-                          yearPillars.length === 0 && (
-                            <div className="w-full py-12 text-center text-muted-foreground">
-                              Please select a 10-Year Luck Pillar first.
-                            </div>
-                          )}
-                        {explorerStep === "month" &&
-                          monthPillars.length === 0 && (
-                            <div className="w-full py-12 text-center text-muted-foreground">
-                              Please select a Year Pillar first.
-                            </div>
-                          )}
-                        {explorerStep === "day" && dayPillars.length === 0 && (
-                          <div className="w-full py-12 text-center text-muted-foreground">
-                            Please select a Month Pillar first.
-                          </div>
-                        )}
-                        {explorerStep === "hour" &&
-                          hourPillars.length === 0 && (
-                            <div className="w-full py-12 text-center text-muted-foreground">
-                              Please select a Day Pillar first.
-                            </div>
-                          )}
-                      </div>
-                    </div>
-
-                    {/* Navigation Actions */}
-                    <div className="mt-4 flex items-center justify-between border-t border-border pt-6">
-                      <button
-                        onClick={() => {
-                          if (explorerStep === "year") setExplorerStep("luck")
-                          if (explorerStep === "month") setExplorerStep("year")
-                          if (explorerStep === "day") setExplorerStep("month")
-                          if (explorerStep === "hour") setExplorerStep("day")
-                        }}
-                        className={`rounded-[12px] px-5 py-2.5 text-[14px] font-medium transition-all duration-200 ${
-                          explorerStep === "luck"
-                            ? "pointer-events-none opacity-0"
-                            : "border border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground"
-                        }`}
-                      >
-                        ← Change{" "}
-                        {explorerStep === "year"
-                          ? "10-Year Luck"
-                          : explorerStep === "month"
-                            ? "Year"
-                            : explorerStep === "day"
-                              ? "Month"
-                              : explorerStep === "hour"
-                                ? "Day"
-                                : ""}
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          if (explorerStep === "luck" && selectedLuck !== null)
-                            setExplorerStep("year")
-                          if (explorerStep === "year" && selectedYear !== null)
-                            setExplorerStep("month")
-                          if (
-                            explorerStep === "month" &&
-                            selectedMonth !== null
-                          )
-                            setExplorerStep("day")
-                          if (explorerStep === "day" && selectedDay !== null)
-                            setExplorerStep("hour")
-                        }}
-                        className={`rounded-[12px] px-5 py-2.5 text-[14px] font-medium transition-all duration-200 ${
-                          (explorerStep === "luck" && selectedLuck === null) ||
-                          (explorerStep === "year" && selectedYear === null) ||
-                          (explorerStep === "month" &&
-                            selectedMonth === null) ||
-                          (explorerStep === "day" && selectedDay === null) ||
-                          explorerStep === "hour"
-                            ? "cursor-not-allowed bg-muted text-muted-foreground opacity-50"
-                            : "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90"
-                        }`}
-                      >
-                        Next →
-                      </button>
-                    </div>
-
-                    {/* Floating Tip Card */}
-                    <div className="mt-8 flex items-start gap-3 rounded-[20px] border border-border bg-card/70 p-4 shadow-sm backdrop-blur-[20px]">
-                      <span className="text-[20px] leading-none">💡</span>
-                      <p className="text-[13px] leading-relaxed text-muted-foreground">
-                        <strong className="text-foreground">Tip:</strong> Start
-                        from 10-Year Luck Pillars and drill down to see more
-                        specific influences. Your selections are saved in the
-                        sidebar.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                <LuckPillarExplorer
+                  baziData={baziData}
+                  luckyStars={luckyStars}
+                  date={date}
+                  time={time}
+                  timezone={timezone}
+                  unknownTime={unknownTime}
+                  mode={mode}
+                />
               </div>
             )}
           </div>
         </div>
       </div>
-
-      {/* Detail Dialog */}
-      <DetailDialog
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        selectedHourData={selectedHourData}
-        selectedLuckData={getSelectedLuckData()}
-        selectedYearData={getSelectedYearData()}
-        selectedMonthData={getSelectedMonthData()}
-        selectedDayData={getSelectedDayData()}
-        selectedYear={selectedYear}
-        selectedDay={selectedDay}
-        baziData={baziData}
-        luckyStars={luckyStars}
-      />
     </div>
   )
 }

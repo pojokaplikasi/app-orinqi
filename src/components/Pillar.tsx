@@ -3,6 +3,7 @@ import React from "react"
 import { ELEMENT_COLORS } from "@/lib/bazi/constants"
 import { HEAVENLY_STEMS } from "@/lib/bazi/constants"
 import { getTenGodsRelationship } from "@/lib/bazi/element-analysis"
+import { formatLifeCycleName, formatNayinName, getNayinFromStemBranch } from "@/lib/bazi/pillar-calculations"
 
 interface PillarProps {
   title: string
@@ -19,6 +20,7 @@ interface PillarProps {
   dayMasterName?: string
   isExpanded?: boolean
   onToggleExpand?: () => void
+  mode?: "classic" | "modern"
 }
 
 export default function Pillar({
@@ -36,6 +38,7 @@ export default function Pillar({
   dayMasterName,
   isExpanded = false,
   onToggleExpand,
+  mode = "modern",
 }: PillarProps) {
   if (!pillarData) return null
 
@@ -339,10 +342,17 @@ export default function Pillar({
       {/* Element Section (Nayin) & Life Stage */}
       <div className="mt-2 flex items-center justify-between w-full px-1 min-h-[24px]">
         <span className="text-[11px] font-medium text-muted-foreground/80 text-left line-clamp-2 flex-1 pr-2">
-          {gan_zhi?.name || "N/A"}
+          {heavenly_stem?.name && earthly_branch?.name
+            ? formatNayinName(
+                getNayinFromStemBranch(heavenly_stem.name, earthly_branch.name),
+                mode
+              )
+            : gan_zhi?.name || "N/A"}
         </span>
         <span className="text-[10px] font-bold tracking-wider text-purple-500/80 uppercase bg-purple-500/10 px-2 py-0.5 rounded-full whitespace-nowrap">
-          {life_cycle || "N/A"}
+          {heavenly_stem?.name && earthly_branch?.name && dayMasterName
+            ? formatLifeCycleName(dayMasterName, earthly_branch.name, mode)
+            : life_cycle || "N/A"}
         </span>
       </div>
 

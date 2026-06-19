@@ -1,309 +1,361 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import React, { useCallback, useEffect, useRef, useState } from "react"
-import Chart from "chart.js/auto"
+import React, { useState } from "react"
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+  Radar,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts"
+import { ELEMENT_COLORS } from "@/lib/bazi/constants"
 
-const ELEMENT_COLORS: Record<string, string> = {
-  Wood: "#28a745",
-  Fire: "#dc3545",
-  Earth: "#ffc107",
-  Metal: "#6c757d",
-  Water: "#007bff",
+// ─── Element metadata ────────────────────────────────────────────────────────
+const ELEMENT_META: Record<
+  string,
+  { chinese: string; bold: string; parenthetical: string; icon: string }
+> = {
+  Metal: {
+    chinese: "創作型",
+    bold: "Output",
+    parenthetical: "(Creators)",
+    icon: "⚙️",
+  },
+  Water: {
+    chinese: "智慧型",
+    bold: "Influence",
+    parenthetical: "(Thinkers)",
+    icon: "💧",
+  },
+  Wood: {
+    chinese: "進取型",
+    bold: "Wealth",
+    parenthetical: "(Achievers)",
+    icon: "🌳",
+  },
+  Fire: {
+    chinese: "表現型",
+    bold: "Power",
+    parenthetical: "(Leaders)",
+    icon: "🔥",
+  },
+  Earth: {
+    chinese: "穩定型",
+    bold: "Resource",
+    parenthetical: "(Supporters)",
+    icon: "🌍",
+  },
 }
 
-const ELEMENT_WORDS: Record<string, string> = {
-  Wood: "Growth",
-  Fire: "Passion",
-  Earth: "Stability",
-  Metal: "Structure",
-  Water: "Wisdom",
+// Order for pentagon radar (top → clockwise)
+const ELEMENT_ORDER = ["Metal", "Water", "Wood", "Fire", "Earth"]
+
+// ─── Custom Angle-Axis Tick (multi-line label) ───────────────────────────────
+const CustomAngleTick = (props: any) => {
+  const { x, y, cx, cy, payload } = props
+  const elem = payload.value as string
+  const meta = ELEMENT_META[elem]
+  if (!meta) return null
+
+  // Direction vector from center to this tick
+  const dx = x - cx
+  const dy = y - cy
+  const dist = Math.sqrt(dx * dx + dy * dy)
+  const nx = dx / dist
+  const ny = dy / dist
+
+  // Push label further out from the axis tip
+  const OFFSET = 52
+  const lx = x + nx * OFFSET
+  const ly = y + ny * OFFSET
+
+  // Total height of 4 rows: badge(18) + gap(4) + chinese(14) + gap(4) + bold(14) + gap(4) + paren(14) = 72
+  // Center the whole block around ly
+  const totalH = 72
+  const startY = ly - totalH / 2
+
+  const boxW = 68
+  const boxH = 18
+
+  return (
+    <g>
+      {/* Row 1: Element badge */}
+      <rect
+        x={lx - boxW / 2}
+        y={startY}
+        width={boxW}
+        height={boxH}
+        rx={4}
+        fill={ELEMENT_COLORS[elem] ?? "#6D4C41"}
+      />
+      <text
+        x={lx}
+        y={startY + boxH / 2}
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fill="#fff"
+        fontSize={11}
+        fontWeight="bold"
+      >
+        {elem.toUpperCase()}
+      </text>
+
+      {/* Row 2: Chinese */}
+      <text
+        x={lx}
+        y={startY + boxH + 4 + 7}
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fill="#555"
+        fontSize={11}
+      >
+        {meta.chinese}
+      </text>
+
+      {/* Row 3: Bold title */}
+      <text
+        x={lx}
+        y={startY + boxH + 4 + 14 + 4 + 7}
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fill="#222"
+        fontSize={12}
+        fontWeight="bold"
+      >
+        {meta.bold}
+      </text>
+
+      {/* Row 4: Parenthetical */}
+      <text
+        x={lx}
+        y={startY + boxH + 4 + 14 + 4 + 14 + 4 + 7}
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fill="#777"
+        fontSize={11}
+      >
+        {meta.parenthetical}
+      </text>
+    </g>
+  )
 }
 
-const ELEMENT_ICONS: Record<string, string> = {
-  Wood: "🌳",
-  Fire: "🔥",
-  Earth: "🌍",
-  Metal: "⚙️",
-  Water: "💧",
+// ─── Custom Tooltip ──────────────────────────────────────────────────────────
+const CustomTooltip = ({ active, payload }: any) => {
+  if (!active || !payload || !payload.length) return null
+  const elem = payload[0]?.payload?.subject as string
+  const meta = ELEMENT_META[elem]
+  const color = ELEMENT_COLORS[elem] ?? "#888"
+  const natal = payload.find((p: any) => p.dataKey === "natal")?.value ?? "-"
+  const annual = payload.find((p: any) => p.dataKey === "annual")?.value ?? "-"
+
+  return (
+    <div
+      style={{
+        background: "rgba(20,20,20,0.92)",
+        borderRadius: 10,
+        padding: "10px 16px",
+        color: "#fff",
+        fontSize: 13,
+        minWidth: 160,
+        boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
+      }}
+    >
+      <div
+        style={{
+          fontWeight: "bold",
+          marginBottom: 6,
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+        }}
+      >
+        <span>{meta?.icon}</span>
+        <span style={{ color }}>{elem}</span>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 16 }}>
+          <span style={{ color: "#D2B48C" }}>Natal</span>
+          <span style={{ fontWeight: "bold", color }}>{natal}%</span>
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 16 }}>
+          <span style={{ color: "#9B59B6" }}>Annual 2026</span>
+          <span style={{ fontWeight: "bold" }}>{annual}%</span>
+        </div>
+      </div>
+    </div>
+  )
 }
 
+// ─── Props ───────────────────────────────────────────────────────────────────
 interface ElementStructureProps {
   elementData: any
 }
 
-export default function ElementStructure({
-  elementData,
-}: ElementStructureProps) {
-  const chartRef = useRef<HTMLCanvasElement>(null)
-  const chartInstance = useRef<Chart | null>(null)
-  const dialogChartInstance = useRef<Chart | null>(null)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-
-  const getChartConfig = useCallback(
-    (showTicks: boolean) => {
-      if (!elementData) return null
-
-      const baseLabels = ["Wood", "Fire", "Earth", "Metal", "Water"]
-      const labels = baseLabels.map((elem) => [elem, ELEMENT_WORDS[elem]])
-      const labelColors = baseLabels.map((elem) => ELEMENT_COLORS[elem])
-
-      const natalData = baseLabels.map((elem) =>
-        parseFloat(elementData.natal[elem])
-      )
-      const annualData = baseLabels.map((elem) =>
-        parseFloat(elementData.annual[elem])
-      )
-
-      return {
-        type: "radar" as const,
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: "Natal Chart",
-              data: natalData,
-              backgroundColor: "rgba(245, 222, 179, 0.5)",
-              borderColor: "rgba(210, 180, 140, 1)",
-              borderWidth: 2,
-              pointBackgroundColor: "rgba(210, 180, 140, 1)",
-              pointBorderColor: "#fff",
-              pointHoverBackgroundColor: "#fff",
-              pointHoverBorderColor: "rgba(210, 180, 140, 1)",
-            },
-            {
-              label: "Annual 2026",
-              data: annualData,
-              backgroundColor: "rgba(147, 112, 219, 0.4)",
-              borderColor: "rgba(138, 43, 226, 1)",
-              borderWidth: 2,
-              pointBackgroundColor: "rgba(138, 43, 226, 1)",
-              pointBorderColor: "#fff",
-              pointHoverBackgroundColor: "#fff",
-              pointHoverBorderColor: "rgba(138, 43, 226, 1)",
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          scales: {
-            r: {
-              beginAtZero: true,
-              max: 100,
-              ticks: {
-                display: showTicks,
-                stepSize: 20,
-                font: { size: showTicks ? 13 : 10 },
-                color: "#6c757d",
-              },
-              grid: { color: "rgba(0, 0, 0, 0.15)" },
-              angleLines: { color: "rgba(0, 0, 0, 0.15)" },
-              pointLabels: {
-                font: {
-                  size: showTicks ? 14 : 12,
-                  weight: "bold" as const,
-                },
-                color: "#ffffff",
-                backdropColor: (context: any) => labelColors[context.index],
-                backdropPadding: { top: 4, bottom: 4, left: 8, right: 8 },
-                borderRadius: 6,
-              },
-            },
-          },
-          plugins: {
-            legend: {
-              position: "bottom" as const,
-              labels: {
-                padding: 25,
-                font: { size: 15, weight: "bold" as const },
-                usePointStyle: true,
-                pointStyle: "circle" as const,
-              },
-            },
-            tooltip: {
-              backgroundColor: "rgba(0, 0, 0, 0.8)",
-              titleFont: { size: 14, weight: "bold" as const },
-              bodyFont: { size: 13 },
-              padding: 12,
-              cornerRadius: 8,
-              callbacks: {
-                title: function (context: any) {
-                  const label = context[0].label || ""
-                  return Array.isArray(label) ? label[0] : label.split(',')[0]
-                },
-                label: function (context: any) {
-                  return context.dataset.label + ": " + context.parsed.r + "%"
-                },
-              },
-            },
-          },
-        },
-      }
-    },
-    [elementData]
-  )
-
-  useEffect(() => {
-    if (!chartRef.current || !elementData) return
-
-    // Destroy existing chart
-    if (chartInstance.current) {
-      chartInstance.current.destroy()
-    }
-
-    const config = getChartConfig(false)
-    if (!config) return
-
-    const ctx = chartRef.current.getContext("2d")
-    if (!ctx) return
-
-    chartInstance.current = new Chart(ctx, config)
-
-    return () => {
-      if (chartInstance.current) {
-        chartInstance.current.destroy()
-      }
-    }
-  }, [elementData, getChartConfig])
-
-  // Dialog chart: use callback ref so chart is created when canvas mounts in portal
-  const dialogCanvasRef = useCallback(
-    (node: HTMLCanvasElement | null) => {
-      // Destroy previous instance
-      if (dialogChartInstance.current) {
-        dialogChartInstance.current.destroy()
-        dialogChartInstance.current = null
-      }
-
-      if (!node || !elementData) return
-
-      const config = getChartConfig(false)
-      if (!config) return
-
-      const ctx = node.getContext("2d")
-      if (!ctx) return
-
-      dialogChartInstance.current = new Chart(ctx, config)
-    },
-    [elementData, getChartConfig]
-  )
-
-  // Cleanup dialog chart when dialog closes
-  useEffect(() => {
-    if (!isDialogOpen && dialogChartInstance.current) {
-      dialogChartInstance.current.destroy()
-      dialogChartInstance.current = null
-    }
-  }, [isDialogOpen])
+// ─── Main Component ──────────────────────────────────────────────────────────
+export default function ElementStructure({ elementData }: ElementStructureProps) {
+  const [showNatal, setShowNatal] = useState(true)
+  const [showAnnual, setShowAnnual] = useState(true)
 
   if (!elementData) return null
 
+  // Build recharts data array
+  const data = ELEMENT_ORDER.map((elem) => ({
+    subject: elem,
+    natal: parseFloat(elementData.natal[elem] ?? "0"),
+    annual: parseFloat(elementData.annual[elem] ?? "0"),
+  }))
+
   return (
-    <div className="flex w-full flex-col items-center">
-      {/* Chart Container (Clickable) */}
+    <div className="flex w-full flex-col items-center gap-0">
+      {/* ── Header ── */}
       <div
-        className="relative mb-6 flex h-[320px] w-full max-w-[320px] cursor-pointer items-center justify-center rounded-[20px] transition-all duration-200 hover:scale-[1.02] hover:shadow-md"
-        onClick={() => setIsDialogOpen(true)}
-        title="Click to enlarge chart"
+        className="w-full rounded-t-[16px] py-2 text-center text-[13px] font-bold tracking-[0.2em] text-white uppercase"
+        style={{ background: "linear-gradient(90deg, #C9A96E 0%, #B8860B 100%)" }}
       >
-        <canvas ref={chartRef} width="320" height="320"></canvas>
-        <div className="absolute right-2 bottom-2 flex items-center gap-1 rounded-full bg-muted/80 px-2 py-1 text-[10px] text-muted-foreground backdrop-blur-sm">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="12"
-            height="12"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="15 3 21 3 21 9" />
-            <polyline points="9 21 3 21 3 15" />
-            <line x1="21" y1="3" x2="14" y2="10" />
-            <line x1="3" y1="21" x2="10" y2="14" />
-          </svg>
-          Enlarge
-        </div>
+        5 Structures
       </div>
 
-      {/* Dialog for enlarged chart */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-[calc(100%-1rem)] p-4 sm:max-w-[90vw] sm:p-6 md:max-w-[700px]">
-          <DialogHeader>
-            <DialogTitle className="text-center text-[20px] font-bold">
-              Element Composition
-            </DialogTitle>
-          </DialogHeader>
-          <div className="flex w-full items-center justify-center overflow-hidden">
-            <div className="relative flex aspect-square w-full max-w-[600px] items-center justify-center">
-              {isDialogOpen && <canvas ref={dialogCanvasRef}></canvas>}
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* ── Legend ── */}
+      <div className="flex items-center justify-center gap-6 py-3">
+        <button
+          onClick={() => setShowNatal((v) => !v)}
+          className="flex items-center gap-2 rounded-full px-3 py-1 text-[12px] font-semibold transition-all"
+          style={{
+            background: showNatal ? "#F5DEB3" : "#e5e7eb",
+            color: showNatal ? "#5C4033" : "#9ca3af",
+            border: `2px solid ${showNatal ? "#D2B48C" : "#d1d5db"}`,
+            opacity: showNatal ? 1 : 0.6,
+          }}
+        >
+          <span
+            className="inline-block h-3 w-3 rounded-sm"
+            style={{ background: "#D2B48C" }}
+          />
+          Natal
+        </button>
+        <button
+          onClick={() => setShowAnnual((v) => !v)}
+          className="flex items-center gap-2 rounded-full px-3 py-1 text-[12px] font-semibold transition-all"
+          style={{
+            background: showAnnual ? "#E8D5F5" : "#e5e7eb",
+            color: showAnnual ? "#6B21A8" : "#9ca3af",
+            border: `2px solid ${showAnnual ? "#9B59B6" : "#d1d5db"}`,
+            opacity: showAnnual ? 1 : 0.6,
+          }}
+        >
+          <span
+            className="inline-block h-3 w-3 rounded-sm"
+            style={{ background: "#9B59B6" }}
+          />
+          Annual 2026
+        </button>
+      </div>
 
-      {/* Element Labels & Comparison Bars */}
-      <div className="grid w-full grid-cols-2 gap-4">
-        {Object.keys(elementData.natal).map((elem) => {
-          const natalPercent = elementData.natal[elem]
-          const annualPercent = elementData.annual[elem]
-          const color = ELEMENT_COLORS[elem]
-          const icon = ELEMENT_ICONS[elem]
+      {/* ── Radar Chart ── */}
+      <div className="w-full" style={{ height: 420 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <RadarChart
+            data={data}
+            margin={{ top: 60, right: 80, bottom: 60, left: 80 }}
+          >
+            <PolarGrid gridType="polygon" stroke="#ccc" strokeWidth={1} />
+            <PolarAngleAxis
+              dataKey="subject"
+              tick={<CustomAngleTick />}
+              tickLine={false}
+            />
+            <PolarRadiusAxis
+              angle={90}
+              domain={[0, 100]}
+              tickCount={6}
+              tick={{ fontSize: 10, fill: "#999" }}
+              axisLine={false}
+              tickLine={false}
+            />
+            {showNatal && (
+              <Radar
+                name="Natal"
+                dataKey="natal"
+                stroke="#D2B48C"
+                strokeWidth={2}
+                fill="#F5DEB3"
+                fillOpacity={0.45}
+                dot={{ r: 4, fill: "#222", strokeWidth: 0 }}
+                activeDot={{ r: 6, fill: "#222" }}
+              />
+            )}
+            {showAnnual && (
+              <Radar
+                name="Annual 2026"
+                dataKey="annual"
+                stroke="#8B2FC9"
+                strokeWidth={2}
+                fill="#9B59B6"
+                fillOpacity={0.3}
+                dot={{ r: 4, fill: "#8B2FC9", strokeWidth: 0 }}
+                activeDot={{ r: 6, fill: "#8B2FC9" }}
+              />
+            )}
+            <Tooltip content={<CustomTooltip />} />
+          </RadarChart>
+        </ResponsiveContainer>
+      </div>
 
+      {/* ── Element Cards ── */}
+      <div className="mt-2 grid w-full grid-cols-2 gap-2">
+        {ELEMENT_ORDER.map((elem) => {
+          const meta = ELEMENT_META[elem]
+          const color = ELEMENT_COLORS[elem] ?? "#888"
+          const natal = elementData.natal[elem] ?? "0"
+          const annual = elementData.annual[elem] ?? "0"
           return (
             <div
               key={elem}
-              className="flex flex-col items-center gap-3 rounded-[18px] border border-border bg-card p-[16px] text-center shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
+              className="flex flex-col rounded-[14px] border border-border bg-card overflow-hidden shadow-sm"
             >
+              {/* Header strip */}
               <div
-                className="flex h-[40px] w-[40px] flex-shrink-0 items-center justify-center rounded-full text-[20px]"
-                style={{
-                  background: "rgba(255,255,255,0.1)",
-                  backdropFilter: "blur(16px)",
-                  border: `1px solid ${color}20`,
-                  boxShadow: `0 4px 12px ${color}15`,
-                }}
+                className="flex items-center gap-2 px-3 py-2"
+                style={{ backgroundColor: color + "22" }}
               >
-                {icon}
-              </div>
-
-              <div className="flex w-full flex-col items-center">
+                <span className="text-[20px] leading-none">{meta.icon}</span>
+                <div>
+                  <div className="text-[12px] font-bold text-foreground leading-tight">
+                    {meta.bold}
+                  </div>
+                  <div className="text-[10px] text-muted-foreground leading-tight">
+                    {meta.parenthetical}
+                  </div>
+                </div>
                 <div
-                  className="mb-1 rounded-full px-3 py-0.5 text-[12px] font-bold tracking-wide text-white uppercase shadow-sm"
+                  className="ml-auto rounded-full px-2 py-0.5 text-[9px] font-bold tracking-wide text-white uppercase shrink-0"
                   style={{ backgroundColor: color }}
                 >
                   {elem}
                 </div>
-                <div className="mb-2 text-[11px] italic text-muted-foreground">
-                  {ELEMENT_WORDS[elem]}
-                </div>
+              </div>
 
-                <div className="flex items-center justify-center gap-2">
-                  <div className="flex items-center gap-1">
-                    <span className="text-[11px] text-muted-foreground">N</span>
-                    <span className="text-[12px] font-bold" style={{ color }}>
-                      {natalPercent}%
-                    </span>
-                  </div>
-                  <div className="h-[3px] w-[3px] rounded-full bg-border"></div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-[11px] text-muted-foreground">A</span>
-                    <span
-                      className="text-[12px] font-bold"
-                      style={{ color, opacity: 0.8 }}
-                    >
-                      {annualPercent}%
-                    </span>
-                  </div>
+              {/* Values row */}
+              <div className="flex divide-x divide-border">
+                <div className="flex flex-1 flex-col items-center py-2">
+                  <span className="text-[9px] font-semibold uppercase text-muted-foreground tracking-wide">
+                    Natal
+                  </span>
+                  <span className="text-[15px] font-bold" style={{ color }}>
+                    {natal}%
+                  </span>
+                </div>
+                <div className="flex flex-1 flex-col items-center py-2">
+                  <span className="text-[9px] font-semibold uppercase text-muted-foreground tracking-wide">
+                    Annual
+                  </span>
+                  <span className="text-[15px] font-bold" style={{ color: "#9B59B6" }}>
+                    {annual}%
+                  </span>
                 </div>
               </div>
             </div>
