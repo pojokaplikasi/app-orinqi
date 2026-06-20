@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
-import html2canvas from "html2canvas"
+import React, { useState } from "react"
 
 interface HeroFormProps {
   date: string
@@ -17,7 +16,12 @@ interface HeroFormProps {
   onCalculate: () => void
   loading: boolean
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  baziData?: any // Added to check if form is submitted
+  baziData?: any
+  /** Ref forwarded from page — StickyHeader watches this element's position */
+  heroRef?: React.RefObject<HTMLDivElement | null>
+  /** Lifted state so StickyHeader can read chartName */
+  chartName: string
+  setChartName: (name: string) => void
 }
 
 export default function HeroForm({
@@ -36,61 +40,12 @@ export default function HeroForm({
   onCalculate,
   loading,
   baziData,
+  heroRef,
+  chartName,
+  setChartName,
 }: HeroFormProps) {
-  const [chartName, setChartName] = useState("Your Destiny Chart")
   const [isEditingName, setIsEditingName] = useState(false)
   const [tempName, setTempName] = useState("")
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isDownloading, setIsDownloading] = useState(false)
-  const placeholderRef = useRef<HTMLDivElement>(null)
-  const headerRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!baziData) return
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
-    }
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [baziData])
-
-  // Keep placeholder height in sync with header height when fixed
-  useEffect(() => {
-    if (!baziData) return
-    const updatePlaceholder = () => {
-      if (placeholderRef.current && headerRef.current) {
-        placeholderRef.current.style.height = isScrolled
-          ? `${headerRef.current.offsetHeight}px`
-          : "0px"
-      }
-    }
-    updatePlaceholder()
-    window.addEventListener("resize", updatePlaceholder)
-    return () => window.removeEventListener("resize", updatePlaceholder)
-  }, [isScrolled, baziData])
-
-  const handleDownloadImage = async () => {
-    const element = document.getElementById("bazi-result-area")
-    if (!element) return
-    setIsDownloading(true)
-    try {
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: null,
-        logging: false,
-      })
-      const dataUrl = canvas.toDataURL("image/png")
-      const link = document.createElement("a")
-      link.href = dataUrl
-      link.download = `${chartName.replace(/\s+/g, "-")}-Destiny-Chart.png`
-      link.click()
-    } catch (err) {
-      console.error("Download failed:", err)
-    } finally {
-      setIsDownloading(false)
-    }
-  }
 
   const handleEditClick = () => {
     setTempName(chartName)
@@ -105,183 +60,63 @@ export default function HeroForm({
     setIsEditingName(false)
   }
 
-  // If data is present, show the info card instead of the form
+  // If data is present, show the static hero info card
   if (baziData) {
     return (
       <>
-        {/* Placeholder to prevent layout jump when header becomes fixed */}
-        <div ref={placeholderRef} style={{ height: 0 }} aria-hidden />
+        {/* Hero card — StickyHeader watches this element's bottom edge */}
+        <div ref={heroRef} className="w-full px-0 py-4">
+          <div className="mx-auto w-full max-w-[1800px]">
+            <div className="group relative overflow-hidden rounded-[24px] border border-border bg-card/40 p-5 shadow-[0_8px_32px_rgba(0,0,0,0.05)] backdrop-blur-[30px]">
+              {/* Liquid Background Effects */}
+              <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-gradient-to-br from-primary/20 to-chart-2/20 opacity-70 mix-blend-multiply blur-3xl transition-opacity duration-700 group-hover:opacity-100 dark:mix-blend-screen"></div>
+              <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-gradient-to-tr from-chart-1/20 to-chart-5/20 opacity-70 mix-blend-multiply blur-3xl transition-opacity duration-700 group-hover:opacity-100 dark:mix-blend-screen"></div>
 
-        <div
-          ref={headerRef}
-          className={`w-full transition-all duration-300 ease-in-out ${
-            isScrolled
-              ? "fixed top-0 left-0 z-50 border-b border-border bg-background/80 px-4 py-2 shadow-md backdrop-blur-md"
-              : "relative bg-background px-0 py-4"
-          }`}
-        >
-          <div className={`mx-auto w-full max-w-[1800px] transition-all duration-300 ${isScrolled ? "px-2" : ""}`}>
-          <div className={`group relative overflow-hidden transition-all duration-300 ${
-            isScrolled
-              ? "border-0 bg-transparent p-0 shadow-none backdrop-blur-none"
-              : "rounded-[24px] border border-border bg-card/40 p-5 shadow-[0_8px_32px_rgba(0,0,0,0.05)] backdrop-blur-[30px]"
-          }`}>
-            {/* Liquid Background Effects — only in hero mode */}
-            {!isScrolled && (
-              <>
-                <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-gradient-to-br from-primary/20 to-chart-2/20 opacity-70 mix-blend-multiply blur-3xl transition-opacity duration-700 group-hover:opacity-100 dark:mix-blend-screen"></div>
-                <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-gradient-to-tr from-chart-1/20 to-chart-5/20 opacity-70 mix-blend-multiply blur-3xl transition-opacity duration-700 group-hover:opacity-100 dark:mix-blend-screen"></div>
-              </>
-            )}
-
-            <div className="relative z-10 flex items-center justify-between gap-4">
-              {/* Left: Avatar + Info + Toggle */}
-              <div className="flex flex-1 items-center gap-3 min-w-0">
-                <div className={`shrink-0 flex items-center justify-center rounded-full border-4 border-background/80 bg-gradient-to-br from-primary to-primary/80 shadow-[0_4px_20px_rgba(var(--primary),0.4)] transition-all duration-300 ${
-                  isScrolled ? "h-[36px] w-[36px]" : "h-[80px] w-[80px]"
-                }`}>
-                  <span className={`font-serif font-bold text-primary-foreground transition-all duration-300 ${
-                    isScrolled ? "text-base" : "text-4xl"
-                  }`}>
-                    命
-                  </span>
-                </div>
-
-                {/* Compact 1-line info when scrolled */}
-                {isScrolled ? (
-                  <div className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden">
-                    <h2 className="shrink-0 text-[15px] font-bold tracking-tight text-foreground">
-                      {chartName}
-                    </h2>
-                    <span className="text-muted-foreground/50">·</span>
-                    <p className="truncate text-[12px] text-muted-foreground">
-                      {new Date(date).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                      {!unknownTime && time && ` · ${time}`}
-                    </p>
-                    {/* Classic / Modern Toggle — compact */}
-                    <div className="ml-2 hidden shrink-0 rounded-[10px] border border-border bg-background/60 p-0.5 shadow-sm sm:flex">
-                      <button
-                        type="button"
-                        onClick={() => setMode("classic")}
-                        className={`rounded-[8px] px-2.5 py-0.5 text-[11px] font-semibold transition-all duration-200 ${mode === "classic" ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-                      >
-                        Classic
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setMode("modern")}
-                        className={`rounded-[8px] px-2.5 py-0.5 text-[11px] font-semibold transition-all duration-200 ${mode === "modern" ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-                      >
-                        Modern
-                      </button>
-                    </div>
+              <div className="relative z-10 flex items-center justify-between gap-4">
+                {/* Left: Avatar + Info + Toggle */}
+                <div className="flex flex-1 items-center gap-4">
+                  <div className="flex h-[80px] w-[80px] shrink-0 items-center justify-center rounded-full border-4 border-background/80 bg-gradient-to-br from-primary to-primary/80 shadow-[0_4px_20px_rgba(var(--primary),0.4)]">
+                    <span className="font-serif text-4xl font-bold text-primary-foreground">命</span>
                   </div>
-                ) : (
                   <div>
                     <div className="mb-1 flex items-center gap-2">
-                      <h2 className="text-[28px] font-bold tracking-tight text-foreground">
-                        {chartName}
-                      </h2>
+                      <h2 className="text-[28px] font-bold tracking-tight text-foreground">{chartName}</h2>
                       <button
                         onClick={handleEditClick}
                         className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-background/60 hover:text-primary"
                         title="Edit Name"
                       >
-                        <svg
-                          className="h-5 w-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                          ></path>
+                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
                         </svg>
                       </button>
                     </div>
                     <p className="text-[15px] font-medium text-muted-foreground">
-                      {new Date(date).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
+                      {new Date(date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
                       {!unknownTime && time && ` • ${time}`}
                     </p>
                     <div className="mt-3 flex flex-wrap items-center gap-3">
-                      <span className="rounded-full border border-border bg-background/60 px-3 py-1 text-[12px] font-semibold text-muted-foreground shadow-sm">
-                        {gender === 1 ? "Male" : "Female"}
-                      </span>
-                      <span className="rounded-full border border-border bg-background/60 px-3 py-1 text-[12px] font-semibold text-muted-foreground shadow-sm">
-                        {timezone.split("/").pop()?.replace(/_/g, " ") || timezone}
-                      </span>
-                      {/* Classic / Modern Toggle */}
+                      <span className="rounded-full border border-border bg-background/60 px-3 py-1 text-[12px] font-semibold text-muted-foreground shadow-sm">{gender === 1 ? "Male" : "Female"}</span>
+                      <span className="rounded-full border border-border bg-background/60 px-3 py-1 text-[12px] font-semibold text-muted-foreground shadow-sm">{timezone.split("/").pop()?.replace(/_/g, " ") || timezone}</span>
                       <div className="flex rounded-[12px] border border-border bg-background/60 p-0.5 shadow-sm">
-                        <button
-                          type="button"
-                          onClick={() => setMode("classic")}
-                          className={`rounded-[10px] px-3 py-1 text-[12px] font-semibold transition-all duration-200 ${mode === "classic" ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-                        >
-                          Classic
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setMode("modern")}
-                          className={`rounded-[10px] px-3 py-1 text-[12px] font-semibold transition-all duration-200 ${mode === "modern" ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-                        >
-                          Modern
-                        </button>
+                        <button type="button" onClick={() => setMode("classic")} className={`rounded-[10px] px-3 py-1 text-[12px] font-semibold transition-colors ${mode === "classic" ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>Classic</button>
+                        <button type="button" onClick={() => setMode("modern")} className={`rounded-[10px] px-3 py-1 text-[12px] font-semibold transition-colors ${mode === "modern" ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>Modern</button>
                       </div>
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
 
-              {/* Right: Download + New Calculation buttons */}
-              <div className="flex shrink-0 items-center gap-2">
-                {/* Download / Print button */}
-                <button
-                  onClick={handleDownloadImage}
-                  disabled={isDownloading}
-                  title="Download as image"
-                  className={`flex items-center gap-1.5 rounded-[12px] border border-border bg-background/70 font-semibold text-foreground shadow-sm backdrop-blur-sm transition-all duration-200 hover:-translate-y-[1px] hover:bg-background hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 ${
-                    isScrolled ? "px-3 py-1.5 text-[12px]" : "px-4 py-3 text-[14px]"
-                  }`}
-                >
-                  {isDownloading ? (
-                    <svg className="h-3.5 w-3.5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                    </svg>
-                  ) : (
-                    <svg className="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                  )}
-                  <span className={isScrolled ? "hidden sm:inline" : ""}>
-                    {isDownloading ? "Saving..." : "Save Image"}
-                  </span>
-                </button>
-
-                {/* New Calculation button */}
-                <button
-                  onClick={() => window.location.reload()}
-                  className={`rounded-[12px] bg-gradient-to-r from-chart-2 to-chart-2/80 font-semibold text-primary-foreground shadow-[0_4px_15px_rgba(var(--chart-2),0.3)] transition-all duration-200 hover:-translate-y-[1px] hover:from-chart-2/90 hover:to-chart-2/70 hover:shadow-[0_6px_20px_rgba(var(--chart-2),0.4)] ${
-                    isScrolled ? "px-3 py-1.5 text-[12px]" : "px-6 py-3 text-[14px]"
-                  }`}
-                >
-                  {isScrolled ? "New" : "New Calculation"}
-                </button>
+                {/* Right: New Calculation button */}
+                <div className="flex shrink-0 items-center gap-2">
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="rounded-[12px] bg-gradient-to-r from-chart-2 to-chart-2/80 px-6 py-3 text-[14px] font-semibold text-primary-foreground shadow-[0_4px_15px_rgba(var(--chart-2),0.3)] transition-colors hover:from-chart-2/90 hover:to-chart-2/70"
+                  >
+                    New Calculation
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
           </div>
         </div>
 

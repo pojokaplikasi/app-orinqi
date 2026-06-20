@@ -20,6 +20,7 @@ import {
 import LuckPillarExplorer from "@/components/calculate-v2/LuckPillarExplorer"
 import ElementStructure from "@/components/calculate-v2/ElementStructure"
 import HeroForm from "@/components/calculate-v2/HeroForm"
+import StickyHeader from "@/components/calculate-v2/StickyHeader"
 import LuckyStars from "@/components/calculate-v2/LuckyStars"
 import Pillar from "@/components/calculate-v2/Pillar"
 import TenGods from "@/components/calculate-v2/TenGods"
@@ -31,6 +32,7 @@ export default function BaziCalculator() {
   const [gender, setGender] = useState<number | null>(null)
   const [unknownTime, setUnknownTime] = useState(false)
   const [mode, setMode] = useState<"classic" | "modern">("modern")
+  const [chartName, setChartName] = useState("Your Destiny Chart")
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
@@ -57,6 +59,7 @@ export default function BaziCalculator() {
   // Explorer state is managed inside LuckPillarExplorer
 
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const heroRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (baziData && scrollContainerRef.current) {
@@ -169,6 +172,21 @@ export default function BaziCalculator() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
+      {/* Sticky header — independent component, fades in when hero scrolls out of view */}
+      {baziData && (
+        <StickyHeader
+          chartName={chartName}
+          date={date}
+          time={time}
+          unknownTime={unknownTime}
+          timezone={timezone}
+          gender={gender}
+          mode={mode}
+          setMode={setMode}
+          heroRef={heroRef}
+        />
+      )}
+
       <div className="container mx-auto px-4">
         <div className="row justify-center">
           <div className="col-md-10 mx-auto w-full max-w-[1800px]">
@@ -188,6 +206,9 @@ export default function BaziCalculator() {
               onCalculate={handleCalculate}
               loading={loading}
               baziData={baziData}
+              heroRef={heroRef}
+              chartName={chartName}
+              setChartName={setChartName}
             />
           </div>
         </div>
