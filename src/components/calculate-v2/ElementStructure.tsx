@@ -306,7 +306,7 @@ export default function ElementStructure({ elementData }: ElementStructureProps)
       </div>
 
       {/* ── Element Cards ── */}
-      <div className="mt-2 grid w-full grid-cols-1 gap-2">
+      <div className="mt-2 grid w-full grid-cols-3 gap-1.5">
         {ELEMENT_ORDER.map((elem) => {
           const meta = ELEMENT_META[elem]
           const color = ELEMENT_COLORS[elem] ?? "#888"
@@ -315,47 +315,38 @@ export default function ElementStructure({ elementData }: ElementStructureProps)
           return (
             <div
               key={elem}
-              className="flex flex-col rounded-[10px] border border-border bg-card overflow-hidden shadow-sm"
+              className="flex flex-col rounded-[8px] border border-border bg-card overflow-hidden"
             >
-              {/* Header strip */}
+              {/* Header */}
               <div
-                className="flex items-center gap-2 px-2.5 py-1.5"
-                style={{ backgroundColor: color + "22" }}
+                className="flex items-center gap-1.5 px-2 py-1"
+                style={{ backgroundColor: color + "18" }}
               >
-                <span className="text-[16px] leading-none">{meta.icon}</span>
-                <div>
-                  <div className="text-[12px] font-bold text-foreground leading-tight">
-                    {meta.bold}
+                <span className="text-[13px] leading-none">{meta.icon}</span>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1 flex-wrap">
+                    <div
+                      className="text-[8px] font-bold tracking-wide text-white rounded-sm px-1 inline-block shrink-0"
+                      style={{ backgroundColor: color }}
+                    >
+                      {elem}
+                    </div>
+                    <div className="text-[9px] font-semibold text-muted-foreground leading-tight truncate">
+                      ({meta.bold})
+                    </div>
                   </div>
-                  <div className="text-[10px] text-muted-foreground leading-tight">
-                    {meta.parenthetical}
-                  </div>
-                </div>
-                <div
-                  className="ml-auto rounded-full px-2 py-0.5 text-[9px] font-bold tracking-wide text-white uppercase shrink-0"
-                  style={{ backgroundColor: color }}
-                >
-                  {elem}
                 </div>
               </div>
 
-              {/* Values row */}
+              {/* Values */}
               <div className="flex divide-x divide-border">
-                <div className="flex flex-1 flex-col items-center py-1.5">
-                  <span className="text-[9px] font-semibold uppercase text-muted-foreground tracking-wide">
-                    Natal
-                  </span>
-                  <span className="text-[13px] font-bold" style={{ color }}>
-                    {natal}%
-                  </span>
+                <div className="flex flex-1 flex-col items-center py-1">
+                  <span className="text-[11px] font-semibold uppercase text-muted-foreground tracking-wide leading-none mb-0.5">N</span>
+                  <span className="text-[11px] font-bold leading-none" style={{ color }}>{natal}%</span>
                 </div>
-                <div className="flex flex-1 flex-col items-center py-1.5">
-                  <span className="text-[9px] font-semibold uppercase text-muted-foreground tracking-wide">
-                    Annual
-                  </span>
-                  <span className="text-[13px] font-bold" style={{ color: "#9B59B6" }}>
-                    {annual}%
-                  </span>
+                <div className="flex flex-1 flex-col items-center py-1">
+                  <span className="text-[11px] font-semibold uppercase text-muted-foreground tracking-wide leading-none mb-0.5">A</span>
+                  <span className="text-[11px] font-bold leading-none" style={{ color: "#9B59B6" }}>{annual}%</span>
                 </div>
               </div>
             </div>

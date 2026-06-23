@@ -106,15 +106,7 @@ export default function HeroForm({
                   </div>
                 </div>
 
-                {/* Right: New Calculation button */}
-                <div className="flex shrink-0 items-center gap-2">
-                  <button
-                    onClick={() => window.location.reload()}
-                    className="rounded-[12px] bg-gradient-to-r from-chart-2 to-chart-2/80 px-6 py-3 text-[14px] font-semibold text-primary-foreground shadow-[0_4px_15px_rgba(var(--chart-2),0.3)] transition-colors hover:from-chart-2/90 hover:to-chart-2/70"
-                  >
-                    New Calculation
-                  </button>
-                </div>
+
               </div>
             </div>
           </div>
