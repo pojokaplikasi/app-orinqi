@@ -417,7 +417,7 @@ export default function BaziCalculator() {
             </div>
 
             {/* ── Baris 2: [Lucky Stars] | [Luck Pillar Explorer] ── */}
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(0,9fr)]">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,10fr)]">
 
               {/* Lucky Stars */}
               <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
