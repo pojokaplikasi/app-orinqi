@@ -173,6 +173,23 @@ export default function BaziCalculator() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
+      {/* Legend — fixed bottom-left of page */}
+      {baziData && (
+        <div className="fixed bottom-4 left-4 z-40">
+          <div className="flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-[10px] font-medium text-muted-foreground shadow-sm">
+            <div className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-[var(--color-chart-3)]"></div><span>Positive</span></div>
+            <div className="w-px h-3 bg-border"></div>
+            <div className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-muted-foreground"></div><span>Neutral</span></div>
+            <div className="w-px h-3 bg-border"></div>
+            <div className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-[var(--color-chart-2)]"></div><span>Warning</span></div>
+            <div className="w-px h-3 bg-border"></div>
+            <div className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-destructive"></div><span>Negative</span></div>
+            <div className="w-px h-3 bg-border"></div>
+            <div className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-[var(--color-chart-1)]"></div><span>Special</span></div>
+          </div>
+        </div>
+      )}
+
       {/* Sticky header — independent component, fades in when hero scrolls out of view */}
       {baziData && (
         <StickyHeader
@@ -418,16 +435,7 @@ export default function BaziCalculator() {
                     mode={mode}
                   />
                 </div>
-                {/* Legend */}
-                <div className="mt-4 flex flex-col items-end gap-2">
-                  <div className="flex flex-wrap items-center justify-end gap-3 rounded-[12px] border border-border bg-muted/30 px-3 py-2 text-[11px] font-medium text-muted-foreground">
-                    <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-[var(--color-chart-3)]"></div><span>Positive</span></div>
-                    <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-muted-foreground"></div><span>Neutral</span></div>
-                    <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-[var(--color-chart-2)]"></div><span>Warning</span></div>
-                    <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-destructive"></div><span>Negative</span></div>
-                    <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-[var(--color-chart-1)]"></div><span>Special</span></div>
-                  </div>
-                </div>
+  
               </div>
 
               {/* Luck Pillar Explorer */}

@@ -365,7 +365,7 @@ export default function Pillar({
           <div className="flex w-full flex-col gap-1.5 text-left">
             {hsLabel && (
               <div
-                className="flex items-center gap-1.5 text-[10px] font-medium bg-black/[0.02] dark:bg-white/[0.02] rounded-lg px-2 py-1"
+                className="flex items-center gap-1.5 text-[9px] font-normal bg-black/[0.02] dark:bg-white/[0.02] rounded-lg px-2 py-1"
                 style={{ color: "var(--color-chart-3)" }}
               >
                 <div className="w-1 h-1 rounded-full bg-current opacity-50 shrink-0"></div>
@@ -395,7 +395,7 @@ export default function Pillar({
               return (
                 <div
                   key={idx}
-                  className={`flex items-center gap-1.5 text-[10px] font-medium rounded-lg px-2 py-1 ${bgColor}`}
+                  className={`flex items-center gap-1.5 text-[9px] font-normal rounded-lg px-2 py-1 ${bgColor}`}
                   style={{ color }}
                 >
                   <div className="w-1 h-1 rounded-full bg-current opacity-50 shrink-0"></div>
