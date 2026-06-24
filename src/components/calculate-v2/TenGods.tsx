@@ -72,53 +72,33 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
         return (
           <div
             key={godName}
-            className="flex items-center gap-3 rounded-[12px] border border-border bg-card p-3"
+            className="flex items-center gap-2.5 rounded-[10px] border border-border bg-card px-2.5 py-2"
           >
-            <div
-              className="flex h-[36px] w-[36px] flex-shrink-0 items-center justify-center rounded-full text-[14px] font-bold"
-              style={{
-                background: "rgba(255,255,255,0.1)",
-                backdropFilter: "blur(16px)",
-                border: `1px solid ${color}20`,
-                boxShadow: `0 4px 12px ${color}15`,
-                color: color,
-              }}
+            {/* Avatar */}
+            <span
+              className="flex-shrink-0 text-[18px] font-bold leading-none"
+              style={{ color }}
             >
               {allStems || chineseChar.split(" ").pop()?.[0] || "?"}
+            </span>
+
+            {/* Name + Chinese */}
+            <div className="flex min-w-0 flex-1 flex-col gap-0">
+              <span className="truncate text-[12px] font-semibold leading-tight text-foreground">
+                {godName}
+              </span>
+              <span className="truncate text-[10px] leading-tight text-muted-foreground">
+                {chineseChar}
+              </span>
             </div>
 
-            <div className="flex flex-1 flex-col">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[13px] font-bold text-foreground">
-                  {godName}
-                </span>
-                <span className="text-[11px] text-muted-foreground">
-                  ({chineseChar})
-                </span>
-              </div>
-
-              <div className="mt-1 flex items-center gap-3">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[12px] text-muted-foreground">
-                    Natal
-                  </span>
-                  <span className="text-[13px] font-bold" style={{ color }}>
-                    {natalPercent.toFixed(1)}%
-                  </span>
-                </div>
-                <div className="h-[3px] w-[3px] rounded-full bg-border"></div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[12px] text-muted-foreground">
-                    Annual
-                  </span>
-                  <span
-                    className="text-[13px] font-bold"
-                    style={{ color, opacity: 0.8 }}
-                  >
-                    {annualPercent.toFixed(1)}%
-                  </span>
-                </div>
-              </div>
+            {/* Stats */}
+            <div className="flex flex-shrink-0 items-center gap-2 text-[11px]">
+              <span className="text-muted-foreground">N</span>
+              <span className="font-semibold" style={{ color }}>{natalPercent.toFixed(1)}%</span>
+              <div className="h-2.5 w-px bg-border" />
+              <span className="text-muted-foreground">A</span>
+              <span className="font-semibold" style={{ color, opacity: 0.75 }}>{annualPercent.toFixed(1)}%</span>
             </div>
           </div>
         )

@@ -52,11 +52,6 @@ export default function BaziCalculator() {
   // Expanded Pillar State
   const [expandedPillarId, setExpandedPillarId] = useState<string | null>(null)
 
-  // Mobile Tab State for Destiny Insights
-  const [activeInsightTab, setActiveInsightTab] = useState<
-    "elements" | "stars" | "gods"
-  >("elements")
-
   // Explorer state is managed inside LuckPillarExplorer
 
   const scrollContainerRef = useRef<HTMLDivElement>(null)
@@ -205,7 +200,7 @@ export default function BaziCalculator() {
         />
       )}
 
-      {/* ── Main 2-Column Layout ── */}
+      {/* ── Main Layout ── */}
       <div className="w-full flex-1 px-4">
         {error && (
           <div className="mt-6 mb-4 rounded-lg border border-destructive/50 bg-destructive/10 px-4 py-3 text-destructive">
@@ -213,97 +208,79 @@ export default function BaziCalculator() {
           </div>
         )}
 
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:gap-4">
+        {/* Before calculation: centered form */}
+        {!baziData && (
+          <HeroForm
+            date={date}
+            setDate={setDate}
+            time={time}
+            setTime={setTime}
+            timezone={timezone}
+            setTimezone={setTimezone}
+            gender={gender}
+            setGender={setGender}
+            unknownTime={unknownTime}
+            setUnknownTime={setUnknownTime}
+            mode={mode}
+            setMode={setMode}
+            onCalculate={handleCalculate}
+            loading={loading}
+            baziData={baziData}
+            heroRef={heroRef}
+            chartName={chartName}
+            setChartName={setChartName}
+          />
+        )}
 
-          {/* ══ LEFT COLUMN (5/12) ══ */}
-          <div className="w-full lg:w-5/12 flex flex-col gap-4 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto lg:pb-8">
+        {/* After calculation: grid layout */}
+        {baziData && (
+          <div className="flex flex-col gap-4 pb-8">
 
-            {/* Before calculation: full-width form */}
-            {!baziData && (
-              <HeroForm
-                date={date}
-                setDate={setDate}
-                time={time}
-                setTime={setTime}
-                timezone={timezone}
-                setTimezone={setTimezone}
-                gender={gender}
-                setGender={setGender}
-                unknownTime={unknownTime}
-                setUnknownTime={setUnknownTime}
-                mode={mode}
-                setMode={setMode}
-                onCalculate={handleCalculate}
-                loading={loading}
-                baziData={baziData}
-                heroRef={heroRef}
-                chartName={chartName}
-                setChartName={setChartName}
-              />
-            )}
+            {/* ── Baris 1: [Hero + TenGods + ElementStructure] | [8 Pillars] ── */}
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,5fr)]">
 
-            {/* After calculation: 2 sub-columns inside left panel */}
-            {baziData && (
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-
-                {/* Sub-col 1: Hero + Ten Gods */}
-                <div className="flex flex-1 flex-col gap-4">
-                  <HeroForm
-                    date={date}
-                    setDate={setDate}
-                    time={time}
-                    setTime={setTime}
-                    timezone={timezone}
-                    setTimezone={setTimezone}
-                    gender={gender}
-                    setGender={setGender}
-                    unknownTime={unknownTime}
-                    setUnknownTime={setUnknownTime}
-                    mode={mode}
-                    setMode={setMode}
-                    onCalculate={handleCalculate}
-                    loading={loading}
-                    baziData={baziData}
-                    heroRef={heroRef}
-                    chartName={chartName}
-                    setChartName={setChartName}
-                  />
+              {/* Col A: Hero (full-width) + TenGods | ElementStructure (side-by-side) */}
+              <div className="flex flex-col gap-4">
+                {/* Hero — full width */}
+                <HeroForm
+                  date={date}
+                  setDate={setDate}
+                  time={time}
+                  setTime={setTime}
+                  timezone={timezone}
+                  setTimezone={setTimezone}
+                  gender={gender}
+                  setGender={setGender}
+                  unknownTime={unknownTime}
+                  setUnknownTime={setUnknownTime}
+                  mode={mode}
+                  setMode={setMode}
+                  onCalculate={handleCalculate}
+                  loading={loading}
+                  baziData={baziData}
+                  heroRef={heroRef}
+                  chartName={chartName}
+                  setChartName={setChartName}
+                />
+                {/* TenGods + ElementStructure side-by-side */}
+                <div className="grid grid-cols-2 gap-4">
                   <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
                     <TenGods tenGodsData={tenGodsData} />
                   </div>
-                </div>
-
-                {/* Sub-col 2: Element Structure + Lucky Stars */}
-                <div className="flex flex-1 flex-col gap-4">
                   <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
                     <Suspense fallback={<div className="h-40 animate-pulse rounded-[12px] bg-muted" />}>
                       <ElementStructure elementData={elementData} />
                     </Suspense>
                   </div>
-                  <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
-                    <h4 className="mb-2 text-[14px] font-bold text-foreground">✨ Lucky Stars</h4>
-                    <LuckyStars stars={luckyStars} mode={mode} />
-                  </div>
                 </div>
-
               </div>
-            )}
-          </div>
 
-          {/* ══ RIGHT COLUMN (7/12) ══ */}
-          {baziData && (
-            <div className="w-full lg:w-7/12 flex flex-col gap-4 pb-8" id="bazi-result-area">
-
-              {/* 8 Pillars: Natal Chart & Current Transits */}
-              <div className="relative flex w-full flex-col rounded-[16px] border border-border bg-card p-4 shadow-sm md:p-5">
-                <div className="mb-2 flex flex-col items-center justify-center border-b border-border pb-3">
-                  <h3 className="text-center text-[20px] font-bold text-foreground md:text-[24px]">
-                    Natal Chart &amp; Current Transits
-                  </h3>
-                </div>
+              {/* Col B: 8 Pillars */}
+              <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm md:p-5" id="bazi-result-area">
                 <div
                   ref={scrollContainerRef}
-                  className="grid w-full gap-3 pb-2 pt-1 px-1" style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr)) 2px repeat(4, minmax(0, 1fr))' }}
+                  className="grid w-full gap-3 "
+                  style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr)) 2px repeat(4, minmax(0, 1fr))' }}
                 >
                   {!unknownTime ? (
                     <Pillar
@@ -435,7 +412,17 @@ export default function BaziCalculator() {
                     mode={mode}
                   />
                 </div>
-  
+              </div>
+
+            </div>
+
+            {/* ── Baris 2: [Lucky Stars] | [Luck Pillar Explorer] ── */}
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(0,9fr)]">
+
+              {/* Lucky Stars */}
+              <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
+                <h4 className="mb-2 text-[14px] font-bold text-foreground">✨ Lucky Stars</h4>
+                <LuckyStars stars={luckyStars} mode={mode} />
               </div>
 
               {/* Luck Pillar Explorer */}
@@ -452,9 +439,10 @@ export default function BaziCalculator() {
               </Suspense>
 
             </div>
-          )}
 
-        </div>
+          </div>
+        )}
+
       </div>
     </div>
   )

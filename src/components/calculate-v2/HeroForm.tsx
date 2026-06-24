@@ -65,46 +65,58 @@ export default function HeroForm({
     return (
       <>
         {/* Hero card — StickyHeader watches this element's bottom edge */}
-        <div ref={heroRef} className="w-full px-0 py-4">
+        <div ref={heroRef} className="w-full px-0 py-2">
           <div className="mx-auto w-full max-w-[1800px]">
-            <div className="group relative overflow-hidden rounded-[24px] border border-border bg-card p-5 shadow-sm">
-              {/* Decorative background removed for performance */}
-
-              <div className="relative z-10 flex items-center justify-between gap-4">
-                {/* Left: Avatar + Info + Toggle */}
-                <div className="flex flex-1 items-center gap-4">
-                  <div className="flex h-[80px] w-[80px] shrink-0 items-center justify-center rounded-full border-4 border-background/80 bg-gradient-to-br from-primary to-primary/80 shadow-[0_4px_20px_rgba(var(--primary),0.4)]">
-                    <span className="font-serif text-4xl font-bold text-primary-foreground">命</span>
-                  </div>
-                  <div>
-                    <div className="mb-1 flex items-center gap-2">
-                      <h2 className="text-[28px] font-bold tracking-tight text-foreground">{chartName}</h2>
-                      <button
-                        onClick={handleEditClick}
-                        className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-background/60 hover:text-primary"
-                        title="Edit Name"
-                      >
-                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
-                        </svg>
-                      </button>
-                    </div>
-                    <p className="text-[15px] font-medium text-muted-foreground">
-                      {new Date(date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
-                      {!unknownTime && time && ` • ${time}`}
-                    </p>
-                    <div className="mt-3 flex flex-wrap items-center gap-3">
-                      <span className="rounded-full border border-border bg-background/60 px-3 py-1 text-[12px] font-semibold text-muted-foreground shadow-sm">{gender === 1 ? "Male" : "Female"}</span>
-                      <span className="rounded-full border border-border bg-background/60 px-3 py-1 text-[12px] font-semibold text-muted-foreground shadow-sm">{timezone.split("/").pop()?.replace(/_/g, " ") || timezone}</span>
-                      <div className="flex rounded-[12px] border border-border bg-background/60 p-0.5 shadow-sm">
-                        <button type="button" onClick={() => setMode("classic")} className={`rounded-[10px] px-3 py-1 text-[12px] font-semibold transition-colors ${mode === "classic" ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>Classic</button>
-                        <button type="button" onClick={() => setMode("modern")} className={`rounded-[10px] px-3 py-1 text-[12px] font-semibold transition-colors ${mode === "modern" ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>Modern</button>
-                      </div>
-                    </div>
-                  </div>
+            <div className="relative overflow-hidden rounded-[18px] border border-border bg-card px-4 py-3 shadow-sm">
+              <div className="flex items-center gap-3">
+                {/* Avatar */}
+                <div className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80">
+                  <span className="font-serif text-xl font-bold text-primary-foreground">命</span>
                 </div>
 
+                {/* Info */}
+                <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                  <div className="flex items-center gap-1.5">
+                    <h2 className="truncate text-[16px] font-bold leading-tight text-foreground">{chartName}</h2>
+                    <button
+                      onClick={handleEditClick}
+                      className="shrink-0 rounded-full p-1 text-muted-foreground hover:text-primary"
+                      title="Edit Name"
+                    >
+                      <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                      </svg>
+                    </button>
+                  </div>
+                  <p className="truncate text-[12px] text-muted-foreground">
+                    {new Date(date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+                    {!unknownTime && time && ` • ${time}`}
+                    {" • "}
+                    {(() => {
+                      try {
+                        const raw = new Intl.DateTimeFormat("en", { timeZone: timezone, timeZoneName: "shortOffset" })
+                          .formatToParts(new Date())
+                          .find(p => p.type === "timeZoneName")?.value ?? ""
+                        return raw.replace("GMT", "UTC") || timezone
+                      } catch {
+                        return timezone
+                      }
+                    })()}
+                  </p>
+                </div>
 
+                {/* Badges + Mode toggle */}
+                <div className="flex shrink-0 items-center gap-2">
+                  {/* Gender icon */}
+                  <span className="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[13px]" title={gender === 1 ? "Male" : "Female"}>
+                    {gender === 1 ? "♂" : "♀"}
+                  </span>
+
+                  <div className="flex rounded-[10px] border border-border bg-muted/50 p-0.5">
+                    <button type="button" onClick={() => setMode("classic")} className={`rounded-[8px] px-2.5 py-1 text-[11px] font-semibold transition-colors ${mode === "classic" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>Classic</button>
+                    <button type="button" onClick={() => setMode("modern")} className={`rounded-[8px] px-2.5 py-1 text-[11px] font-semibold transition-colors ${mode === "modern" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>Modern</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

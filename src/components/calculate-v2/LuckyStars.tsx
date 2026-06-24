@@ -165,35 +165,28 @@ export default function LuckyStars({
         activeStars.map((star) => (
           <div
             key={star.id}
-            className="flex items-center gap-3 rounded-[12px] border border-border bg-card p-3"
+            className="flex items-center gap-2.5 rounded-[10px] border border-border bg-card px-2.5 py-2"
           >
-            <div
-              className="flex h-[36px] w-[36px] flex-shrink-0 items-center justify-center rounded-full text-[18px]"
-              style={{
-                background: "rgba(255,255,255,0.1)",
-                backdropFilter: "blur(16px)",
-                border: `1px solid ${star.color}20`,
-                boxShadow: `0 4px 12px ${star.color}15`,
-              }}
+            {/* Icon */}
+            <span className="flex-shrink-0 text-[22px] leading-none">{star.icon}</span>
+
+            {/* Name + Chinese */}
+            <div className="flex min-w-0 flex-1 flex-col gap-0">
+              <span className="truncate text-[12px] font-semibold leading-tight text-foreground">
+                {star.name}
+              </span>
+              <span className="text-[10px] leading-tight text-muted-foreground">
+                {star.chinese}
+              </span>
+            </div>
+
+            {/* Branch value */}
+            <span
+              className="shrink-0 text-[11px] font-medium"
+              style={{ color: star.color }}
             >
-              {star.icon}
-            </div>
-            <div className="flex flex-1 flex-col">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[13px] font-bold text-foreground">
-                  {star.name}
-                </span>
-                <span className="text-[11px] text-muted-foreground">
-                  {star.chinese}
-                </span>
-              </div>
-              <div
-                className="mt-0.5 text-[12px] font-medium"
-                style={{ color: star.color }}
-              >
-                {star.branches}
-              </div>
-            </div>
+              {star.branches}
+            </span>
           </div>
         ))
       ) : (

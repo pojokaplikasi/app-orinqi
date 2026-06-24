@@ -256,11 +256,11 @@ export default function ElementStructure({ elementData }: ElementStructureProps)
       </div>
 
       {/* ── Radar Chart ── */}
-      <div className="w-full" style={{ height: 340 }}>
+      <div className="w-full" style={{ height: 260 }}>
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart
             data={data}
-            margin={{ top: 50, right: 70, bottom: 50, left: 70 }}
+            margin={{ top: 40, right: 55, bottom: 40, left: 55 }}
           >
             <PolarGrid gridType="polygon" stroke="#ccc" strokeWidth={1} />
             <PolarAngleAxis
@@ -306,7 +306,7 @@ export default function ElementStructure({ elementData }: ElementStructureProps)
       </div>
 
       {/* ── Element Cards ── */}
-      <div className="mt-2 grid w-full grid-cols-3 gap-1.5">
+      <div className="mt-2 grid w-full grid-cols-2 gap-1.5">
         {ELEMENT_ORDER.map((elem) => {
           const meta = ELEMENT_META[elem]
           const color = ELEMENT_COLORS[elem] ?? "#888"
