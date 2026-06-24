@@ -165,7 +165,7 @@ export default function LuckyStars({
         activeStars.map((star) => (
           <div
             key={star.id}
-            className="flex items-center gap-3 rounded-[12px] border border-border bg-card p-3 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
+            className="flex items-center gap-3 rounded-[12px] border border-border bg-card p-3"
           >
             <div
               className="flex h-[36px] w-[36px] flex-shrink-0 items-center justify-center rounded-full text-[18px]"

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react"
+import React, { memo } from "react"
 import { ELEMENT_COLORS } from "@/lib/bazi/constants"
 import { HEAVENLY_STEMS } from "@/lib/bazi/constants"
 import { getTenGodsRelationship } from "@/lib/bazi/element-analysis"
@@ -23,7 +23,7 @@ interface PillarProps {
   mode?: "classic" | "modern"
 }
 
-export default function Pillar({
+function Pillar({
   title,
   pillarData,
   isCurrent = false,
@@ -214,20 +214,20 @@ export default function Pillar({
 
   // Base classes
   let pillarClass =
-    "w-full h-full min-h-[320px] p-3 pt-4 rounded-[18px] bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-[24px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.04)] text-foreground text-center box-border transition-all duration-300 relative flex flex-col gap-2.5"
+    "w-full h-full min-h-[320px] p-3 pt-4 rounded-[18px] bg-card border border-border shadow-sm text-foreground text-center box-border relative flex flex-col gap-2.5"
 
   if (isCurrent) {
-    pillarClass += " ring-1 ring-orange-500/50 shadow-[0_8px_32px_rgba(249,115,22,0.1)]"
+    pillarClass += " ring-1 ring-orange-500/50"
   } else {
     pillarClass += " hover:bg-card/60"
   }
 
   if (isSelected) {
-    pillarClass += " ring-2 ring-primary shadow-[0_8px_32px_rgba(233,75,75,0.15)]"
+    pillarClass += " ring-2 ring-primary"
   }
 
   if (onClick) {
-    pillarClass += " cursor-pointer hover:-translate-y-1.5 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)]"
+    pillarClass += " cursor-pointer"
   }
 
   // Extract Chinese title if available (e.g., "Hour Pillar (時柱)" -> "Hour Pillar", "時柱")
@@ -266,10 +266,9 @@ export default function Pillar({
       </div>
 
       {/* Heavenly Stem */}
-      <div className="flex flex-col items-center justify-center relative group">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/5 dark:to-white/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      <div className="flex flex-col items-center justify-center relative">
         <strong
-          className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[42px] leading-none drop-shadow-sm transition-transform duration-300 group-hover:scale-105"
+          className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[42px] leading-none"
           style={{ color: ELEMENT_COLORS[hsElement] }}
         >
           {heavenly_stem?.character || "?"}
@@ -288,10 +287,9 @@ export default function Pillar({
       </div>
 
       {/* Earthly Branch */}
-      <div className="relative flex flex-col items-center justify-center group">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/5 dark:to-white/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      <div className="relative flex flex-col items-center justify-center">
         <strong
-          className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[38px] leading-none drop-shadow-sm transition-transform duration-300 group-hover:scale-105"
+          className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[38px] leading-none"
           style={{ color: ELEMENT_COLORS[ebElement] }}
         >
           {earthly_branch?.character || "?"}
@@ -305,7 +303,7 @@ export default function Pillar({
 
         {/* Lucky Stars Indicator */}
         {starsForThisBranch.length > 0 && (
-          <div className="absolute -top-2 -right-2 z-10 flex flex-col items-center gap-1 rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-md border border-white/20 p-1.5 shadow-sm">
+          <div className="absolute -top-2 -right-2 z-10 flex flex-col items-center gap-1 rounded-full bg-background border border-border p-1.5 shadow-sm">
             {starsForThisBranch.map((star, idx) => (
               <div key={idx} className="text-[14px] leading-none drop-shadow-sm">
                 {star}
@@ -409,3 +407,5 @@ export default function Pillar({
     </div>
   )
 }
+
+export default memo(Pillar)

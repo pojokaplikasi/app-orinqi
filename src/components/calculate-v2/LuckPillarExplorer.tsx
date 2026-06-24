@@ -178,9 +178,12 @@ export default function LuckPillarExplorer({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [baziData])
 
-  // Auto-select on mount
+  // Auto-select on mount — delayed so the page renders first before fetching
   useEffect(() => {
-    autoSelectCurrentTime()
+    const timer = setTimeout(() => {
+      autoSelectCurrentTime()
+    }, 800)
+    return () => clearTimeout(timer)
   }, [autoSelectCurrentTime])
 
   // ── Cascade: Luck → Year ─────────────────────────────────────────────────
@@ -465,7 +468,7 @@ export default function LuckPillarExplorer({
 
   return (
     <>
-      <div className="flex w-full flex-col gap-0 overflow-hidden rounded-[28px] border border-border bg-card/70 shadow-sm backdrop-blur-[24px]">
+      <div className="flex w-full flex-col gap-0 overflow-hidden rounded-[28px] border border-border bg-card shadow-sm">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-5 py-3">
         <div>

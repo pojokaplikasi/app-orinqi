@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import html2canvas from "html2canvas"
 
 interface StickyHeaderProps {
   chartName: string
@@ -28,7 +27,6 @@ export default function StickyHeader({
   heroRef,
 }: StickyHeaderProps) {
   const [visible, setVisible] = useState(false)
-  const [isDownloading, setIsDownloading] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,32 +40,9 @@ export default function StickyHeader({
     return () => window.removeEventListener("scroll", handleScroll)
   }, [heroRef])
 
-  const handleDownloadImage = async () => {
-    const element = document.getElementById("bazi-result-area")
-    if (!element) return
-    setIsDownloading(true)
-    try {
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-      })
-      const dataUrl = canvas.toDataURL("image/png")
-      const link = document.createElement("a")
-      link.href = dataUrl
-      link.download = `${chartName.replace(/\s+/g, "-")}-Destiny-Chart.png`
-      link.click()
-    } catch (err) {
-      console.error("Download failed:", err)
-    } finally {
-      setIsDownloading(false)
-    }
-  }
-
   return (
     <div
-      className="fixed top-0 left-0 z-50 w-full border-b border-border bg-background/80 shadow-md backdrop-blur-md"
+      className="fixed top-0 left-0 z-50 w-full border-b border-border bg-background shadow-md"
       style={{
         opacity: visible ? 1 : 0,
         pointerEvents: visible ? "auto" : "none",
@@ -132,25 +107,6 @@ export default function StickyHeader({
 
         {/* Action buttons */}
         <div className="flex shrink-0 items-center gap-2">
-          <button
-            onClick={handleDownloadImage}
-            disabled={isDownloading}
-            title="Download as image"
-            className="flex items-center gap-1.5 rounded-[10px] border border-border bg-background/70 px-3 py-1.5 text-[12px] font-semibold text-foreground shadow-sm transition-colors hover:bg-background disabled:opacity-60"
-          >
-            {isDownloading ? (
-              <svg className="h-3.5 w-3.5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-              </svg>
-            ) : (
-              <svg className="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
-            )}
-            <span className="hidden sm:inline">{isDownloading ? "Saving..." : "Save Image"}</span>
-          </button>
-
           <button
             onClick={() => window.location.reload()}
             className="rounded-[10px] bg-gradient-to-r from-chart-2 to-chart-2/80 px-3 py-1.5 text-[12px] font-semibold text-primary-foreground transition-colors hover:from-chart-2/90"

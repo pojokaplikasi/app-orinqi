@@ -67,10 +67,8 @@ export default function HeroForm({
         {/* Hero card — StickyHeader watches this element's bottom edge */}
         <div ref={heroRef} className="w-full px-0 py-4">
           <div className="mx-auto w-full max-w-[1800px]">
-            <div className="group relative overflow-hidden rounded-[24px] border border-border bg-card/40 p-5 shadow-[0_8px_32px_rgba(0,0,0,0.05)] backdrop-blur-[30px]">
-              {/* Liquid Background Effects */}
-              <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-gradient-to-br from-primary/20 to-chart-2/20 opacity-70 mix-blend-multiply blur-3xl transition-opacity duration-700 group-hover:opacity-100 dark:mix-blend-screen"></div>
-              <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-gradient-to-tr from-chart-1/20 to-chart-5/20 opacity-70 mix-blend-multiply blur-3xl transition-opacity duration-700 group-hover:opacity-100 dark:mix-blend-screen"></div>
+            <div className="group relative overflow-hidden rounded-[24px] border border-border bg-card p-5 shadow-sm">
+              {/* Decorative background removed for performance */}
 
               <div className="relative z-10 flex items-center justify-between gap-4">
                 {/* Left: Avatar + Info + Toggle */}
@@ -237,7 +235,7 @@ export default function HeroForm({
         </div>
 
         {/* Main Form Container (Liquid Glass) */}
-        <div className="w-full rounded-[24px] border border-border bg-card/70 p-6 shadow-sm backdrop-blur-[20px] md:p-8 lg:p-10">
+        <div className="w-full rounded-[24px] border border-border bg-card p-6 shadow-sm md:p-8 lg:p-10">
           {/* Desktop: 3 columns, Mobile: 1 column */}
           <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
             {/* Date Input */}

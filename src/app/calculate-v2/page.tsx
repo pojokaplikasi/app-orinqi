@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import React, { useEffect, useRef, useState } from "react"
+import React, { lazy, Suspense, useEffect, useRef, useState } from "react"
 import {
   detectAllBranchInteractions,
   detectAllHSCombinations,
@@ -17,13 +17,14 @@ import {
   calculateCurrentMonthPillar,
   calculateCurrentYearPillar,
 } from "@/lib/bazi/pillar-calculations"
-import LuckPillarExplorer from "@/components/calculate-v2/LuckPillarExplorer"
-import ElementStructure from "@/components/calculate-v2/ElementStructure"
 import HeroForm from "@/components/calculate-v2/HeroForm"
 import StickyHeader from "@/components/calculate-v2/StickyHeader"
 import LuckyStars from "@/components/calculate-v2/LuckyStars"
 import Pillar from "@/components/calculate-v2/Pillar"
 import TenGods from "@/components/calculate-v2/TenGods"
+
+const LuckPillarExplorer = lazy(() => import("@/components/calculate-v2/LuckPillarExplorer"))
+const ElementStructure = lazy(() => import("@/components/calculate-v2/ElementStructure"))
 
 export default function BaziCalculator() {
   const [date, setDate] = useState("")
@@ -250,18 +251,19 @@ export default function BaziCalculator() {
                     chartName={chartName}
                     setChartName={setChartName}
                   />
-                  <div className="rounded-[16px] border border-border bg-card/70 p-4 shadow-sm backdrop-blur-[20px]">
-                    <h4 className="mb-2 text-[14px] font-bold text-foreground">⚖️ Ten Gods</h4>
+                  <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
                     <TenGods tenGodsData={tenGodsData} />
                   </div>
                 </div>
 
                 {/* Sub-col 2: Element Structure + Lucky Stars */}
                 <div className="flex flex-1 flex-col gap-4">
-                  <div className="rounded-[16px] border border-border bg-card/70 p-4 shadow-sm backdrop-blur-[20px]">
-                    <ElementStructure elementData={elementData} />
+                  <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
+                    <Suspense fallback={<div className="h-40 animate-pulse rounded-[12px] bg-muted" />}>
+                      <ElementStructure elementData={elementData} />
+                    </Suspense>
                   </div>
-                  <div className="rounded-[16px] border border-border bg-card/70 p-4 shadow-sm backdrop-blur-[20px]">
+                  <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
                     <h4 className="mb-2 text-[14px] font-bold text-foreground">✨ Lucky Stars</h4>
                     <LuckyStars stars={luckyStars} mode={mode} />
                   </div>
@@ -276,7 +278,7 @@ export default function BaziCalculator() {
             <div className="w-full lg:w-7/12 flex flex-col gap-4 pb-8" id="bazi-result-area">
 
               {/* 8 Pillars: Natal Chart & Current Transits */}
-              <div className="relative flex w-full flex-col rounded-[16px] border border-border bg-card/70 p-4 shadow-sm backdrop-blur-[20px] md:p-5">
+              <div className="relative flex w-full flex-col rounded-[16px] border border-border bg-card p-4 shadow-sm md:p-5">
                 <div className="mb-2 flex flex-col items-center justify-center border-b border-border pb-3">
                   <h3 className="text-center text-[20px] font-bold text-foreground md:text-[24px]">
                     Natal Chart &amp; Current Transits
@@ -429,15 +431,17 @@ export default function BaziCalculator() {
               </div>
 
               {/* Luck Pillar Explorer */}
-              <LuckPillarExplorer
-                baziData={baziData}
-                luckyStars={luckyStars}
-                date={date}
-                time={time}
-                timezone={timezone}
-                unknownTime={unknownTime}
-                mode={mode}
-              />
+              <Suspense fallback={<div className="h-64 animate-pulse rounded-[28px] bg-muted" />}>
+                <LuckPillarExplorer
+                  baziData={baziData}
+                  luckyStars={luckyStars}
+                  date={date}
+                  time={time}
+                  timezone={timezone}
+                  unknownTime={unknownTime}
+                  mode={mode}
+                />
+              </Suspense>
 
             </div>
           )}
