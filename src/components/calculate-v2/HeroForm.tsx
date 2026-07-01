@@ -71,32 +71,54 @@ export default function HeroForm({
               <div className="flex items-center gap-3">
                 {/* Avatar */}
                 <div className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80">
-                  <span className="font-serif text-xl font-bold text-primary-foreground">命</span>
+                  <span className="font-serif text-xl font-bold text-primary-foreground">
+                    命
+                  </span>
                 </div>
 
                 {/* Info */}
                 <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                   <div className="flex items-center gap-1.5">
-                    <h2 className="truncate text-[16px] font-bold leading-tight text-foreground">{chartName}</h2>
+                    <h2 className="truncate text-[16px] leading-tight font-bold text-foreground">
+                      {chartName}
+                    </h2>
                     <button
                       onClick={handleEditClick}
                       className="shrink-0 rounded-full p-1 text-muted-foreground hover:text-primary"
                       title="Edit Name"
                     >
-                      <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                      <svg
+                        className="h-3.5 w-3.5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                        />
                       </svg>
                     </button>
                   </div>
                   <p className="truncate text-[12px] text-muted-foreground">
-                    {new Date(date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+                    {new Date(date).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
                     {!unknownTime && time && ` • ${time}`}
                     {" • "}
                     {(() => {
                       try {
-                        const raw = new Intl.DateTimeFormat("en", { timeZone: timezone, timeZoneName: "shortOffset" })
-                          .formatToParts(new Date())
-                          .find(p => p.type === "timeZoneName")?.value ?? ""
+                        const raw =
+                          new Intl.DateTimeFormat("en", {
+                            timeZone: timezone,
+                            timeZoneName: "shortOffset",
+                          })
+                            .formatToParts(new Date())
+                            .find((p) => p.type === "timeZoneName")?.value ?? ""
                         return raw.replace("GMT", "UTC") || timezone
                       } catch {
                         return timezone
@@ -108,13 +130,28 @@ export default function HeroForm({
                 {/* Badges + Mode toggle */}
                 <div className="flex shrink-0 items-center gap-2">
                   {/* Gender icon */}
-                  <span className="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[13px]" title={gender === 1 ? "Male" : "Female"}>
+                  <span
+                    className="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[13px]"
+                    title={gender === 1 ? "Male" : "Female"}
+                  >
                     {gender === 1 ? "♂" : "♀"}
                   </span>
 
                   <div className="flex rounded-[10px] border border-border bg-muted/50 p-0.5">
-                    <button type="button" onClick={() => setMode("classic")} className={`rounded-[8px] px-2.5 py-1 text-[11px] font-semibold transition-colors ${mode === "classic" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>Classic</button>
-                    <button type="button" onClick={() => setMode("modern")} className={`rounded-[8px] px-2.5 py-1 text-[11px] font-semibold transition-colors ${mode === "modern" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>Modern</button>
+                    <button
+                      type="button"
+                      onClick={() => setMode("classic")}
+                      className={`rounded-[8px] px-2.5 py-1 text-[11px] font-semibold transition-colors ${mode === "classic" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                    >
+                      Classic
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMode("modern")}
+                      className={`rounded-[8px] px-2.5 py-1 text-[11px] font-semibold transition-colors ${mode === "modern" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                    >
+                      Modern
+                    </button>
                   </div>
                 </div>
               </div>
@@ -300,37 +337,81 @@ export default function HeroForm({
                   <option value="" disabled>
                     Select Timezone
                   </option>
-                  <option value="Etc/GMT+12">(UTC-12:00) International Date Line West</option>
-                  <option value="Pacific/Midway">(UTC-11:00) Pacific/Midway, US/Samoa</option>
-                  <option value="Pacific/Honolulu">(UTC-10:00) Pacific/Honolulu, US/Hawaii</option>
-                  <option value="America/Anchorage">(UTC-09:00) America/Anchorage, US/Alaska</option>
-                  <option value="America/Los_Angeles">(UTC-08:00) America/Los_Angeles</option>
-                  <option value="America/Denver">(UTC-07:00) America/Denver</option>
-                  <option value="America/Chicago">(UTC-06:00) America/Chicago</option>
-                  <option value="America/New_York">(UTC-05:00) America/New_York</option>
-                  <option value="America/Halifax">(UTC-04:00) America/Halifax</option>
-                  <option value="America/Argentina/Buenos_Aires">(UTC-03:00) America/Argentina/Buenos_Aires</option>
-                  <option value="America/Noronha">(UTC-02:00) America/Noronha</option>
-                  <option value="Atlantic/Cape_Verde">(UTC-01:00) Atlantic/Cape_Verde</option>
+                  <option value="Etc/GMT+12">
+                    (UTC-12:00) International Date Line West
+                  </option>
+                  <option value="Pacific/Midway">
+                    (UTC-11:00) Pacific/Midway, US/Samoa
+                  </option>
+                  <option value="Pacific/Honolulu">
+                    (UTC-10:00) Pacific/Honolulu, US/Hawaii
+                  </option>
+                  <option value="America/Anchorage">
+                    (UTC-09:00) America/Anchorage, US/Alaska
+                  </option>
+                  <option value="America/Los_Angeles">
+                    (UTC-08:00) America/Los_Angeles
+                  </option>
+                  <option value="America/Denver">
+                    (UTC-07:00) America/Denver
+                  </option>
+                  <option value="America/Chicago">
+                    (UTC-06:00) America/Chicago
+                  </option>
+                  <option value="America/New_York">
+                    (UTC-05:00) America/New_York
+                  </option>
+                  <option value="America/Halifax">
+                    (UTC-04:00) America/Halifax
+                  </option>
+                  <option value="America/Argentina/Buenos_Aires">
+                    (UTC-03:00) America/Argentina/Buenos_Aires
+                  </option>
+                  <option value="America/Noronha">
+                    (UTC-02:00) America/Noronha
+                  </option>
+                  <option value="Atlantic/Cape_Verde">
+                    (UTC-01:00) Atlantic/Cape_Verde
+                  </option>
                   <option value="GMT">(UTC+00:00) UTC, GMT</option>
-                  <option value="Europe/London">(UTC+01:00) Europe/London</option>
-                  <option value="Europe/Helsinki">(UTC+02:00) Europe/Helsinki</option>
-                  <option value="Europe/Moscow">(UTC+03:00) Europe/Moscow</option>
+                  <option value="Europe/London">
+                    (UTC+01:00) Europe/London
+                  </option>
+                  <option value="Europe/Helsinki">
+                    (UTC+02:00) Europe/Helsinki
+                  </option>
+                  <option value="Europe/Moscow">
+                    (UTC+03:00) Europe/Moscow
+                  </option>
                   <option value="Asia/Dubai">(UTC+04:00) Asia/Dubai</option>
                   <option value="Asia/Karachi">(UTC+05:00) Asia/Karachi</option>
                   <option value="Asia/Dhaka">(UTC+06:00) Asia/Dhaka</option>
                   <option value="Asia/Bangkok">(UTC+07:00) Asia/Bangkok</option>
-                  <option value="Asia/Ho_Chi_Minh">(UTC+07:00) Asia/Ho_Chi_Minh</option>
+                  <option value="Asia/Ho_Chi_Minh">
+                    (UTC+07:00) Asia/Ho_Chi_Minh
+                  </option>
                   <option value="Asia/Jakarta">(UTC+07:00) Asia/Jakarta</option>
-                  <option value="Asia/Singapore">(UTC+08:00) Asia/Singapore</option>
-                  <option value="Asia/Shanghai">(UTC+08:00) Asia/Shanghai</option>
+                  <option value="Asia/Singapore">
+                    (UTC+08:00) Asia/Singapore
+                  </option>
+                  <option value="Asia/Shanghai">
+                    (UTC+08:00) Asia/Shanghai
+                  </option>
                   <option value="Asia/Taipei">(UTC+08:00) Asia/Taipei</option>
                   <option value="Asia/Tokyo">(UTC+09:00) Asia/Tokyo</option>
                   <option value="Asia/Seoul">(UTC+09:00) Asia/Seoul</option>
-                  <option value="Australia/Brisbane">(UTC+10:00) Australia/Brisbane</option>
-                  <option value="Australia/Sydney">(UTC+10:00) Australia/Sydney</option>
-                  <option value="Pacific/Noumea">(UTC+11:00) Pacific/Noumea</option>
-                  <option value="Pacific/Auckland">(UTC+12:00) Pacific/Auckland</option>
+                  <option value="Australia/Brisbane">
+                    (UTC+10:00) Australia/Brisbane
+                  </option>
+                  <option value="Australia/Sydney">
+                    (UTC+10:00) Australia/Sydney
+                  </option>
+                  <option value="Pacific/Noumea">
+                    (UTC+11:00) Pacific/Noumea
+                  </option>
+                  <option value="Pacific/Auckland">
+                    (UTC+12:00) Pacific/Auckland
+                  </option>
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-muted-foreground">
                   <svg

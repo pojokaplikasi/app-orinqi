@@ -2,10 +2,9 @@
 "use client"
 
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import CompactPillarCard from "@/components/CompactPillarCard"
-import Pillar from "@/components/Pillar"
-import DetailDialog from "@/components/DetailDialog"
 import { detectLuckPillarCombinations } from "@/lib/bazi/combinations"
+import DetailDialog from "@/components/DetailDialog"
+import Pillar from "@/components/Pillar"
 
 interface LuckPillarExplorerProps {
   baziData: any
@@ -67,6 +66,18 @@ export default function LuckPillarExplorer({
   // ── Dialog state ─────────────────────────────────────────────────────────
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedHourData, setSelectedHourData] = useState<any>(null)
+
+  // ── Collapsible state per row (hide/show relationship indicators) ────────
+  const [collapsedRows, setCollapsedRows] = useState<Record<number, boolean>>({
+    0: true,
+    1: true,
+    2: true,
+    3: true,
+    4: true,
+  })
+  const toggleRowCollapse = (rowIndex: number) => {
+    setCollapsedRows((prev) => ({ ...prev, [rowIndex]: !prev[rowIndex] }))
+  }
 
   // ── Row scroll refs ──────────────────────────────────────────────────────
   const rowRefs = [
@@ -186,105 +197,108 @@ export default function LuckPillarExplorer({
     return () => clearTimeout(timer)
   }, [autoSelectCurrentTime])
 
-  // ── Cascade: Luck → Year ─────────────────────────────────────────────────
-  useEffect(() => {
-    if (selectedLuck === null || !baziData) return
-    const lp = baziData.luck_pillars.luck_pillars[selectedLuck]
-    setSelectedYear(null)
-    setSelectedMonth(null)
-    setSelectedDay(null)
-    setYearPillars([])
-    setMonthPillars([])
-    setDayPillars([])
-    setHourPillars([])
-    setLoadingYear(true)
-    fetch("/api/calculate_yearly", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        start_year: lp.year_start,
-        end_year: lp.year_end,
-        birth_time: birthTime,
-      }),
-    })
-      .then((r) => r.json())
-      .then((data) => setYearPillars(data.yearly_pillars ?? []))
-      .catch(console.error)
-      .finally(() => setLoadingYear(false))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedLuck])
+  // ── Cascade handlers (event-driven, not effect-driven) ───────────────────
+  const handleSelectLuck = useCallback(
+    (luckIdx: number) => {
+      if (!baziData) return
+      setSelectedLuck(luckIdx)
+      setSelectedYear(null)
+      setSelectedMonth(null)
+      setSelectedDay(null)
+      setYearPillars([])
+      setMonthPillars([])
+      setDayPillars([])
+      setHourPillars([])
+      const lp = baziData.luck_pillars.luck_pillars[luckIdx]
+      setLoadingYear(true)
+      fetch("/api/calculate_yearly", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          start_year: lp.year_start,
+          end_year: lp.year_end,
+          birth_time: birthTime,
+        }),
+      })
+        .then((r) => r.json())
+        .then((data) => setYearPillars(data.yearly_pillars ?? []))
+        .catch(console.error)
+        .finally(() => setLoadingYear(false))
+    },
+    [baziData, birthTime]
+  )
 
-  // ── Cascade: Year → Month ────────────────────────────────────────────────
-  useEffect(() => {
-    if (selectedYear === null || !baziData) return
-    setSelectedMonth(null)
-    setSelectedDay(null)
-    setMonthPillars([])
-    setDayPillars([])
-    setHourPillars([])
-    setLoadingMonth(true)
-    fetch("/api/calculate_monthly", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ year: selectedYear, birth_time: birthTime }),
-    })
-      .then((r) => r.json())
-      .then((data) => setMonthPillars(data.monthly_pillars ?? []))
-      .catch(console.error)
-      .finally(() => setLoadingMonth(false))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedYear])
+  const handleSelectYear = useCallback(
+    (year: number) => {
+      if (!baziData) return
+      setSelectedYear(year)
+      setSelectedMonth(null)
+      setSelectedDay(null)
+      setMonthPillars([])
+      setDayPillars([])
+      setHourPillars([])
+      setLoadingMonth(true)
+      fetch("/api/calculate_monthly", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ year, birth_time: birthTime }),
+      })
+        .then((r) => r.json())
+        .then((data) => setMonthPillars(data.monthly_pillars ?? []))
+        .catch(console.error)
+        .finally(() => setLoadingMonth(false))
+    },
+    [baziData, birthTime]
+  )
 
-  // ── Cascade: Month → Day ─────────────────────────────────────────────────
-  useEffect(() => {
-    if (selectedMonth === null || selectedYear === null || !baziData) return
-    setSelectedDay(null)
-    setDayPillars([])
-    setHourPillars([])
-    setLoadingDay(true)
-    fetch("/api/calculate_daily", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        year: selectedYear,
-        month: selectedMonth,
-        birth_time: birthTime,
-      }),
-    })
-      .then((r) => r.json())
-      .then((data) => setDayPillars(data.daily_pillars ?? []))
-      .catch(console.error)
-      .finally(() => setLoadingDay(false))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedMonth, selectedYear])
+  const handleSelectMonth = useCallback(
+    (month: number, year: number) => {
+      if (!baziData) return
+      setSelectedMonth(month)
+      setSelectedDay(null)
+      setDayPillars([])
+      setHourPillars([])
+      setLoadingDay(true)
+      fetch("/api/calculate_daily", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          year,
+          month,
+          birth_time: birthTime,
+        }),
+      })
+        .then((r) => r.json())
+        .then((data) => setDayPillars(data.daily_pillars ?? []))
+        .catch(console.error)
+        .finally(() => setLoadingDay(false))
+    },
+    [baziData, birthTime]
+  )
 
-  // ── Cascade: Day → Hour ──────────────────────────────────────────────────
-  useEffect(() => {
-    if (
-      selectedDay === null ||
-      selectedMonth === null ||
-      selectedYear === null ||
-      !baziData
-    )
-      return
-    setHourPillars([])
-    setLoadingHour(true)
-    fetch("/api/calculate_hourly", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        year: selectedYear,
-        month: selectedMonth,
-        day: selectedDay,
-        birth_time: birthTime,
-      }),
-    })
-      .then((r) => r.json())
-      .then((data) => setHourPillars(data.hourly_pillars ?? []))
-      .catch(console.error)
-      .finally(() => setLoadingHour(false))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDay, selectedMonth, selectedYear])
+  const handleSelectDay = useCallback(
+    (day: number, month: number, year: number) => {
+      if (!baziData) return
+      setSelectedDay(day)
+      setHourPillars([])
+      setLoadingHour(true)
+      fetch("/api/calculate_hourly", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          year,
+          month,
+          day,
+          birth_time: birthTime,
+        }),
+      })
+        .then((r) => r.json())
+        .then((data) => setHourPillars(data.hourly_pillars ?? []))
+        .catch(console.error)
+        .finally(() => setLoadingHour(false))
+    },
+    [baziData, birthTime]
+  )
 
   // ── Auto-scroll selected card into view ──────────────────────────────────
   const scrollToSelected = (rowRef: React.RefObject<HTMLDivElement | null>) => {
@@ -299,9 +313,13 @@ export default function LuckPillarExplorer({
     })
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => scrollToSelected(rowRefs[1]), [selectedLuck, yearPillars])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => scrollToSelected(rowRefs[2]), [selectedYear, monthPillars])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => scrollToSelected(rowRefs[3]), [selectedMonth, dayPillars])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => scrollToSelected(rowRefs[4]), [selectedDay, hourPillars])
 
   // ── Reset to current time ────────────────────────────────────────────────
@@ -336,12 +354,13 @@ export default function LuckPillarExplorer({
               periodValue={`${pillar.year_start}–${pillar.year_end}`}
               pillarData={pillar}
               isSelected={selectedLuck === index}
-              onClick={() => setSelectedLuck(index)}
+              onClick={() => handleSelectLuck(index)}
               dayMasterName={dayMasterName}
               luckyStars={luckyStars}
               hsCombos={lhc}
               branchInteractions={lbi}
               mode={mode}
+              hideRelationships={collapsedRows[0]}
             />
           </div>
         )
@@ -362,12 +381,13 @@ export default function LuckPillarExplorer({
               periodValue={`Age ${pillar.age}`}
               pillarData={pillar}
               isSelected={selectedYear === pillar.year}
-              onClick={() => setSelectedYear(pillar.year)}
+              onClick={() => handleSelectYear(pillar.year)}
               dayMasterName={dayMasterName}
               luckyStars={luckyStars}
               hsCombos={yhc}
               branchInteractions={ybi}
               mode={mode}
+              hideRelationships={collapsedRows[1]}
             />
           </div>
         )
@@ -388,12 +408,13 @@ export default function LuckPillarExplorer({
               periodValue={`Month ${pillar.month}`}
               pillarData={pillar}
               isSelected={selectedMonth === pillar.month}
-              onClick={() => setSelectedMonth(pillar.month)}
+              onClick={() => handleSelectMonth(pillar.month, selectedYear!)}
               dayMasterName={dayMasterName}
               luckyStars={luckyStars}
               hsCombos={mhc}
               branchInteractions={mbi}
               mode={mode}
+              hideRelationships={collapsedRows[2]}
             />
           </div>
         )
@@ -417,12 +438,16 @@ export default function LuckPillarExplorer({
               }
               pillarData={pillar}
               isSelected={selectedDay === pillar.day}
-              onClick={() => setSelectedDay(pillar.day)}
+              onClick={() =>
+                handleSelectDay(pillar.day, selectedMonth!, selectedYear!)
+              }
               dayMasterName={dayMasterName}
               luckyStars={luckyStars}
               hsCombos={dhc}
               branchInteractions={dbi}
               mode={mode}
+              hideRelationships={collapsedRows[3]}
+              size="small"
             />
           </div>
         )
@@ -453,6 +478,8 @@ export default function LuckPillarExplorer({
               hsCombos={hhc}
               branchInteractions={hbi}
               mode={mode}
+              hideRelationships={collapsedRows[4]}
+              size="small"
             />
           </div>
         )
@@ -469,151 +496,177 @@ export default function LuckPillarExplorer({
   return (
     <>
       <div className="flex w-full flex-col gap-0 overflow-hidden rounded-[28px] border border-border bg-card shadow-sm">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-border px-5 py-3">
-        <div>
-          <h3 className="flex items-center gap-2 text-[20px] font-bold text-foreground">
-            <span>✨</span> Luck Pillars Explorer
-          </h3>
-          <p className="mt-0.5 text-[13px] text-muted-foreground">
-            Click any pillar to drill down. All rows update automatically.
-          </p>
-        </div>
-        <button
-          onClick={handleReset}
-          className="flex items-center gap-2 rounded-[12px] border border-primary/50 bg-primary/5 px-4 py-2 text-[13px] font-medium text-primary shadow-sm transition-all duration-200 hover:border-primary hover:bg-primary hover:text-white hover:shadow-md"
-        >
-          <svg
-            className="h-3.5 w-3.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-            />
-          </svg>
-          Reset to Current Time
-        </button>
-        </div>
-
         {/* 5 Rows */}
         {rows.map((row, rowIndex) => {
-        const meta = ROW_LABELS[rowIndex]
-        const color = ROW_COLORS[rowIndex]
-        const isLocked = !row.isActive
+          const meta = ROW_LABELS[rowIndex]
+          const color = ROW_COLORS[rowIndex]
+          const isLocked = !row.isActive
 
-        return (
-          <div
-            key={rowIndex}
-            className={`flex flex-col border-b border-border last:border-b-0 transition-opacity duration-300 ${isLocked ? "opacity-40" : "opacity-100"}`}
-          >
-            {/* Row Label */}
+          return (
             <div
-              className="flex items-center gap-3 px-5 py-2"
-              style={{ borderLeft: `3px solid ${color}` }}
+              key={rowIndex}
+              className={`flex flex-col border-b border-border transition-opacity duration-300 last:border-b-0 ${isLocked ? "opacity-40" : "opacity-100"}`}
             >
-              <span className="text-[16px] leading-none">{meta.icon}</span>
-              <div className="flex items-baseline gap-2">
-                <span className="text-[14px] font-bold text-foreground">
-                  {meta.label}
-                </span>
-                <span className="text-[12px] font-medium text-muted-foreground">
-                  {meta.zh}
-                </span>
+              {/* Row Label */}
+              <div
+                className="flex items-center gap-3 px-5 py-2"
+                style={{ borderLeft: `3px solid ${color}` }}
+              >
+                <span className="text-[16px] leading-none">{meta.icon}</span>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-[14px] font-bold text-foreground">
+                    {meta.label}
+                  </span>
+                  <span className="text-[12px] font-medium text-muted-foreground">
+                    {meta.zh}
+                  </span>
+                </div>
+                {/* Collapse/expand relationship indicators toggle */}
+                {!isLocked && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      toggleRowCollapse(rowIndex)
+                    }}
+                    className="flex h-5 w-5 items-center justify-center rounded-md text-muted-foreground/60 transition-colors hover:bg-muted hover:text-foreground"
+                    title={
+                      collapsedRows[rowIndex]
+                        ? "Show combinations"
+                        : "Hide combinations"
+                    }
+                  >
+                    <svg
+                      className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                        collapsedRows[rowIndex] ? "" : "rotate-180"
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                )}
+
+                {/* Reset button — on 10-Year Luck row */}
+                {rowIndex === 0 && (
+                  <button
+                    onClick={handleReset}
+                    className="ml-auto flex items-center gap-1.5 rounded-[10px] border border-primary/50 bg-primary/5 px-3 py-1 text-[12px] font-medium text-primary transition-all duration-200 hover:border-primary hover:bg-primary hover:text-white"
+                  >
+                    <svg
+                      className="h-3 w-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      />
+                    </svg>
+                    Reset
+                  </button>
+                )}
+
+                {/* Selected badge */}
+                {rowIndex === 0 && selectedLuck !== null && (
+                  <SelectedBadge
+                    color={color}
+                    text={`${luckPillars[selectedLuck]?.year_start}–${luckPillars[selectedLuck]?.year_end}`}
+                  />
+                )}
+                {rowIndex === 1 && selectedYear !== null && (
+                  <SelectedBadge color={color} text={String(selectedYear)} />
+                )}
+                {rowIndex === 2 && selectedMonth !== null && (
+                  <SelectedBadge
+                    color={color}
+                    text={
+                      monthPillars.find((m) => m.month === selectedMonth)
+                        ?.month_english ?? String(selectedMonth)
+                    }
+                  />
+                )}
+                {rowIndex === 3 && selectedDay !== null && (
+                  <SelectedBadge color={color} text={`Day ${selectedDay}`} />
+                )}
+
+                {/* Loading spinner */}
+                {row.loading && (
+                  <svg
+                    className="ml-auto h-4 w-4 animate-spin text-muted-foreground"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
+                  </svg>
+                )}
+
+                {/* Lock hint */}
+                {isLocked && (
+                  <span className="ml-auto text-[11px] text-muted-foreground">
+                    Select{" "}
+                    {rowIndex === 1
+                      ? "a 10-Year Luck"
+                      : rowIndex === 2
+                        ? "a Year"
+                        : rowIndex === 3
+                          ? "a Month"
+                          : "a Day"}{" "}
+                    first
+                  </span>
+                )}
               </div>
 
-              {/* Selected badge */}
-              {rowIndex === 0 && selectedLuck !== null && (
-                <SelectedBadge
-                  color={color}
-                  text={`${luckPillars[selectedLuck]?.year_start}–${luckPillars[selectedLuck]?.year_end}`}
-                />
-              )}
-              {rowIndex === 1 && selectedYear !== null && (
-                <SelectedBadge color={color} text={String(selectedYear)} />
-              )}
-              {rowIndex === 2 && selectedMonth !== null && (
-                <SelectedBadge
-                  color={color}
-                  text={
-                    monthPillars.find((m) => m.month === selectedMonth)
-                      ?.month_english ?? String(selectedMonth)
-                  }
-                />
-              )}
-              {rowIndex === 3 && selectedDay !== null && (
-                <SelectedBadge color={color} text={`Day ${selectedDay}`} />
-              )}
-
-              {/* Loading spinner */}
-              {row.loading && (
-                <svg
-                  className="ml-auto h-4 w-4 animate-spin text-muted-foreground"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                  />
-                </svg>
-              )}
-
-              {/* Lock hint */}
-              {isLocked && (
-                <span className="ml-auto text-[11px] text-muted-foreground">
-                  Select{" "}
-                  {rowIndex === 1
-                    ? "a 10-Year Luck"
-                    : rowIndex === 2
-                      ? "a Year"
-                      : rowIndex === 3
-                        ? "a Month"
-                        : "a Day"}{" "}
-                  first
-                </span>
-              )}
+              {/* Horizontal scroll area */}
+              <div
+                ref={rowRefs[rowIndex]}
+                className="flex scrollbar-thin scrollbar-thumb-border/40 scrollbar-track-transparent flex-row flex-nowrap items-stretch gap-3 overflow-x-auto scroll-smooth px-5 pt-2 pb-3 hover:scrollbar-thumb-border/70"
+                style={{
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "rgba(0,0,0,0.15) transparent",
+                }}
+              >
+                {row.loading ? (
+                  // Skeleton placeholders
+                  Array.from({ length: 6 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-[200px] w-[130px] flex-none animate-pulse rounded-[16px] bg-muted/50"
+                    />
+                  ))
+                ) : row.pillars.length > 0 ? (
+                  row.pillars.map((pillar, index) =>
+                    row.renderCard(pillar, index)
+                  )
+                ) : !isLocked ? (
+                  <div className="flex w-full items-center justify-center py-8 text-[13px] text-muted-foreground">
+                    No data available.
+                  </div>
+                ) : null}
+              </div>
             </div>
-
-            {/* Horizontal scroll area */}
-            <div
-              ref={rowRefs[rowIndex]}
-              className="flex flex-row flex-nowrap items-stretch gap-3 overflow-x-auto scroll-smooth px-5 pb-3 pt-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-border/40 hover:scrollbar-thumb-border/70"
-              style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(0,0,0,0.15) transparent' }}
-            >
-              {row.loading ? (
-                // Skeleton placeholders
-                Array.from({ length: 6 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="h-[200px] w-[130px] flex-none animate-pulse rounded-[16px] bg-muted/50"
-                  />
-                ))
-              ) : row.pillars.length > 0 ? (
-                row.pillars.map((pillar, index) =>
-                  row.renderCard(pillar, index)
-                )
-              ) : !isLocked ? (
-                <div className="flex w-full items-center justify-center py-8 text-[13px] text-muted-foreground">
-                  No data available.
-                </div>
-              ) : null}
-            </div>
-          </div>
-        )
+          )
         })}
       </div>
 

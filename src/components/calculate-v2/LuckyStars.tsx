@@ -168,11 +168,13 @@ export default function LuckyStars({
             className="flex items-center gap-2.5 rounded-[10px] border border-border bg-card px-2.5 py-2"
           >
             {/* Icon */}
-            <span className="flex-shrink-0 text-[22px] leading-none">{star.icon}</span>
+            <span className="flex-shrink-0 text-[22px] leading-none">
+              {star.icon}
+            </span>
 
             {/* Name + Chinese */}
             <div className="flex min-w-0 flex-1 flex-col gap-0">
-              <span className="truncate text-[12px] font-semibold leading-tight text-foreground">
+              <span className="truncate text-[12px] leading-tight font-semibold text-foreground">
                 {star.name}
               </span>
               <span className="text-[10px] leading-tight text-muted-foreground">

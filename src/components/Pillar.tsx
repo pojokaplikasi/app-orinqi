@@ -3,7 +3,11 @@ import React from "react"
 import { ELEMENT_COLORS } from "@/lib/bazi/constants"
 import { HEAVENLY_STEMS } from "@/lib/bazi/constants"
 import { getTenGodsRelationship } from "@/lib/bazi/element-analysis"
-import { formatLifeCycleName, formatNayinName, getNayinFromStemBranch } from "@/lib/bazi/pillar-calculations"
+import {
+  formatLifeCycleName,
+  formatNayinName,
+  getNayinFromStemBranch,
+} from "@/lib/bazi/pillar-calculations"
 
 interface PillarProps {
   title: string
@@ -21,6 +25,8 @@ interface PillarProps {
   isExpanded?: boolean
   onToggleExpand?: () => void
   mode?: "classic" | "modern"
+  hideRelationships?: boolean
+  size?: "default" | "small"
 }
 
 export default function Pillar({
@@ -39,6 +45,8 @@ export default function Pillar({
   isExpanded = false,
   onToggleExpand,
   mode = "modern",
+  hideRelationships = false,
+  size = "default",
 }: PillarProps) {
   if (!pillarData) return null
 
@@ -84,7 +92,9 @@ export default function Pillar({
   }
   const ebElement =
     earthly_branch?.element ||
-    (earthly_branch?.name ? BRANCH_ASSOCIATIONS[earthly_branch.name] : "Wood") ||
+    (earthly_branch?.name
+      ? BRANCH_ASSOCIATIONS[earthly_branch.name]
+      : "Wood") ||
     "Wood"
 
   const nayinElement = gan_zhi?.element_name || "Wood"
@@ -212,22 +222,29 @@ export default function Pillar({
     }
   })
 
+  // Size variants
+  const isSmall = size === "small"
+
   // Base classes
-  let pillarClass =
-    "flex-none w-[120px] md:w-[140px] lg:w-[160px] h-full min-h-[320px] p-3 pt-4 rounded-[18px] bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-[24px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.04)] text-foreground text-center box-border transition-all duration-300 relative flex flex-col gap-2.5"
+  let pillarClass = isSmall
+    ? "flex-none w-[100px] md:w-[110px] lg:w-[120px] h-full min-h-[240px] p-2 pt-3 rounded-[14px] bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-[24px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.04)] text-foreground text-center box-border transition-all duration-300 relative flex flex-col gap-1.5"
+    : "flex-none w-[120px] md:w-[140px] lg:w-[160px] h-full min-h-[320px] p-3 pt-4 rounded-[18px] bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-[24px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.04)] text-foreground text-center box-border transition-all duration-300 relative flex flex-col gap-2.5"
 
   if (isCurrent) {
-    pillarClass += " ring-1 ring-orange-500/50 shadow-[0_8px_32px_rgba(249,115,22,0.1)]"
+    pillarClass +=
+      " ring-1 ring-orange-500/50 shadow-[0_8px_32px_rgba(249,115,22,0.1)]"
   } else {
     pillarClass += " hover:bg-card/60"
   }
 
   if (isSelected) {
-    pillarClass += " ring-2 ring-primary shadow-[0_8px_32px_rgba(233,75,75,0.15)]"
+    pillarClass +=
+      " ring-2 ring-primary shadow-[0_8px_32px_rgba(233,75,75,0.15)]"
   }
 
   if (onClick) {
-    pillarClass += " cursor-pointer hover:-translate-y-1.5 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)]"
+    pillarClass +=
+      " cursor-pointer hover:-translate-y-1.5 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)]"
   }
 
   // Extract Chinese title if available (e.g., "Hour Pillar (時柱)" -> "Hour Pillar", "時柱")
@@ -242,40 +259,50 @@ export default function Pillar({
   return (
     <div className={pillarClass} onClick={onClick}>
       {/* Header & Ten Gods Badge */}
-      <div className="relative flex w-full items-start justify-between mb-0.5 min-h-[32px]">
+      <div
+        className={`relative mb-0.5 flex w-full items-start justify-between ${isSmall ? "min-h-[24px]" : "min-h-[32px]"}`}
+      >
         <div className="flex flex-col items-start text-left">
-          <span className="text-[12px] tracking-tight font-semibold text-foreground/90 line-clamp-2">
+          <span
+            className={`line-clamp-2 font-semibold tracking-tight text-foreground/90 ${isSmall ? "text-[10px]" : "text-[12px]"}`}
+          >
             {mainTitle}
           </span>
           {chineseTitle && (
-            <span className="text-[10px] font-medium text-muted-foreground/60 mt-0.5">
+            <span
+              className={`mt-0.5 font-medium text-muted-foreground/60 ${isSmall ? "text-[8px]" : "text-[10px]"}`}
+            >
               {chineseTitle}
             </span>
           )}
           {periodLabel && periodValue && (
-            <span className="mt-1 inline-flex items-center rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-primary">
+            <span
+              className={`mt-0.5 inline-flex items-center rounded-full bg-primary/10 px-1.5 py-0.5 font-bold tracking-wide text-primary ${isSmall ? "text-[8px]" : "text-[9px]"}`}
+            >
               {periodValue}
             </span>
           )}
         </div>
         {hsTenGodAbbr && (
-          <div className="flex h-[24px] items-center justify-center rounded-full bg-gradient-to-br from-purple-500/10 to-purple-500/5 border border-purple-500/20 px-2.5 text-[11px] font-bold tracking-wide text-purple-600 dark:text-purple-400 shadow-sm">
+          <div
+            className={`flex items-center justify-center rounded-full border border-purple-500/20 bg-gradient-to-br from-purple-500/10 to-purple-500/5 font-bold tracking-wide text-purple-600 shadow-sm dark:text-purple-400 ${isSmall ? "h-[20px] px-1.5 text-[9px]" : "h-[24px] px-2.5 text-[11px]"}`}
+          >
             {hsTenGodAbbr}
           </div>
         )}
       </div>
 
       {/* Heavenly Stem */}
-      <div className="flex flex-col items-center justify-center relative group">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/5 dark:to-white/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      <div className="group relative flex flex-col items-center justify-center">
+        <div className="absolute inset-0 rounded-full bg-gradient-to-b from-transparent to-black/5 opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100 dark:to-white/5"></div>
         <strong
-          className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[42px] leading-none drop-shadow-sm transition-transform duration-300 group-hover:scale-105"
+          className={`font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] leading-none drop-shadow-sm transition-transform duration-300 group-hover:scale-105 ${isSmall ? "text-[30px]" : "text-[42px]"}`}
           style={{ color: ELEMENT_COLORS[hsElement] }}
         >
           {heavenly_stem?.character || "?"}
         </strong>
         <div
-          className="mt-1 text-[9px] font-bold tracking-[0.2em] uppercase opacity-80"
+          className={`mt-0.5 font-bold tracking-[0.2em] uppercase opacity-80 ${isSmall ? "text-[7px]" : "text-[9px]"}`}
           style={{ color: ELEMENT_COLORS[hsElement] }}
         >
           {heavenly_stem?.name || "N/A"}
@@ -283,21 +310,25 @@ export default function Pillar({
       </div>
 
       {/* Separator */}
-      <div className="my-1 flex items-center justify-center w-full">
-        <div className="h-[1px] w-8 bg-gradient-to-r from-transparent via-border to-transparent"></div>
+      <div
+        className={`flex w-full items-center justify-center ${isSmall ? "my-0.5" : "my-1"}`}
+      >
+        <div
+          className={`h-[1px] bg-gradient-to-r from-transparent via-border to-transparent ${isSmall ? "w-6" : "w-8"}`}
+        ></div>
       </div>
 
       {/* Earthly Branch */}
-      <div className="relative flex flex-col items-center justify-center group">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/5 dark:to-white/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      <div className="group relative flex flex-col items-center justify-center">
+        <div className="absolute inset-0 rounded-full bg-gradient-to-b from-transparent to-black/5 opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100 dark:to-white/5"></div>
         <strong
-          className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[38px] leading-none drop-shadow-sm transition-transform duration-300 group-hover:scale-105"
+          className={`font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] leading-none drop-shadow-sm transition-transform duration-300 group-hover:scale-105 ${isSmall ? "text-[26px]" : "text-[38px]"}`}
           style={{ color: ELEMENT_COLORS[ebElement] }}
         >
           {earthly_branch?.character || "?"}
         </strong>
         <div
-          className="mt-1 text-[9px] font-bold tracking-[0.2em] uppercase opacity-80"
+          className={`mt-0.5 font-bold tracking-[0.2em] uppercase opacity-80 ${isSmall ? "text-[7px]" : "text-[9px]"}`}
           style={{ color: ELEMENT_COLORS[ebElement] }}
         >
           {earthly_branch?.name || "N/A"}
@@ -305,9 +336,14 @@ export default function Pillar({
 
         {/* Lucky Stars Indicator */}
         {starsForThisBranch.length > 0 && (
-          <div className="absolute -top-2 -right-2 z-10 flex flex-col items-center gap-1 rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-md border border-white/20 p-1.5 shadow-sm">
+          <div
+            className={`absolute -top-2 -right-2 z-10 flex flex-col items-center gap-1 rounded-full border border-white/20 bg-white/80 shadow-sm backdrop-blur-md dark:bg-black/80 ${isSmall ? "p-1" : "p-1.5"}`}
+          >
             {starsForThisBranch.map((star, idx) => (
-              <div key={idx} className="text-[14px] leading-none drop-shadow-sm">
+              <div
+                key={idx}
+                className={`leading-none drop-shadow-sm ${isSmall ? "text-[11px]" : "text-[14px]"}`}
+              >
                 {star}
               </div>
             ))}
@@ -316,7 +352,9 @@ export default function Pillar({
       </div>
 
       {/* Hidden Stems (Mini Chips) */}
-      <div className="mt-1 flex w-full justify-center gap-1">
+      <div
+        className={`flex w-full justify-center gap-1 ${isSmall ? "mt-0.5" : "mt-1"}`}
+      >
         {[
           hidden_stems?.residual_qi,
           hidden_stems?.main_qi,
@@ -324,14 +362,19 @@ export default function Pillar({
         ].map((qi, idx) => {
           if (!qi) return null
           return (
-            <div key={idx} className="flex flex-col items-center justify-center rounded-[10px] bg-black/[0.02] dark:bg-white/[0.02] border border-black/[0.04] dark:border-white/[0.04] px-1.5 py-1.5 flex-1">
+            <div
+              key={idx}
+              className={`flex flex-1 flex-col items-center justify-center border border-black/[0.04] bg-black/[0.02] dark:border-white/[0.04] dark:bg-white/[0.02] ${isSmall ? "rounded-[8px] px-1 py-1" : "rounded-[10px] px-1.5 py-1.5"}`}
+            >
               <span
-                className="mb-0.5 font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[13px] leading-none font-bold drop-shadow-sm"
+                className={`mb-0.5 font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] leading-none font-bold drop-shadow-sm ${isSmall ? "text-[11px]" : "text-[13px]"}`}
                 style={{ color: ELEMENT_COLORS[qi.element] }}
               >
                 {qi.character}
               </span>
-              <span className="text-[7px] font-bold tracking-wider text-muted-foreground/70 uppercase">
+              <span
+                className={`font-bold tracking-wider text-muted-foreground/70 uppercase ${isSmall ? "text-[6px]" : "text-[7px]"}`}
+              >
                 {qi.ten_gods || "-"}
               </span>
             </div>
@@ -340,8 +383,12 @@ export default function Pillar({
       </div>
 
       {/* Element Section (Nayin) & Life Stage */}
-      <div className="mt-1 flex items-center justify-between w-full px-0.5 min-h-[20px]">
-        <span className="text-[10px] font-medium text-muted-foreground/80 text-left line-clamp-2 flex-1 pr-1">
+      <div
+        className={`flex w-full items-center justify-between px-0.5 ${isSmall ? "mt-0.5 min-h-[16px]" : "mt-1 min-h-[20px]"}`}
+      >
+        <span
+          className={`line-clamp-2 flex-1 pr-1 text-left font-medium text-muted-foreground/80 ${isSmall ? "text-[8px]" : "text-[10px]"}`}
+        >
           {heavenly_stem?.name && earthly_branch?.name
             ? formatNayinName(
                 getNayinFromStemBranch(heavenly_stem.name, earthly_branch.name),
@@ -349,7 +396,9 @@ export default function Pillar({
               )
             : gan_zhi?.name || "N/A"}
         </span>
-        <span className="text-[9px] font-bold tracking-wider text-purple-500/80 uppercase bg-purple-500/10 px-1.5 py-0.5 rounded-full whitespace-nowrap">
+        <span
+          className={`rounded-full bg-purple-500/10 px-1.5 py-0.5 font-bold tracking-wider whitespace-nowrap text-purple-500/80 uppercase ${isSmall ? "text-[7px]" : "text-[9px]"}`}
+        >
           {heavenly_stem?.name && earthly_branch?.name && dayMasterName
             ? formatLifeCycleName(dayMasterName, earthly_branch.name, mode)
             : life_cycle || "N/A"}
@@ -360,22 +409,22 @@ export default function Pillar({
       <div className="flex-grow"></div>
 
       {/* Relationship Indicators (Always Visible) */}
-      {(hsLabel || branchLabels.length > 0) && (
-        <div className="mt-auto w-full pt-2 border-t border-border/50">
+      {!hideRelationships && (hsLabel || branchLabels.length > 0) && (
+        <div className="mt-auto w-full border-t border-border/50 pt-2">
           <div className="flex w-full flex-col gap-1.5 text-left">
             {hsLabel && (
               <div
-                className="flex items-center gap-1.5 text-[9px] font-normal bg-black/[0.02] dark:bg-white/[0.02] rounded-lg px-2 py-1"
+                className="flex items-center gap-1.5 rounded-lg bg-black/[0.02] px-2 py-1 text-[9px] font-normal dark:bg-white/[0.02]"
                 style={{ color: "var(--color-chart-3)" }}
               >
-                <div className="w-1 h-1 rounded-full bg-current opacity-50 shrink-0"></div>
+                <div className="h-1 w-1 shrink-0 rounded-full bg-current opacity-50"></div>
                 <span className="break-words">{hsLabel}</span>
               </div>
             )}
             {branchLabels.map((label, idx) => {
               let color = "var(--color-muted-foreground)"
               let bgColor = "bg-black/[0.02] dark:bg-white/[0.02]"
-              
+
               if (label.category === "positive") {
                 color = "var(--color-chart-3)"
                 bgColor = "bg-green-500/5 dark:bg-green-500/10"
@@ -395,10 +444,10 @@ export default function Pillar({
               return (
                 <div
                   key={idx}
-                  className={`flex items-center gap-1.5 text-[9px] font-normal rounded-lg px-2 py-1 ${bgColor}`}
+                  className={`flex items-center gap-1.5 rounded-lg px-2 py-1 text-[9px] font-normal ${bgColor}`}
                   style={{ color }}
                 >
-                  <div className="w-1 h-1 rounded-full bg-current opacity-50 shrink-0"></div>
+                  <div className="h-1 w-1 shrink-0 rounded-full bg-current opacity-50"></div>
                   <span className="break-words">{label.text}</span>
                 </div>
               )

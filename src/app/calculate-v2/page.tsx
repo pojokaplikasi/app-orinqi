@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import React, { lazy, Suspense, useEffect, useRef, useState } from "react"
+import React, { Suspense, lazy, useEffect, useRef, useState } from "react"
 import {
   detectAllBranchInteractions,
   detectAllHSCombinations,
@@ -18,13 +18,17 @@ import {
   calculateCurrentYearPillar,
 } from "@/lib/bazi/pillar-calculations"
 import HeroForm from "@/components/calculate-v2/HeroForm"
-import StickyHeader from "@/components/calculate-v2/StickyHeader"
 import LuckyStars from "@/components/calculate-v2/LuckyStars"
 import Pillar from "@/components/calculate-v2/Pillar"
+import StickyHeader from "@/components/calculate-v2/StickyHeader"
 import TenGods from "@/components/calculate-v2/TenGods"
 
-const LuckPillarExplorer = lazy(() => import("@/components/calculate-v2/LuckPillarExplorer"))
-const ElementStructure = lazy(() => import("@/components/calculate-v2/ElementStructure"))
+const LuckPillarExplorer = lazy(
+  () => import("@/components/calculate-v2/LuckPillarExplorer")
+)
+const ElementStructure = lazy(
+  () => import("@/components/calculate-v2/ElementStructure")
+)
 
 export default function BaziCalculator() {
   const [date, setDate] = useState("")
@@ -172,15 +176,30 @@ export default function BaziCalculator() {
       {baziData && (
         <div className="fixed bottom-4 left-4 z-40">
           <div className="flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-[10px] font-medium text-muted-foreground shadow-sm">
-            <div className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-[var(--color-chart-3)]"></div><span>Positive</span></div>
-            <div className="w-px h-3 bg-border"></div>
-            <div className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-muted-foreground"></div><span>Neutral</span></div>
-            <div className="w-px h-3 bg-border"></div>
-            <div className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-[var(--color-chart-2)]"></div><span>Warning</span></div>
-            <div className="w-px h-3 bg-border"></div>
-            <div className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-destructive"></div><span>Negative</span></div>
-            <div className="w-px h-3 bg-border"></div>
-            <div className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-[var(--color-chart-1)]"></div><span>Special</span></div>
+            <div className="flex items-center gap-1">
+              <div className="h-2 w-2 rounded-full bg-[var(--color-chart-3)]"></div>
+              <span>Positive</span>
+            </div>
+            <div className="h-3 w-px bg-border"></div>
+            <div className="flex items-center gap-1">
+              <div className="h-2 w-2 rounded-full bg-muted-foreground"></div>
+              <span>Neutral</span>
+            </div>
+            <div className="h-3 w-px bg-border"></div>
+            <div className="flex items-center gap-1">
+              <div className="h-2 w-2 rounded-full bg-[var(--color-chart-2)]"></div>
+              <span>Warning</span>
+            </div>
+            <div className="h-3 w-px bg-border"></div>
+            <div className="flex items-center gap-1">
+              <div className="h-2 w-2 rounded-full bg-destructive"></div>
+              <span>Negative</span>
+            </div>
+            <div className="h-3 w-px bg-border"></div>
+            <div className="flex items-center gap-1">
+              <div className="h-2 w-2 rounded-full bg-[var(--color-chart-1)]"></div>
+              <span>Special</span>
+            </div>
           </div>
         </div>
       )}
@@ -234,13 +253,11 @@ export default function BaziCalculator() {
 
         {/* After calculation: grid layout */}
         {baziData && (
-          <div className="flex flex-col gap-4 pb-8">
-
+          <div className="flex flex-col gap-2 pb-8">
             {/* ── Baris 1: [Hero + TenGods + ElementStructure] | [8 Pillars] ── */}
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,5fr)]">
-
+            <div className="grid grid-cols-1 gap-2 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,5fr)]">
               {/* Col A: Hero (full-width) + TenGods | ElementStructure (side-by-side) */}
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
                 {/* Hero — full width */}
                 <HeroForm
                   date={date}
@@ -263,12 +280,16 @@ export default function BaziCalculator() {
                   setChartName={setChartName}
                 />
                 {/* TenGods + ElementStructure side-by-side */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-2">
                   <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
                     <TenGods tenGodsData={tenGodsData} />
                   </div>
                   <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
-                    <Suspense fallback={<div className="h-40 animate-pulse rounded-[12px] bg-muted" />}>
+                    <Suspense
+                      fallback={
+                        <div className="h-40 animate-pulse rounded-[12px] bg-muted" />
+                      }
+                    >
                       <ElementStructure elementData={elementData} />
                     </Suspense>
                   </div>
@@ -276,11 +297,17 @@ export default function BaziCalculator() {
               </div>
 
               {/* Col B: 8 Pillars */}
-              <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm md:p-5" id="bazi-result-area">
+              <div
+                className="rounded-[16px] border border-border bg-card p-4 shadow-sm md:p-5"
+                id="bazi-result-area"
+              >
                 <div
                   ref={scrollContainerRef}
-                  className="grid w-full gap-3 "
-                  style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr)) 2px repeat(4, minmax(0, 1fr))' }}
+                  className="grid w-full gap-3"
+                  style={{
+                    gridTemplateColumns:
+                      "repeat(4, minmax(0, 1fr)) 2px repeat(4, minmax(0, 1fr))",
+                  }}
                 >
                   {!unknownTime ? (
                     <Pillar
@@ -289,35 +316,55 @@ export default function BaziCalculator() {
                       luckyStars={luckyStars}
                       hsCombos={hsCombos?.H}
                       branchInteractions={branchInteractions?.H}
-                      dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name}
+                      dayMasterName={
+                        baziData.four_pillars.day_pillar?.heavenly_stem?.name
+                      }
                       isExpanded={expandedPillarId === "natal-H"}
-                      onToggleExpand={() => setExpandedPillarId(expandedPillarId === "natal-H" ? null : "natal-H")}
+                      onToggleExpand={() =>
+                        setExpandedPillarId(
+                          expandedPillarId === "natal-H" ? null : "natal-H"
+                        )
+                      }
                       mode={mode}
                     />
                   ) : (
                     <div className="relative box-border flex h-full min-h-[320px] w-full flex-col gap-3 rounded-[18px] border border-white/20 bg-gradient-to-b from-card/80 to-card/40 p-3 pt-4 text-center text-foreground backdrop-blur-[24px] transition-all duration-200">
-                      <div className="relative flex w-full items-start justify-between min-h-[40px]">
+                      <div className="relative flex min-h-[40px] w-full items-start justify-between">
                         <div className="flex flex-col items-start text-left">
-                          <span className="text-[13px] leading-tight font-semibold text-foreground">Hour Pillar</span>
-                          <span className="text-[11px] text-muted-foreground opacity-50">時柱</span>
+                          <span className="text-[13px] leading-tight font-semibold text-foreground">
+                            Hour Pillar
+                          </span>
+                          <span className="text-[11px] text-muted-foreground opacity-50">
+                            時柱
+                          </span>
                         </div>
                       </div>
                       <div className="mt-2 flex flex-col items-center justify-center">
-                        <strong className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[48px] leading-none text-muted-foreground drop-shadow-sm">?</strong>
+                        <strong className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[48px] leading-none text-muted-foreground drop-shadow-sm">
+                          ?
+                        </strong>
                       </div>
                       <div className="my-1 h-[1px] w-full bg-border"></div>
                       <div className="relative flex flex-col items-center justify-center">
-                        <strong className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[44px] leading-none text-muted-foreground drop-shadow-sm">?</strong>
+                        <strong className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[44px] leading-none text-muted-foreground drop-shadow-sm">
+                          ?
+                        </strong>
                       </div>
                       <div className="mt-1 flex min-h-[40px] w-full justify-center gap-2 rounded-[12px] bg-muted/50 p-[10px]">
-                        <span className="text-[12px] font-medium text-muted-foreground">N/A</span>
+                        <span className="text-[12px] font-medium text-muted-foreground">
+                          N/A
+                        </span>
                       </div>
                       <div className="mt-1 flex flex-col items-center justify-center">
-                        <span className="text-center text-[12px] leading-tight font-semibold text-muted-foreground">N/A</span>
+                        <span className="text-center text-[12px] leading-tight font-semibold text-muted-foreground">
+                          N/A
+                        </span>
                       </div>
                       <div className="my-1 h-[1px] w-full bg-border"></div>
                       <div className="flex items-center justify-center">
-                        <span className="text-[13px] font-bold tracking-wide text-muted-foreground uppercase">N/A</span>
+                        <span className="text-[13px] font-bold tracking-wide text-muted-foreground uppercase">
+                          N/A
+                        </span>
                       </div>
                     </div>
                   )}
@@ -327,9 +374,15 @@ export default function BaziCalculator() {
                     luckyStars={luckyStars}
                     hsCombos={hsCombos?.D}
                     branchInteractions={branchInteractions?.D}
-                    dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name}
+                    dayMasterName={
+                      baziData.four_pillars.day_pillar?.heavenly_stem?.name
+                    }
                     isExpanded={expandedPillarId === "natal-D"}
-                    onToggleExpand={() => setExpandedPillarId(expandedPillarId === "natal-D" ? null : "natal-D")}
+                    onToggleExpand={() =>
+                      setExpandedPillarId(
+                        expandedPillarId === "natal-D" ? null : "natal-D"
+                      )
+                    }
                     mode={mode}
                   />
                   <Pillar
@@ -338,9 +391,15 @@ export default function BaziCalculator() {
                     luckyStars={luckyStars}
                     hsCombos={hsCombos?.M}
                     branchInteractions={branchInteractions?.M}
-                    dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name}
+                    dayMasterName={
+                      baziData.four_pillars.day_pillar?.heavenly_stem?.name
+                    }
                     isExpanded={expandedPillarId === "natal-M"}
-                    onToggleExpand={() => setExpandedPillarId(expandedPillarId === "natal-M" ? null : "natal-M")}
+                    onToggleExpand={() =>
+                      setExpandedPillarId(
+                        expandedPillarId === "natal-M" ? null : "natal-M"
+                      )
+                    }
                     mode={mode}
                   />
                   <Pillar
@@ -349,9 +408,15 @@ export default function BaziCalculator() {
                     luckyStars={luckyStars}
                     hsCombos={hsCombos?.Y}
                     branchInteractions={branchInteractions?.Y}
-                    dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name}
+                    dayMasterName={
+                      baziData.four_pillars.day_pillar?.heavenly_stem?.name
+                    }
                     isExpanded={expandedPillarId === "natal-Y"}
-                    onToggleExpand={() => setExpandedPillarId(expandedPillarId === "natal-Y" ? null : "natal-Y")}
+                    onToggleExpand={() =>
+                      setExpandedPillarId(
+                        expandedPillarId === "natal-Y" ? null : "natal-Y"
+                      )
+                    }
                     mode={mode}
                   />
                   <div className="self-stretch rounded-full bg-border"></div>
@@ -364,9 +429,15 @@ export default function BaziCalculator() {
                     branchInteractions={branchInteractions?.CL}
                     periodLabel="Period"
                     periodValue={currentPillars?.luck?.luck_period}
-                    dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name}
+                    dayMasterName={
+                      baziData.four_pillars.day_pillar?.heavenly_stem?.name
+                    }
                     isExpanded={expandedPillarId === "transit-L"}
-                    onToggleExpand={() => setExpandedPillarId(expandedPillarId === "transit-L" ? null : "transit-L")}
+                    onToggleExpand={() =>
+                      setExpandedPillarId(
+                        expandedPillarId === "transit-L" ? null : "transit-L"
+                      )
+                    }
                     mode={mode}
                   />
                   <Pillar
@@ -378,9 +449,15 @@ export default function BaziCalculator() {
                     branchInteractions={branchInteractions?.CY}
                     periodLabel="Year"
                     periodValue={currentPillars?.year?.year?.toString()}
-                    dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name}
+                    dayMasterName={
+                      baziData.four_pillars.day_pillar?.heavenly_stem?.name
+                    }
                     isExpanded={expandedPillarId === "transit-Y"}
-                    onToggleExpand={() => setExpandedPillarId(expandedPillarId === "transit-Y" ? null : "transit-Y")}
+                    onToggleExpand={() =>
+                      setExpandedPillarId(
+                        expandedPillarId === "transit-Y" ? null : "transit-Y"
+                      )
+                    }
                     mode={mode}
                   />
                   <Pillar
@@ -392,9 +469,15 @@ export default function BaziCalculator() {
                     branchInteractions={branchInteractions?.CM}
                     periodLabel="Month"
                     periodValue={currentPillars?.month?.month_english}
-                    dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name}
+                    dayMasterName={
+                      baziData.four_pillars.day_pillar?.heavenly_stem?.name
+                    }
                     isExpanded={expandedPillarId === "transit-M"}
-                    onToggleExpand={() => setExpandedPillarId(expandedPillarId === "transit-M" ? null : "transit-M")}
+                    onToggleExpand={() =>
+                      setExpandedPillarId(
+                        expandedPillarId === "transit-M" ? null : "transit-M"
+                      )
+                    }
                     mode={mode}
                   />
                   <Pillar
@@ -406,27 +489,37 @@ export default function BaziCalculator() {
                     branchInteractions={branchInteractions?.CD}
                     periodLabel="Day"
                     periodValue={currentPillars?.day?.day?.toString()}
-                    dayMasterName={baziData.four_pillars.day_pillar?.heavenly_stem?.name}
+                    dayMasterName={
+                      baziData.four_pillars.day_pillar?.heavenly_stem?.name
+                    }
                     isExpanded={expandedPillarId === "transit-D"}
-                    onToggleExpand={() => setExpandedPillarId(expandedPillarId === "transit-D" ? null : "transit-D")}
+                    onToggleExpand={() =>
+                      setExpandedPillarId(
+                        expandedPillarId === "transit-D" ? null : "transit-D"
+                      )
+                    }
                     mode={mode}
                   />
                 </div>
               </div>
-
             </div>
 
             {/* ── Baris 2: [Lucky Stars] | [Luck Pillar Explorer] ── */}
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,10fr)]">
-
+            <div className="grid grid-cols-1 gap-2 lg:grid-cols-[minmax(0,2fr)_minmax(0,10fr)]">
               {/* Lucky Stars */}
               <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
-                <h4 className="mb-2 text-[14px] font-bold text-foreground">✨ Lucky Stars</h4>
+                <h4 className="mb-2 text-[14px] font-bold text-foreground">
+                  ✨ Lucky Stars
+                </h4>
                 <LuckyStars stars={luckyStars} mode={mode} />
               </div>
 
               {/* Luck Pillar Explorer */}
-              <Suspense fallback={<div className="h-64 animate-pulse rounded-[28px] bg-muted" />}>
+              <Suspense
+                fallback={
+                  <div className="h-64 animate-pulse rounded-[28px] bg-muted" />
+                }
+              >
                 <LuckPillarExplorer
                   baziData={baziData}
                   luckyStars={luckyStars}
@@ -437,12 +530,9 @@ export default function BaziCalculator() {
                   mode={mode}
                 />
               </Suspense>
-
             </div>
-
           </div>
         )}
-
       </div>
     </div>
   )

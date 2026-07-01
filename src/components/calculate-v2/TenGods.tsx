@@ -76,7 +76,7 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
           >
             {/* Avatar */}
             <span
-              className="flex-shrink-0 text-[18px] font-bold leading-none"
+              className="flex-shrink-0 text-[18px] leading-none font-bold"
               style={{ color }}
             >
               {allStems || chineseChar.split(" ").pop()?.[0] || "?"}
@@ -84,7 +84,7 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
 
             {/* Name + Chinese */}
             <div className="flex min-w-0 flex-1 flex-col gap-0">
-              <span className="truncate text-[12px] font-semibold leading-tight text-foreground">
+              <span className="truncate text-[12px] leading-tight font-semibold text-foreground">
                 {godName}
               </span>
               <span className="truncate text-[10px] leading-tight text-muted-foreground">
@@ -95,10 +95,14 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
             {/* Stats */}
             <div className="flex flex-shrink-0 items-center gap-2 text-[11px]">
               <span className="text-muted-foreground">N</span>
-              <span className="font-semibold" style={{ color }}>{natalPercent.toFixed(1)}%</span>
+              <span className="font-semibold" style={{ color }}>
+                {natalPercent.toFixed(1)}%
+              </span>
               <div className="h-2.5 w-px bg-border" />
               <span className="text-muted-foreground">A</span>
-              <span className="font-semibold" style={{ color, opacity: 0.75 }}>{annualPercent.toFixed(1)}%</span>
+              <span className="font-semibold" style={{ color, opacity: 0.75 }}>
+                {annualPercent.toFixed(1)}%
+              </span>
             </div>
           </div>
         )

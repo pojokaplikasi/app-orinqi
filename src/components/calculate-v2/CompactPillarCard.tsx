@@ -29,8 +29,7 @@ export default function CompactPillarCard({
   const hs = pillarData.heavenly_stem
   const eb = pillarData.earthly_branch
 
-  const hsElement =
-    hs?.element || (hs?.name ? hs.name.split(" ")[1] : "Wood")
+  const hsElement = hs?.element || (hs?.name ? hs.name.split(" ")[1] : "Wood")
 
   const BRANCH_ASSOCIATIONS: Record<string, string> = {
     Tiger: "Wood",

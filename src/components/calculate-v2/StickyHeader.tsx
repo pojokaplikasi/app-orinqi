@@ -52,7 +52,9 @@ export default function StickyHeader({
       <div className="mx-auto flex w-full max-w-[1800px] items-center gap-3 px-4 py-2">
         {/* Avatar */}
         <div className="flex h-[32px] w-[32px] shrink-0 items-center justify-center rounded-full border-2 border-background/80 bg-gradient-to-br from-primary to-primary/80">
-          <span className="font-serif text-sm font-bold text-primary-foreground">命</span>
+          <span className="font-serif text-sm font-bold text-primary-foreground">
+            命
+          </span>
         </div>
 
         {/* Name · Date · Time */}

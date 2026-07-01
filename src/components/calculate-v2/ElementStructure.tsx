@@ -3,11 +3,11 @@
 
 import React, { useState } from "react"
 import {
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
   Radar,
   RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
   ResponsiveContainer,
   Tooltip,
 } from "recharts"
@@ -177,11 +177,15 @@ const CustomTooltip = ({ active, payload }: any) => {
         <span style={{ color }}>{elem}</span>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", gap: 16 }}>
+        <div
+          style={{ display: "flex", justifyContent: "space-between", gap: 16 }}
+        >
           <span style={{ color: "#D2B48C" }}>Natal</span>
           <span style={{ fontWeight: "bold", color }}>{natal}%</span>
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", gap: 16 }}>
+        <div
+          style={{ display: "flex", justifyContent: "space-between", gap: 16 }}
+        >
           <span style={{ color: "#9B59B6" }}>Annual 2026</span>
           <span style={{ fontWeight: "bold" }}>{annual}%</span>
         </div>
@@ -196,7 +200,9 @@ interface ElementStructureProps {
 }
 
 // ─── Main Component ──────────────────────────────────────────────────────────
-export default function ElementStructure({ elementData }: ElementStructureProps) {
+export default function ElementStructure({
+  elementData,
+}: ElementStructureProps) {
   const [showNatal, setShowNatal] = useState(true)
   const [showAnnual, setShowAnnual] = useState(true)
 
@@ -214,7 +220,9 @@ export default function ElementStructure({ elementData }: ElementStructureProps)
       {/* ── Header ── */}
       <div
         className="w-full rounded-t-[16px] py-2 text-center text-[13px] font-bold tracking-[0.2em] text-white uppercase"
-        style={{ background: "linear-gradient(90deg, #C9A96E 0%, #B8860B 100%)" }}
+        style={{
+          background: "linear-gradient(90deg, #C9A96E 0%, #B8860B 100%)",
+        }}
       >
         5 Structures
       </div>
@@ -315,7 +323,7 @@ export default function ElementStructure({ elementData }: ElementStructureProps)
           return (
             <div
               key={elem}
-              className="flex flex-col rounded-[8px] border border-border bg-card overflow-hidden"
+              className="flex flex-col overflow-hidden rounded-[8px] border border-border bg-card"
             >
               {/* Header */}
               <div
@@ -324,14 +332,14 @@ export default function ElementStructure({ elementData }: ElementStructureProps)
               >
                 <span className="text-[13px] leading-none">{meta.icon}</span>
                 <div className="min-w-0">
-                  <div className="flex items-center gap-1 flex-wrap">
+                  <div className="flex flex-wrap items-center gap-1">
                     <div
-                      className="text-[8px] font-bold tracking-wide text-white rounded-sm px-1 inline-block shrink-0"
+                      className="inline-block shrink-0 rounded-sm px-1 text-[8px] font-bold tracking-wide text-white"
                       style={{ backgroundColor: color }}
                     >
                       {elem}
                     </div>
-                    <div className="text-[9px] font-semibold text-muted-foreground leading-tight truncate">
+                    <div className="truncate text-[9px] leading-tight font-semibold text-muted-foreground">
                       ({meta.bold})
                     </div>
                   </div>
@@ -341,12 +349,26 @@ export default function ElementStructure({ elementData }: ElementStructureProps)
               {/* Values */}
               <div className="flex divide-x divide-border">
                 <div className="flex flex-1 flex-col items-center py-1">
-                  <span className="text-[11px] font-semibold uppercase text-muted-foreground tracking-wide leading-none mb-0.5">N</span>
-                  <span className="text-[11px] font-bold leading-none" style={{ color }}>{natal}%</span>
+                  <span className="mb-0.5 text-[11px] leading-none font-semibold tracking-wide text-muted-foreground uppercase">
+                    N
+                  </span>
+                  <span
+                    className="text-[11px] leading-none font-bold"
+                    style={{ color }}
+                  >
+                    {natal}%
+                  </span>
                 </div>
                 <div className="flex flex-1 flex-col items-center py-1">
-                  <span className="text-[11px] font-semibold uppercase text-muted-foreground tracking-wide leading-none mb-0.5">A</span>
-                  <span className="text-[11px] font-bold leading-none" style={{ color: "#9B59B6" }}>{annual}%</span>
+                  <span className="mb-0.5 text-[11px] leading-none font-semibold tracking-wide text-muted-foreground uppercase">
+                    A
+                  </span>
+                  <span
+                    className="text-[11px] leading-none font-bold"
+                    style={{ color: "#9B59B6" }}
+                  >
+                    {annual}%
+                  </span>
                 </div>
               </div>
             </div>
