@@ -47,7 +47,6 @@ export default function LuckPillarExplorer({
     baziData?.four_pillars?.day_pillar?.heavenly_stem?.name ?? undefined
 
   // ── Selection state ──────────────────────────────────────────────────────
-  // selectedLuck stores year_start of the luck pillar (unique identifier), not array index
   const [selectedLuck, setSelectedLuck] = useState<number | null>(null)
   const [selectedYear, setSelectedYear] = useState<number | null>(null)
   const [selectedMonth, setSelectedMonth] = useState<number | null>(null)
@@ -70,9 +69,6 @@ export default function LuckPillarExplorer({
   const [selectedHourData, setSelectedHourData] = useState<any>(null)
 
   // ── Row scroll refs ──────────────────────────────────────────────────────
-  // Deklarasi di sini agar bisa dipakai di useEffect scroll state di bawah
-  const luckPillars: any[] = baziData?.luck_pillars?.luck_pillars ?? []
-
   const rowRefs = [
     useRef<HTMLDivElement>(null),
     useRef<HTMLDivElement>(null),
@@ -80,36 +76,6 @@ export default function LuckPillarExplorer({
     useRef<HTMLDivElement>(null),
     useRef<HTMLDivElement>(null),
   ]
-
-  // Flag to skip cascade useEffect when autoSelectCurrentTime is running
-  const isAutoSelectingRef = useRef(false)
-
-  // ── Scroll nav state per row ─────────────────────────────────────────────
-  const [canScrollLeft, setCanScrollLeft] = useState([false, false, false, false, false])
-  const [canScrollRight, setCanScrollRight] = useState([false, false, false, false, false])
-
-  const updateScrollState = useCallback((rowIndex: number) => {
-    const el = rowRefs[rowIndex].current
-    if (!el) return
-    const left = el.scrollLeft > 4
-    const right = el.scrollLeft < el.scrollWidth - el.clientWidth - 4
-    setCanScrollLeft(prev => { const n = [...prev]; n[rowIndex] = left; return n })
-    setCanScrollRight(prev => { const n = [...prev]; n[rowIndex] = right; return n })
-  }, [])
-
-  const scrollRow = useCallback((rowIndex: number, direction: 'left' | 'right') => {
-    const el = rowRefs[rowIndex].current
-    if (!el) return
-    const amount = el.clientWidth * 0.6
-    el.scrollBy({ left: direction === 'right' ? amount : -amount, behavior: 'smooth' })
-  }, [])
-
-  // Update scroll state whenever pillars change
-  useEffect(() => { setTimeout(() => updateScrollState(0), 100) }, [luckPillars])
-  useEffect(() => { setTimeout(() => updateScrollState(1), 100) }, [yearPillars])
-  useEffect(() => { setTimeout(() => updateScrollState(2), 100) }, [monthPillars])
-  useEffect(() => { setTimeout(() => updateScrollState(3), 100) }, [dayPillars])
-  useEffect(() => { setTimeout(() => updateScrollState(4), 100) }, [hourPillars])
 
   const birthTime = unknownTime ? `${date}T12:00` : `${date}T${time}`
 
@@ -124,18 +90,16 @@ export default function LuckPillarExplorer({
 
     // Find current luck pillar
     const luckPillars: any[] = baziData.luck_pillars.luck_pillars
-    const currentLuck = luckPillars.find(
+    const currentLuckIdx = luckPillars.findIndex(
       (p: any) => currentYear >= p.year_start && currentYear <= p.year_end
     )
 
-    if (!currentLuck) return
+    if (currentLuckIdx === -1) return
 
-    // Set flag so cascade useEffects skip their fetch (we handle it here)
-    isAutoSelectingRef.current = true
-    setSelectedLuck(currentLuck.year_start)
+    setSelectedLuck(currentLuckIdx)
 
     // Fetch years for that luck pillar, then auto-select current year
-    const lp = currentLuck
+    const lp = luckPillars[currentLuckIdx]
     setLoadingYear(true)
     fetch("/api/calculate_yearly", {
       method: "POST",
@@ -151,7 +115,7 @@ export default function LuckPillarExplorer({
         const yp: any[] = data.yearly_pillars ?? []
         setYearPillars(yp)
         const matchYear = yp.find((p: any) => p.year === currentYear)
-        if (!matchYear) { isAutoSelectingRef.current = false; return }
+        if (!matchYear) return
         setSelectedYear(currentYear)
 
         // Fetch months for current year, then auto-select current month
@@ -166,7 +130,7 @@ export default function LuckPillarExplorer({
             const mp: any[] = mdata.monthly_pillars ?? []
             setMonthPillars(mp)
             const matchMonth = mp.find((p: any) => p.month === currentMonth)
-            if (!matchMonth) { isAutoSelectingRef.current = false; return }
+            if (!matchMonth) return
             setSelectedMonth(currentMonth)
 
             // Fetch days for current month, then auto-select current day
@@ -185,7 +149,7 @@ export default function LuckPillarExplorer({
                 const dp: any[] = ddata.daily_pillars ?? []
                 setDayPillars(dp)
                 const matchDay = dp.find((p: any) => p.day === currentDay)
-                if (!matchDay) { isAutoSelectingRef.current = false; return }
+                if (!matchDay) return
                 setSelectedDay(currentDay)
 
                 // Fetch hours for current day
@@ -202,29 +166,9 @@ export default function LuckPillarExplorer({
                 })
                   .then((r) => r.json())
                   .then((hdata) => {
-                    const hp: any[] = hdata.hourly_pillars ?? []
-                    setHourPillars(hp)
-                    // Auto-select the hour pillar that covers the current time
-                    const currentHour = now.getHours()
-                    const currentMinute = now.getMinutes()
-                    const currentTotalMin = currentHour * 60 + currentMinute
-                    const matchHour = hp.find((p: any) => {
-                      // hour_time format: "HH:MM - HH:MM" e.g. "15:00 - 16:59"
-                      const parts = p.hour_time?.split(' - ')
-                      if (!parts || parts.length < 2) return false
-                      const [startH, startM] = parts[0].split(':').map(Number)
-                      const [endH, endM] = parts[1].split(':').map(Number)
-                      const startMin = startH * 60 + startM
-                      const endMin = endH * 60 + endM
-                      // Handle midnight-crossing range (23:00 - 00:59)
-                      if (startMin > endMin) {
-                        return currentTotalMin >= startMin || currentTotalMin <= endMin
-                      }
-                      return currentTotalMin >= startMin && currentTotalMin <= endMin
-                    })
-                    if (matchHour) setSelectedHourData(matchHour)
+                    setHourPillars(hdata.hourly_pillars ?? [])
                   })
-                  .finally(() => { setLoadingHour(false); isAutoSelectingRef.current = false })
+                  .finally(() => setLoadingHour(false))
               })
               .finally(() => setLoadingDay(false))
           })
@@ -245,9 +189,7 @@ export default function LuckPillarExplorer({
   // ── Cascade: Luck → Year ─────────────────────────────────────────────────
   useEffect(() => {
     if (selectedLuck === null || !baziData) return
-    // Skip if autoSelectCurrentTime is handling the full cascade
-    if (isAutoSelectingRef.current) return
-    const lp = baziData.luck_pillars.luck_pillars.find((p: any) => p.year_start === selectedLuck)
+    const lp = baziData.luck_pillars.luck_pillars[selectedLuck]
     setSelectedYear(null)
     setSelectedMonth(null)
     setSelectedDay(null)
@@ -255,7 +197,6 @@ export default function LuckPillarExplorer({
     setMonthPillars([])
     setDayPillars([])
     setHourPillars([])
-    if (!lp) return
     setLoadingYear(true)
     fetch("/api/calculate_yearly", {
       method: "POST",
@@ -276,7 +217,6 @@ export default function LuckPillarExplorer({
   // ── Cascade: Year → Month ────────────────────────────────────────────────
   useEffect(() => {
     if (selectedYear === null || !baziData) return
-    if (isAutoSelectingRef.current) return
     setSelectedMonth(null)
     setSelectedDay(null)
     setMonthPillars([])
@@ -298,7 +238,6 @@ export default function LuckPillarExplorer({
   // ── Cascade: Month → Day ─────────────────────────────────────────────────
   useEffect(() => {
     if (selectedMonth === null || selectedYear === null || !baziData) return
-    if (isAutoSelectingRef.current) return
     setSelectedDay(null)
     setDayPillars([])
     setHourPillars([])
@@ -328,7 +267,6 @@ export default function LuckPillarExplorer({
       !baziData
     )
       return
-    if (isAutoSelectingRef.current) return
     setHourPillars([])
     setLoadingHour(true)
     fetch("/api/calculate_hourly", {
@@ -361,35 +299,26 @@ export default function LuckPillarExplorer({
     })
   }
 
-  useEffect(() => { setTimeout(() => scrollToSelected(rowRefs[0]), 150) }, [selectedLuck, luckPillars])
   useEffect(() => scrollToSelected(rowRefs[1]), [selectedLuck, yearPillars])
   useEffect(() => scrollToSelected(rowRefs[2]), [selectedYear, monthPillars])
   useEffect(() => scrollToSelected(rowRefs[3]), [selectedMonth, dayPillars])
   useEffect(() => scrollToSelected(rowRefs[4]), [selectedDay, hourPillars])
-  useEffect(() => scrollToSelected(rowRefs[4]), [selectedHourData])
 
   // ── Reset to current time ────────────────────────────────────────────────
-  const handleReset = useCallback(() => {
+  const handleReset = () => {
     setSelectedLuck(null)
     setSelectedYear(null)
     setSelectedMonth(null)
     setSelectedDay(null)
-    setSelectedHourData(null)
     setYearPillars([])
     setMonthPillars([])
     setDayPillars([])
     setHourPillars([])
     setTimeout(() => autoSelectCurrentTime(), 50)
-  }, [autoSelectCurrentTime])
-
-  // Listen for custom event from page.tsx
-  useEffect(() => {
-    window.addEventListener('reset-to-current-time', handleReset)
-    return () => window.removeEventListener('reset-to-current-time', handleReset)
-  }, [handleReset])
+  }
 
   // ── Row data ─────────────────────────────────────────────────────────────
-  // (luckPillars sudah dideklarasikan di atas)
+  const luckPillars: any[] = baziData?.luck_pillars?.luck_pillars ?? []
 
   const rows = [
     {
@@ -397,17 +326,21 @@ export default function LuckPillarExplorer({
       loading: false,
       isActive: true,
       renderCard: (pillar: any, index: number) => {
+        const { hsCombos: lhc, branchInteractions: lbi } =
+          detectLuckPillarCombinations(pillar, baziData.four_pillars)
         return (
-          <div key={index} data-selected={selectedLuck === pillar.year_start}>
+          <div key={index} data-selected={selectedLuck === index}>
             <Pillar
               title={`Luck ${pillar.number} (大運)`}
               periodLabel="Period"
               periodValue={`${pillar.year_start}–${pillar.year_end}`}
               pillarData={pillar}
-              isSelected={selectedLuck === pillar.year_start}
-              onClick={() => setSelectedLuck(pillar.year_start)}
+              isSelected={selectedLuck === index}
+              onClick={() => setSelectedLuck(index)}
               dayMasterName={dayMasterName}
               luckyStars={luckyStars}
+              hsCombos={lhc}
+              branchInteractions={lbi}
               mode={mode}
             />
           </div>
@@ -419,6 +352,8 @@ export default function LuckPillarExplorer({
       loading: loadingYear,
       isActive: selectedLuck !== null,
       renderCard: (pillar: any, index: number) => {
+        const { hsCombos: yhc, branchInteractions: ybi } =
+          detectLuckPillarCombinations(pillar, baziData.four_pillars)
         return (
           <div key={index} data-selected={selectedYear === pillar.year}>
             <Pillar
@@ -430,6 +365,8 @@ export default function LuckPillarExplorer({
               onClick={() => setSelectedYear(pillar.year)}
               dayMasterName={dayMasterName}
               luckyStars={luckyStars}
+              hsCombos={yhc}
+              branchInteractions={ybi}
               mode={mode}
             />
           </div>
@@ -441,6 +378,8 @@ export default function LuckPillarExplorer({
       loading: loadingMonth,
       isActive: selectedYear !== null,
       renderCard: (pillar: any, index: number) => {
+        const { hsCombos: mhc, branchInteractions: mbi } =
+          detectLuckPillarCombinations(pillar, baziData.four_pillars)
         return (
           <div key={index} data-selected={selectedMonth === pillar.month}>
             <Pillar
@@ -452,6 +391,8 @@ export default function LuckPillarExplorer({
               onClick={() => setSelectedMonth(pillar.month)}
               dayMasterName={dayMasterName}
               luckyStars={luckyStars}
+              hsCombos={mhc}
+              branchInteractions={mbi}
               mode={mode}
             />
           </div>
@@ -463,6 +404,8 @@ export default function LuckPillarExplorer({
       loading: loadingDay,
       isActive: selectedMonth !== null,
       renderCard: (pillar: any, index: number) => {
+        const { hsCombos: dhc, branchInteractions: dbi } =
+          detectLuckPillarCombinations(pillar, baziData.four_pillars)
         return (
           <div key={index} data-selected={selectedDay === pillar.day}>
             <Pillar
@@ -477,6 +420,8 @@ export default function LuckPillarExplorer({
               onClick={() => setSelectedDay(pillar.day)}
               dayMasterName={dayMasterName}
               luckyStars={luckyStars}
+              hsCombos={dhc}
+              branchInteractions={dbi}
               mode={mode}
             />
           </div>
@@ -488,14 +433,16 @@ export default function LuckPillarExplorer({
       loading: loadingHour,
       isActive: selectedDay !== null,
       renderCard: (pillar: any, index: number) => {
+        const { hsCombos: hhc, branchInteractions: hbi } =
+          detectLuckPillarCombinations(pillar, baziData.four_pillars)
         return (
-          <div key={index} data-selected={selectedHourData?.hour_time === pillar.hour_time}>
+          <div key={index}>
             <Pillar
               title={`${pillar.hour_time} (時柱)`}
               periodLabel="Hour"
               periodValue="Hour"
               pillarData={pillar}
-              isSelected={selectedHourData?.hour_time === pillar.hour_time}
+              isSelected={selectedHourData === pillar}
               onClick={() => {
                 setSelectedHourData(pillar)
                 setIsDialogOpen(true)
@@ -503,6 +450,8 @@ export default function LuckPillarExplorer({
               }}
               dayMasterName={dayMasterName}
               luckyStars={luckyStars}
+              hsCombos={hhc}
+              branchInteractions={hbi}
               mode={mode}
             />
           </div>
@@ -512,7 +461,7 @@ export default function LuckPillarExplorer({
   ]
 
   const selectedLuckData =
-    selectedLuck !== null ? luckPillars.find((p: any) => p.year_start === selectedLuck) ?? null : null
+    selectedLuck !== null ? luckPillars[selectedLuck] : null
   const selectedYearData = yearPillars.find((p) => p.year === selectedYear)
   const selectedMonthData = monthPillars.find((p) => p.month === selectedMonth)
   const selectedDayData = dayPillars.find((p) => p.day === selectedDay)
@@ -520,76 +469,148 @@ export default function LuckPillarExplorer({
   return (
     <>
       <div className="flex w-full flex-col gap-0 overflow-hidden rounded-[28px] border border-border bg-card shadow-sm">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-border px-5 py-3">
+        <div>
+          <h3 className="flex items-center gap-2 text-[20px] font-bold text-foreground">
+            <span>✨</span> Luck Pillars Explorer
+          </h3>
+          <p className="mt-0.5 text-[13px] text-muted-foreground">
+            Click any pillar to drill down. All rows update automatically.
+          </p>
+        </div>
+        <button
+          onClick={handleReset}
+          className="flex items-center gap-2 rounded-[12px] border border-primary/50 bg-primary/5 px-4 py-2 text-[13px] font-medium text-primary shadow-sm transition-all duration-200 hover:border-primary hover:bg-primary hover:text-white hover:shadow-md"
+        >
+          <svg
+            className="h-3.5 w-3.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+            />
+          </svg>
+          Reset to Current Time
+        </button>
+        </div>
 
         {/* 5 Rows */}
         {rows.map((row, rowIndex) => {
+        const meta = ROW_LABELS[rowIndex]
+        const color = ROW_COLORS[rowIndex]
         const isLocked = !row.isActive
-        const hasItems = row.pillars.length > 0
 
         return (
           <div
             key={rowIndex}
-            className={`relative flex flex-col border-b border-border last:border-b-0 transition-opacity duration-300 ${isLocked ? "opacity-40" : "opacity-100"}`}
+            className={`flex flex-col border-b border-border last:border-b-0 transition-opacity duration-300 ${isLocked ? "opacity-40" : "opacity-100"}`}
           >
-            {/* Prev / Next nav buttons + gradient fade edges */}
-            {!isLocked && hasItems && (
-              <>
-                {/* Left gradient + button */}
-                <div className={`absolute left-0 inset-y-0 z-10 flex items-center w-12 transition-opacity duration-200 ${canScrollLeft[rowIndex] ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                  <div className="absolute inset-0 bg-gradient-to-r from-card via-card/80 to-transparent rounded-l-[28px]" />
-                  <button
-                    onClick={() => scrollRow(rowIndex, 'left')}
-                    className="relative ml-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 border border-primary/20 text-primary shadow-sm backdrop-blur-sm transition-all hover:bg-primary/20 hover:border-primary/40 hover:shadow-md active:scale-95"
-                    aria-label="Scroll left"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="15 18 9 12 15 6" />
-                    </svg>
-                  </button>
-                </div>
+            {/* Row Label */}
+            <div
+              className="flex items-center gap-3 px-5 py-2"
+              style={{ borderLeft: `3px solid ${color}` }}
+            >
+              <span className="text-[16px] leading-none">{meta.icon}</span>
+              <div className="flex items-baseline gap-2">
+                <span className="text-[14px] font-bold text-foreground">
+                  {meta.label}
+                </span>
+                <span className="text-[12px] font-medium text-muted-foreground">
+                  {meta.zh}
+                </span>
+              </div>
 
-                {/* Right gradient + button */}
-                <div className={`absolute right-0 inset-y-0 z-10 flex items-center justify-end w-12 transition-opacity duration-200 ${canScrollRight[rowIndex] ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                  <div className="absolute inset-0 bg-gradient-to-l from-card via-card/80 to-transparent rounded-r-[28px]" />
-                  <button
-                    onClick={() => scrollRow(rowIndex, 'right')}
-                    className="relative mr-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 border border-primary/20 text-primary shadow-sm backdrop-blur-sm transition-all hover:bg-primary/20 hover:border-primary/40 hover:shadow-md active:scale-95"
-                    aria-label="Scroll right"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="9 18 15 12 9 6" />
-                    </svg>
-                  </button>
-                </div>
-              </>
-            )}
+              {/* Selected badge */}
+              {rowIndex === 0 && selectedLuck !== null && (
+                <SelectedBadge
+                  color={color}
+                  text={`${luckPillars[selectedLuck]?.year_start}–${luckPillars[selectedLuck]?.year_end}`}
+                />
+              )}
+              {rowIndex === 1 && selectedYear !== null && (
+                <SelectedBadge color={color} text={String(selectedYear)} />
+              )}
+              {rowIndex === 2 && selectedMonth !== null && (
+                <SelectedBadge
+                  color={color}
+                  text={
+                    monthPillars.find((m) => m.month === selectedMonth)
+                      ?.month_english ?? String(selectedMonth)
+                  }
+                />
+              )}
+              {rowIndex === 3 && selectedDay !== null && (
+                <SelectedBadge color={color} text={`Day ${selectedDay}`} />
+              )}
 
-            {/* Horizontal scroll area — no overflow-x-auto, scroll via buttons only */}
+              {/* Loading spinner */}
+              {row.loading && (
+                <svg
+                  className="ml-auto h-4 w-4 animate-spin text-muted-foreground"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+              )}
+
+              {/* Lock hint */}
+              {isLocked && (
+                <span className="ml-auto text-[11px] text-muted-foreground">
+                  Select{" "}
+                  {rowIndex === 1
+                    ? "a 10-Year Luck"
+                    : rowIndex === 2
+                      ? "a Year"
+                      : rowIndex === 3
+                        ? "a Month"
+                        : "a Day"}{" "}
+                  first
+                </span>
+              )}
+            </div>
+
+            {/* Horizontal scroll area */}
             <div
               ref={rowRefs[rowIndex]}
-              className="flex flex-row flex-nowrap items-stretch gap-3 overflow-x-hidden scroll-smooth px-5 pb-3 pt-3"
-              onScroll={() => updateScrollState(rowIndex)}
+              className="flex flex-row flex-nowrap items-stretch gap-3 overflow-x-auto scroll-smooth px-5 pb-3 pt-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-border/40 hover:scrollbar-thumb-border/70"
+              style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(0,0,0,0.15) transparent' }}
             >
-              {/* Inner wrapper: center when items fit, left-align when overflow */}
-              <div className="flex flex-row flex-nowrap items-stretch gap-3 mx-auto">
-                {row.loading ? (
-                  // Skeleton placeholders
-                  Array.from({ length: 6 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="h-[200px] w-[130px] flex-none animate-pulse rounded-[16px] bg-muted/50"
-                    />
-                  ))
-                ) : row.pillars.length > 0 ? (
-                  row.pillars.map((pillar, index) =>
-                    row.renderCard(pillar, index)
-                  )
-                ) : !isLocked ? (
-                  <div className="flex w-full items-center justify-center py-8 text-[13px] text-muted-foreground">
-                    No data available.
-                  </div>
-                ) : null}
-              </div>
+              {row.loading ? (
+                // Skeleton placeholders
+                Array.from({ length: 6 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-[200px] w-[130px] flex-none animate-pulse rounded-[16px] bg-muted/50"
+                  />
+                ))
+              ) : row.pillars.length > 0 ? (
+                row.pillars.map((pillar, index) =>
+                  row.renderCard(pillar, index)
+                )
+              ) : !isLocked ? (
+                <div className="flex w-full items-center justify-center py-8 text-[13px] text-muted-foreground">
+                  No data available.
+                </div>
+              ) : null}
             </div>
           </div>
         )

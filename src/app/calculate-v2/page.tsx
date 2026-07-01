@@ -22,7 +22,6 @@ import StickyHeader from "@/components/calculate-v2/StickyHeader"
 import LuckyStars from "@/components/calculate-v2/LuckyStars"
 import Pillar from "@/components/calculate-v2/Pillar"
 import TenGods from "@/components/calculate-v2/TenGods"
-import BaziViewport from "@/components/calculate-v2/BaziViewport"
 
 const LuckPillarExplorer = lazy(() => import("@/components/calculate-v2/LuckPillarExplorer"))
 const ElementStructure = lazy(() => import("@/components/calculate-v2/ElementStructure"))
@@ -53,28 +52,10 @@ export default function BaziCalculator() {
   // Expanded Pillar State
   const [expandedPillarId, setExpandedPillarId] = useState<string | null>(null)
 
-  // Window size state
-  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })
-
   // Explorer state is managed inside LuckPillarExplorer
 
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const heroRef = useRef<HTMLDivElement>(null)
-
-  // Reset to current time function
-  const handleResetToCurrentTime = () => {
-    // Dispatch a custom event that LuckPillarExplorer can listen to
-    window.dispatchEvent(new CustomEvent('reset-to-current-time'))
-  }
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowSize({ width: window.innerWidth, height: window.innerHeight })
-    }
-    handleResize()
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
 
   useEffect(() => {
     if (baziData && scrollContainerRef.current) {
@@ -186,11 +167,23 @@ export default function BaziCalculator() {
   }
 
   return (
-    <div className="flex h-screen flex-col bg-background text-foreground overflow-hidden">
-      {/* Window Size Indicator */}
-      <div className="fixed top-4 right-4 z-50 rounded-md bg-black/80 px-3 py-1.5 text-xs font-mono text-white shadow-lg backdrop-blur-sm">
-        {windowSize.width}px × {windowSize.height}px
-      </div>
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
+      {/* Legend — fixed bottom-left of page */}
+      {baziData && (
+        <div className="fixed bottom-4 left-4 z-40">
+          <div className="flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-[10px] font-medium text-muted-foreground shadow-sm">
+            <div className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-[var(--color-chart-3)]"></div><span>Positive</span></div>
+            <div className="w-px h-3 bg-border"></div>
+            <div className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-muted-foreground"></div><span>Neutral</span></div>
+            <div className="w-px h-3 bg-border"></div>
+            <div className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-[var(--color-chart-2)]"></div><span>Warning</span></div>
+            <div className="w-px h-3 bg-border"></div>
+            <div className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-destructive"></div><span>Negative</span></div>
+            <div className="w-px h-3 bg-border"></div>
+            <div className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-[var(--color-chart-1)]"></div><span>Special</span></div>
+          </div>
+        </div>
+      )}
 
       {/* Sticky header — independent component, fades in when hero scrolls out of view */}
       {baziData && (
@@ -208,49 +201,47 @@ export default function BaziCalculator() {
       )}
 
       {/* ── Main Layout ── */}
-      <div className="w-full flex-1 min-h-0 overflow-hidden">
+      <div className="w-full flex-1 px-4">
         {error && (
-          <div className="mt-6 mb-4 mx-4 rounded-lg border border-destructive/50 bg-destructive/10 px-4 py-3 text-destructive">
+          <div className="mt-6 mb-4 rounded-lg border border-destructive/50 bg-destructive/10 px-4 py-3 text-destructive">
             {error}
           </div>
         )}
 
         {/* Before calculation: centered form */}
         {!baziData && (
-          <div className="px-4">
-            <HeroForm
-              date={date}
-              setDate={setDate}
-              time={time}
-              setTime={setTime}
-              timezone={timezone}
-              setTimezone={setTimezone}
-              gender={gender}
-              setGender={setGender}
-              unknownTime={unknownTime}
-              setUnknownTime={setUnknownTime}
-              mode={mode}
-              setMode={setMode}
-              onCalculate={handleCalculate}
-              loading={loading}
-              baziData={baziData}
-              heroRef={heroRef}
-              chartName={chartName}
-              setChartName={setChartName}
-            />
-          </div>
+          <HeroForm
+            date={date}
+            setDate={setDate}
+            time={time}
+            setTime={setTime}
+            timezone={timezone}
+            setTimezone={setTimezone}
+            gender={gender}
+            setGender={setGender}
+            unknownTime={unknownTime}
+            setUnknownTime={setUnknownTime}
+            mode={mode}
+            setMode={setMode}
+            onCalculate={handleCalculate}
+            loading={loading}
+            baziData={baziData}
+            heroRef={heroRef}
+            chartName={chartName}
+            setChartName={setChartName}
+          />
         )}
 
         {/* After calculation: grid layout */}
         {baziData && (
-          <div className="h-full w-full min-h-0">
-            <BaziViewport>
-              {/* ── Main Grid: [Sidebar (2/12)] | [Content (10/12)] ── */}
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-12 h-full">
+          <div className="flex flex-col gap-4 pb-8">
 
-                {/* ── Sidebar (2/12) ── */}
-                <div className="flex flex-col gap-4 lg:col-span-2">
-                {/* Hero */}
+            {/* ── Baris 1: [Hero + TenGods + ElementStructure] | [8 Pillars] ── */}
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,5fr)]">
+
+              {/* Col A: Hero (full-width) + TenGods | ElementStructure (side-by-side) */}
+              <div className="flex flex-col gap-4">
+                {/* Hero — full width */}
                 <HeroForm
                   date={date}
                   setDate={setDate}
@@ -271,67 +262,21 @@ export default function BaziCalculator() {
                   chartName={chartName}
                   setChartName={setChartName}
                 />
-
-                {/* TenGods */}
-                <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
-                  <TenGods tenGodsData={tenGodsData} />
-                </div>
-
-                {/* Element Structure */}
-                <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
-                  <Suspense fallback={<div className="h-40 animate-pulse rounded-[12px] bg-muted" />}>
-                    <ElementStructure elementData={elementData} />
-                  </Suspense>
-                </div>
-
-                {/* Lucky Stars */}
-                <div className="flex flex-col rounded-[16px] border border-border bg-card p-4 shadow-sm">
-                  <h4 className="mb-2 text-[14px] font-bold text-foreground">✨ Lucky Stars</h4>
-                  <div className="flex-1">
-                    <LuckyStars stars={luckyStars} mode={mode} />
+                {/* TenGods + ElementStructure side-by-side */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
+                    <TenGods tenGodsData={tenGodsData} />
                   </div>
-                  <button
-                    onClick={handleResetToCurrentTime}
-                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-[12px] border border-primary/50 bg-primary/5 px-4 py-2 text-[13px] font-medium text-primary shadow-sm transition-all duration-200 hover:border-primary hover:bg-primary hover:text-white hover:shadow-md"
-                  >
-                    <svg
-                      className="h-3.5 w-3.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                      />
-                    </svg>
-                    Reset to Current Time
-                  </button>
-
-                  {/* Legend */}
-                  <div className="mt-4 flex flex-col items-center justify-center gap-2 rounded-[12px] border border-border bg-muted/20 px-3 py-2 text-[10px] font-medium text-muted-foreground">
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-[var(--color-chart-3)]"></div><span>Positive</span></div>
-                      <div className="h-3 w-px bg-border"></div>
-                      <div className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-muted-foreground"></div><span>Neutral</span></div>
-                      <div className="h-3 w-px bg-border"></div>
-                      <div className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-[var(--color-chart-2)]"></div><span>Warning</span></div>
-                    </div>
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-destructive"></div><span>Negative</span></div>
-                      <div className="h-3 w-px bg-border"></div>
-                      <div className="flex items-center gap-1"><div className="h-2 w-2 rounded-full bg-[var(--color-chart-1)]"></div><span>Special</span></div>
-                    </div>
+                  <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
+                    <Suspense fallback={<div className="h-40 animate-pulse rounded-[12px] bg-muted" />}>
+                      <ElementStructure elementData={elementData} />
+                    </Suspense>
                   </div>
                 </div>
-                </div>
+              </div>
 
-                {/* ── Content (10/12) ── */}
-                <div className="flex flex-col gap-4 lg:col-span-10">
-                {/* 8 Pillars */}
-                <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm md:p-5" id="bazi-result-area">
+              {/* Col B: 8 Pillars */}
+              <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm md:p-5" id="bazi-result-area">
                 <div
                   ref={scrollContainerRef}
                   className="grid w-full gap-3 "
@@ -469,6 +414,17 @@ export default function BaziCalculator() {
                 </div>
               </div>
 
+            </div>
+
+            {/* ── Baris 2: [Lucky Stars] | [Luck Pillar Explorer] ── */}
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,10fr)]">
+
+              {/* Lucky Stars */}
+              <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
+                <h4 className="mb-2 text-[14px] font-bold text-foreground">✨ Lucky Stars</h4>
+                <LuckyStars stars={luckyStars} mode={mode} />
+              </div>
+
               {/* Luck Pillar Explorer */}
               <Suspense fallback={<div className="h-64 animate-pulse rounded-[28px] bg-muted" />}>
                 <LuckPillarExplorer
@@ -481,10 +437,9 @@ export default function BaziCalculator() {
                   mode={mode}
                 />
               </Suspense>
-              </div>
 
-              </div>
-            </BaziViewport>
+            </div>
+
           </div>
         )}
 
