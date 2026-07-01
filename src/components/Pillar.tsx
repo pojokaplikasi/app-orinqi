@@ -227,8 +227,8 @@ export default function Pillar({
 
   // Base classes
   let pillarClass = isSmall
-    ? "flex-none w-[100px] md:w-[110px] lg:w-[120px] h-full min-h-[240px] p-2 pt-3 rounded-[14px] bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-[24px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.04)] text-foreground text-center box-border transition-all duration-300 relative flex flex-col gap-1.5"
-    : "flex-none w-[120px] md:w-[140px] lg:w-[160px] h-full min-h-[320px] p-3 pt-4 rounded-[18px] bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-[24px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.04)] text-foreground text-center box-border transition-all duration-300 relative flex flex-col gap-2.5"
+    ? `flex-none w-[100px] md:w-[110px] lg:w-[120px] h-full ${hideRelationships ? "" : "min-h-[240px]"} p-1.5 pt-2 rounded-[14px] bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-[24px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.04)] text-foreground text-center box-border transition-all duration-300 relative flex flex-col gap-1`
+    : `flex-none w-[120px] md:w-[140px] lg:w-[160px] h-full ${hideRelationships ? "" : "min-h-[320px]"} p-2 pt-2 rounded-[18px] bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-[24px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.04)] text-foreground text-center box-border transition-all duration-300 relative flex flex-col gap-1`
 
   if (isCurrent) {
     pillarClass +=
@@ -260,7 +260,7 @@ export default function Pillar({
     <div className={pillarClass} onClick={onClick}>
       {/* Header & Ten Gods Badge */}
       <div
-        className={`relative mb-0.5 flex w-full items-start justify-between ${isSmall ? "min-h-[24px]" : "min-h-[32px]"}`}
+        className={`relative flex w-full items-start justify-between ${isSmall ? "min-h-[20px]" : "min-h-[28px]"}`}
       >
         <div className="flex flex-col items-start text-left">
           <span
@@ -311,7 +311,7 @@ export default function Pillar({
 
       {/* Separator */}
       <div
-        className={`flex w-full items-center justify-center ${isSmall ? "my-0.5" : "my-1"}`}
+        className={`flex w-full items-center justify-center ${isSmall ? "my-0" : "my-0.5"}`}
       >
         <div
           className={`h-[1px] bg-gradient-to-r from-transparent via-border to-transparent ${isSmall ? "w-6" : "w-8"}`}
@@ -353,7 +353,7 @@ export default function Pillar({
 
       {/* Hidden Stems (Mini Chips) */}
       <div
-        className={`flex w-full justify-center gap-1 ${isSmall ? "mt-0.5" : "mt-1"}`}
+        className={`flex w-full justify-center gap-0.5 ${isSmall ? "mt-0.5" : "mt-0.5"}`}
       >
         {[
           hidden_stems?.residual_qi,
@@ -364,7 +364,7 @@ export default function Pillar({
           return (
             <div
               key={idx}
-              className={`flex flex-1 flex-col items-center justify-center border border-black/[0.04] bg-black/[0.02] dark:border-white/[0.04] dark:bg-white/[0.02] ${isSmall ? "rounded-[8px] px-1 py-1" : "rounded-[10px] px-1.5 py-1.5"}`}
+              className={`flex flex-1 flex-col items-center justify-center border border-black/[0.04] bg-black/[0.02] dark:border-white/[0.04] dark:bg-white/[0.02] ${isSmall ? "rounded-[8px] px-0.5 py-0.5" : "rounded-[10px] px-1 py-1"}`}
             >
               <span
                 className={`mb-0.5 font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] leading-none font-bold drop-shadow-sm ${isSmall ? "text-[11px]" : "text-[13px]"}`}
@@ -384,7 +384,7 @@ export default function Pillar({
 
       {/* Element Section (Nayin) & Life Stage */}
       <div
-        className={`flex w-full items-center justify-between px-0.5 ${isSmall ? "mt-0.5 min-h-[16px]" : "mt-1 min-h-[20px]"}`}
+        className={`flex w-full items-center justify-between px-0.5 ${isSmall ? "mt-0.5 min-h-[14px]" : "mt-0.5 min-h-[18px]"}`}
       >
         <span
           className={`line-clamp-2 flex-1 pr-1 text-left font-medium text-muted-foreground/80 ${isSmall ? "text-[8px]" : "text-[10px]"}`}
@@ -406,15 +406,15 @@ export default function Pillar({
       </div>
 
       {/* Spacer to push Relationship Indicators to the bottom */}
-      <div className="flex-grow"></div>
+      {!hideRelationships && <div className="flex-grow"></div>}
 
       {/* Relationship Indicators (Always Visible) */}
       {!hideRelationships && (hsLabel || branchLabels.length > 0) && (
-        <div className="mt-auto w-full border-t border-border/50 pt-2">
-          <div className="flex w-full flex-col gap-1.5 text-left">
+        <div className="mt-auto w-full border-t border-border/50 pt-1">
+          <div className="flex w-full flex-col gap-1 text-left">
             {hsLabel && (
               <div
-                className="flex items-center gap-1.5 rounded-lg bg-black/[0.02] px-2 py-1 text-[9px] font-normal dark:bg-white/[0.02]"
+                className="flex items-center gap-1 rounded-lg bg-black/[0.02] px-1.5 py-0.5 text-[9px] font-normal dark:bg-white/[0.02]"
                 style={{ color: "var(--color-chart-3)" }}
               >
                 <div className="h-1 w-1 shrink-0 rounded-full bg-current opacity-50"></div>
@@ -444,7 +444,7 @@ export default function Pillar({
               return (
                 <div
                   key={idx}
-                  className={`flex items-center gap-1.5 rounded-lg px-2 py-1 text-[9px] font-normal ${bgColor}`}
+                  className={`flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-[9px] font-normal ${bgColor}`}
                   style={{ color }}
                 >
                   <div className="h-1 w-1 shrink-0 rounded-full bg-current opacity-50"></div>

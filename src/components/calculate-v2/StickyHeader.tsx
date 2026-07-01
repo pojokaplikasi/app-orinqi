@@ -49,7 +49,7 @@ export default function StickyHeader({
         transition: "opacity 250ms ease",
       }}
     >
-      <div className="mx-auto flex w-full max-w-[1800px] items-center gap-3 px-4 py-2">
+      <div className="mx-auto flex w-full max-w-[1800px] items-center gap-2 px-3 py-1">
         {/* Avatar */}
         <div className="flex h-[32px] w-[32px] shrink-0 items-center justify-center rounded-full border-2 border-background/80 bg-gradient-to-br from-primary to-primary/80">
           <span className="font-serif text-sm font-bold text-primary-foreground">
@@ -58,7 +58,7 @@ export default function StickyHeader({
         </div>
 
         {/* Name · Date · Time */}
-        <div className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden">
+        <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-hidden">
           <h2 className="shrink-0 text-[15px] font-bold tracking-tight text-foreground">
             {chartName}
           </h2>
@@ -81,7 +81,7 @@ export default function StickyHeader({
           </span>
 
           {/* Classic/Modern toggle */}
-          <div className="ml-2 hidden shrink-0 rounded-[10px] border border-border bg-background/60 p-0.5 sm:flex">
+          <div className="ml-1.5 hidden shrink-0 rounded-[10px] border border-border bg-background/60 p-0.5 sm:flex">
             <button
               type="button"
               onClick={() => setMode("classic")}
@@ -108,10 +108,10 @@ export default function StickyHeader({
         </div>
 
         {/* Action buttons */}
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1.5">
           <button
             onClick={() => window.location.reload()}
-            className="rounded-[10px] bg-gradient-to-r from-chart-2 to-chart-2/80 px-3 py-1.5 text-[12px] font-semibold text-primary-foreground transition-colors hover:from-chart-2/90"
+            className="rounded-[10px] bg-gradient-to-r from-chart-2 to-chart-2/80 px-2 py-1 text-[12px] font-semibold text-primary-foreground transition-colors hover:from-chart-2/90"
           >
             New
           </button>

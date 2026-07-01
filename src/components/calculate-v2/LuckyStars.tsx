@@ -160,12 +160,12 @@ export default function LuckyStars({
   const activeStars = starConfig.filter((star) => star.branches)
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-1">
       {activeStars.length > 0 ? (
         activeStars.map((star) => (
           <div
             key={star.id}
-            className="flex items-center gap-2.5 rounded-[10px] border border-border bg-card px-2.5 py-2"
+            className="flex items-center gap-1 rounded-[10px] border border-border bg-card px-1.5 py-1"
           >
             {/* Icon */}
             <span className="flex-shrink-0 text-[22px] leading-none">
@@ -192,7 +192,7 @@ export default function LuckyStars({
           </div>
         ))
       ) : (
-        <div className="flex items-center justify-center rounded-[18px] border border-border bg-card p-[18px] text-[14px] text-muted-foreground">
+        <div className="flex items-center justify-center rounded-[18px] border border-border bg-card p-3 text-[14px] text-muted-foreground">
           No active stars found in this chart.
         </div>
       )}

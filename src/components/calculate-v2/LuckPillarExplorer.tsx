@@ -301,16 +301,19 @@ export default function LuckPillarExplorer({
   )
 
   // ── Auto-scroll selected card into view ──────────────────────────────────
+  // With flex-row-reverse the scroll origin is on the right (scrollLeft is
+  // negative in most browsers). We centre the selected card in the viewport.
   const scrollToSelected = (rowRef: React.RefObject<HTMLDivElement | null>) => {
     const container = rowRef.current
     if (!container) return
     const selected = container.querySelector('[data-selected="true"]')
     if (!selected) return
     const el = selected as HTMLElement
-    container.scrollTo({
-      left: el.offsetLeft - container.clientWidth / 2 + el.clientWidth / 2,
-      behavior: "smooth",
-    })
+    // offsetLeft is still measured from the left content edge.
+    // Target: centre the element horizontally in the visible area.
+    const targetScroll =
+      el.offsetLeft - container.clientWidth / 2 + el.clientWidth / 2
+    container.scrollTo({ left: targetScroll, behavior: "smooth" })
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -340,7 +343,7 @@ export default function LuckPillarExplorer({
 
   const rows = [
     {
-      pillars: [...luckPillars].reverse(),
+      pillars: luckPillars,
       loading: false,
       isActive: true,
       renderCard: (pillar: any, index: number) => {
@@ -367,7 +370,7 @@ export default function LuckPillarExplorer({
       },
     },
     {
-      pillars: [...yearPillars].reverse(),
+      pillars: yearPillars,
       loading: loadingYear,
       isActive: selectedLuck !== null,
       renderCard: (pillar: any, index: number) => {
@@ -394,7 +397,7 @@ export default function LuckPillarExplorer({
       },
     },
     {
-      pillars: [...monthPillars].reverse(),
+      pillars: monthPillars,
       loading: loadingMonth,
       isActive: selectedYear !== null,
       renderCard: (pillar: any, index: number) => {
@@ -421,7 +424,7 @@ export default function LuckPillarExplorer({
       },
     },
     {
-      pillars: [...dayPillars].reverse(),
+      pillars: dayPillars,
       loading: loadingDay,
       isActive: selectedMonth !== null,
       renderCard: (pillar: any, index: number) => {
@@ -454,7 +457,7 @@ export default function LuckPillarExplorer({
       },
     },
     {
-      pillars: [...hourPillars].reverse(),
+      pillars: hourPillars,
       loading: loadingHour,
       isActive: selectedDay !== null,
       renderCard: (pillar: any, index: number) => {
@@ -509,11 +512,11 @@ export default function LuckPillarExplorer({
             >
               {/* Row Label */}
               <div
-                className="flex items-center gap-3 px-5 py-2"
+                className="flex items-center gap-1.5 px-3 py-1"
                 style={{ borderLeft: `3px solid ${color}` }}
               >
                 <span className="text-[16px] leading-none">{meta.icon}</span>
-                <div className="flex items-baseline gap-2">
+                <div className="flex items-baseline gap-1">
                   <span className="text-[14px] font-bold text-foreground">
                     {meta.label}
                   </span>
@@ -557,7 +560,7 @@ export default function LuckPillarExplorer({
                 {rowIndex === 0 && (
                   <button
                     onClick={handleReset}
-                    className="ml-auto flex items-center gap-1.5 rounded-[10px] border border-primary/50 bg-primary/5 px-3 py-1 text-[12px] font-medium text-primary transition-all duration-200 hover:border-primary hover:bg-primary hover:text-white"
+                    className="ml-auto flex items-center gap-1 rounded-[10px] border border-primary/50 bg-primary/5 px-2 py-0.5 text-[12px] font-medium text-primary transition-all duration-200 hover:border-primary hover:bg-primary hover:text-white"
                   >
                     <svg
                       className="h-3 w-3"
@@ -641,7 +644,7 @@ export default function LuckPillarExplorer({
               {/* Horizontal scroll area */}
               <div
                 ref={rowRefs[rowIndex]}
-                className="flex scrollbar-thin scrollbar-thumb-border/40 scrollbar-track-transparent flex-row flex-nowrap items-stretch gap-3 overflow-x-auto scroll-smooth px-5 pt-2 pb-3 hover:scrollbar-thumb-border/70"
+                className="flex scrollbar-thin scrollbar-thumb-border/40 scrollbar-track-transparent flex-row-reverse flex-nowrap items-stretch gap-1.5 overflow-x-auto scroll-smooth px-3 pt-1 pb-1.5 hover:scrollbar-thumb-border/70"
                 style={{
                   scrollbarWidth: "thin",
                   scrollbarColor: "rgba(0,0,0,0.15) transparent",
@@ -690,7 +693,7 @@ export default function LuckPillarExplorer({
 function SelectedBadge({ color, text }: { color: string; text: string }) {
   return (
     <span
-      className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-bold"
+      className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-bold"
       style={{
         backgroundColor: color + "18",
         color,

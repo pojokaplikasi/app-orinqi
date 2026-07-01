@@ -52,7 +52,7 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
   ) as number
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-1">
       {sortedGods.map(([godName, natalPoints]: [string, any]) => {
         const annualPoints = tenGodsPoints.annual[godName] || 0
         const chineseChar = tenGodsChinese[godName] || ""
@@ -72,7 +72,7 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
         return (
           <div
             key={godName}
-            className="flex items-center gap-2.5 rounded-[10px] border border-border bg-card px-2.5 py-2"
+            className="flex items-center gap-1 rounded-[10px] border border-border bg-card px-1.5 py-1"
           >
             {/* Avatar */}
             <span
@@ -93,7 +93,7 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
             </div>
 
             {/* Stats */}
-            <div className="flex flex-shrink-0 items-center gap-2 text-[11px]">
+            <div className="flex flex-shrink-0 items-center gap-1 text-[11px]">
               <span className="text-muted-foreground">N</span>
               <span className="font-semibold" style={{ color }}>
                 {natalPercent.toFixed(1)}%

@@ -65,10 +65,10 @@ export default function HeroForm({
     return (
       <>
         {/* Hero card — StickyHeader watches this element's bottom edge */}
-        <div ref={heroRef} className="w-full px-0 py-2">
+        <div ref={heroRef} className="w-full px-0 py-1">
           <div className="mx-auto w-full max-w-[1800px]">
-            <div className="relative overflow-hidden rounded-[18px] border border-border bg-card px-4 py-3 shadow-sm">
-              <div className="flex items-center gap-3">
+            <div className="relative overflow-hidden rounded-[18px] border border-border bg-card px-3 py-2 shadow-sm">
+              <div className="flex items-center gap-2">
                 {/* Avatar */}
                 <div className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80">
                   <span className="font-serif text-xl font-bold text-primary-foreground">
@@ -78,7 +78,7 @@ export default function HeroForm({
 
                 {/* Info */}
                 <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1">
                     <h2 className="truncate text-[16px] leading-tight font-bold text-foreground">
                       {chartName}
                     </h2>
@@ -128,7 +128,7 @@ export default function HeroForm({
                 </div>
 
                 {/* Badges + Mode toggle */}
-                <div className="flex shrink-0 items-center gap-2">
+                <div className="flex shrink-0 items-center gap-1">
                   {/* Gender icon */}
                   <span
                     className="rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[13px]"
@@ -141,14 +141,14 @@ export default function HeroForm({
                     <button
                       type="button"
                       onClick={() => setMode("classic")}
-                      className={`rounded-[8px] px-2.5 py-1 text-[11px] font-semibold transition-colors ${mode === "classic" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                      className={`rounded-[8px] px-2 py-0.5 text-[11px] font-semibold transition-colors ${mode === "classic" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                     >
                       Classic
                     </button>
                     <button
                       type="button"
                       onClick={() => setMode("modern")}
-                      className={`rounded-[8px] px-2.5 py-1 text-[11px] font-semibold transition-colors ${mode === "modern" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                      className={`rounded-[8px] px-2 py-0.5 text-[11px] font-semibold transition-colors ${mode === "modern" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                     >
                       Modern
                     </button>

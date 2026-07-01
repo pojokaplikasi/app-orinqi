@@ -220,7 +220,7 @@ function Pillar({
 
   // Base classes
   let pillarClass =
-    "w-full h-full min-h-[320px] p-3 pt-4 rounded-[18px] bg-card border border-border shadow-sm text-foreground text-center box-border relative flex flex-col gap-2.5"
+    "w-full h-full min-h-[320px] p-2 pt-2 rounded-[18px] bg-card border border-border shadow-sm text-foreground text-center box-border relative flex flex-col gap-1"
 
   if (isCurrent) {
     pillarClass += " ring-1 ring-orange-500/50"
@@ -248,7 +248,7 @@ function Pillar({
   return (
     <div className={pillarClass} onClick={onClick}>
       {/* Header & Ten Gods Badge */}
-      <div className="relative mb-0.5 flex min-h-[32px] w-full items-start justify-between">
+      <div className="relative flex min-h-[28px] w-full items-start justify-between">
         <div className="flex flex-col items-start text-left">
           <span className="line-clamp-2 text-[12px] font-semibold tracking-tight text-foreground/90">
             {mainTitle}
@@ -259,7 +259,7 @@ function Pillar({
             </span>
           )}
           {periodLabel && periodValue && (
-            <span className="mt-1 inline-flex items-center rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-primary">
+            <span className="mt-0.5 inline-flex items-center rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-primary">
               {periodValue}
             </span>
           )}
@@ -280,7 +280,7 @@ function Pillar({
           {heavenly_stem?.character || "?"}
         </strong>
         <div
-          className="mt-1 text-[9px] font-bold tracking-[0.2em] uppercase opacity-80"
+          className="mt-0.5 text-[9px] font-bold tracking-[0.2em] uppercase opacity-80"
           style={{ color: ELEMENT_COLORS[hsElement] }}
         >
           {heavenly_stem?.name || "N/A"}
@@ -288,7 +288,7 @@ function Pillar({
       </div>
 
       {/* Separator */}
-      <div className="my-1 flex w-full items-center justify-center">
+      <div className="my-0.5 flex w-full items-center justify-center">
         <div className="h-[1px] w-8 bg-gradient-to-r from-transparent via-border to-transparent"></div>
       </div>
 
@@ -301,7 +301,7 @@ function Pillar({
           {earthly_branch?.character || "?"}
         </strong>
         <div
-          className="mt-1 text-[9px] font-bold tracking-[0.2em] uppercase opacity-80"
+          className="mt-0.5 text-[9px] font-bold tracking-[0.2em] uppercase opacity-80"
           style={{ color: ELEMENT_COLORS[ebElement] }}
         >
           {earthly_branch?.name || "N/A"}
@@ -323,7 +323,7 @@ function Pillar({
       </div>
 
       {/* Hidden Stems (Mini Chips) */}
-      <div className="mt-1 flex w-full justify-center gap-1">
+      <div className="mt-0.5 flex w-full justify-center gap-0.5">
         {[
           hidden_stems?.residual_qi,
           hidden_stems?.main_qi,
@@ -333,7 +333,7 @@ function Pillar({
           return (
             <div
               key={idx}
-              className="flex flex-1 flex-col items-center justify-center rounded-[10px] border border-black/[0.04] bg-black/[0.02] px-1.5 py-1.5 dark:border-white/[0.04] dark:bg-white/[0.02]"
+              className="flex flex-1 flex-col items-center justify-center rounded-[10px] border border-black/[0.04] bg-black/[0.02] px-1 py-1 dark:border-white/[0.04] dark:bg-white/[0.02]"
             >
               <span
                 className="mb-0.5 font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[13px] leading-none font-bold drop-shadow-sm"
@@ -350,7 +350,7 @@ function Pillar({
       </div>
 
       {/* Element Section (Nayin) & Life Stage */}
-      <div className="mt-1 flex min-h-[20px] w-full items-center justify-between px-0.5">
+      <div className="mt-0.5 flex min-h-[18px] w-full items-center justify-between px-0.5">
         <span className="line-clamp-2 flex-1 pr-1 text-left text-[10px] font-medium text-muted-foreground/80">
           {heavenly_stem?.name && earthly_branch?.name
             ? formatNayinName(
@@ -371,11 +371,11 @@ function Pillar({
 
       {/* Relationship Indicators (Always Visible) */}
       {(hsLabel || branchLabels.length > 0) && (
-        <div className="mt-auto w-full border-t border-border/50 pt-2">
-          <div className="flex w-full flex-col gap-1.5 text-left">
+        <div className="mt-auto w-full border-t border-border/50 pt-1">
+          <div className="flex w-full flex-col gap-1 text-left">
             {hsLabel && (
               <div
-                className="flex items-center gap-1.5 rounded-lg bg-black/[0.02] px-2 py-1 text-[9px] font-normal dark:bg-white/[0.02]"
+                className="flex items-center gap-1 rounded-lg bg-black/[0.02] px-1.5 py-0.5 text-[9px] font-normal dark:bg-white/[0.02]"
                 style={{ color: "var(--color-chart-3)" }}
               >
                 <div className="h-1 w-1 shrink-0 rounded-full bg-current opacity-50"></div>
@@ -405,7 +405,7 @@ function Pillar({
               return (
                 <div
                   key={idx}
-                  className={`flex items-center gap-1.5 rounded-lg px-2 py-1 text-[9px] font-normal ${bgColor}`}
+                  className={`flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-[9px] font-normal ${bgColor}`}
                   style={{ color }}
                 >
                   <div className="h-1 w-1 shrink-0 rounded-full bg-current opacity-50"></div>

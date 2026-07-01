@@ -253,11 +253,11 @@ export default function BaziCalculator() {
 
         {/* After calculation: grid layout */}
         {baziData && (
-          <div className="flex flex-col gap-2 pb-8">
+          <div className="flex flex-col gap-1 pb-4">
             {/* ── Baris 1: [Hero + TenGods + ElementStructure] | [8 Pillars] ── */}
-            <div className="grid grid-cols-1 gap-2 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,5fr)]">
+            <div className="grid grid-cols-1 gap-1 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,5fr)]">
               {/* Col A: Hero (full-width) + TenGods | ElementStructure (side-by-side) */}
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1">
                 {/* Hero — full width */}
                 <HeroForm
                   date={date}
@@ -279,31 +279,28 @@ export default function BaziCalculator() {
                   chartName={chartName}
                   setChartName={setChartName}
                 />
-                {/* TenGods + ElementStructure side-by-side */}
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
+                {/* TenGods + LuckyStars side-by-side */}
+                <div className="grid grid-cols-2 gap-1">
+                  <div className="rounded-[16px] border border-border bg-card p-2 shadow-sm">
                     <TenGods tenGodsData={tenGodsData} />
                   </div>
-                  <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
-                    <Suspense
-                      fallback={
-                        <div className="h-40 animate-pulse rounded-[12px] bg-muted" />
-                      }
-                    >
-                      <ElementStructure elementData={elementData} />
-                    </Suspense>
+                  <div className="rounded-[16px] border border-border bg-card p-2 shadow-sm">
+                    <h4 className="mb-1 text-[14px] font-bold text-foreground">
+                      ✨ Lucky Stars
+                    </h4>
+                    <LuckyStars stars={luckyStars} mode={mode} />
                   </div>
                 </div>
               </div>
 
               {/* Col B: 8 Pillars */}
               <div
-                className="rounded-[16px] border border-border bg-card p-4 shadow-sm md:p-5"
+                className="rounded-[16px] border border-border bg-card p-2 shadow-sm md:p-3"
                 id="bazi-result-area"
               >
                 <div
                   ref={scrollContainerRef}
-                  className="grid w-full gap-3"
+                  className="grid w-full gap-1"
                   style={{
                     gridTemplateColumns:
                       "repeat(4, minmax(0, 1fr)) 2px repeat(4, minmax(0, 1fr))",
@@ -328,8 +325,8 @@ export default function BaziCalculator() {
                       mode={mode}
                     />
                   ) : (
-                    <div className="relative box-border flex h-full min-h-[320px] w-full flex-col gap-3 rounded-[18px] border border-white/20 bg-gradient-to-b from-card/80 to-card/40 p-3 pt-4 text-center text-foreground backdrop-blur-[24px] transition-all duration-200">
-                      <div className="relative flex min-h-[40px] w-full items-start justify-between">
+                    <div className="relative box-border flex h-full min-h-[320px] w-full flex-col gap-1 rounded-[18px] border border-white/20 bg-gradient-to-b from-card/80 to-card/40 p-2 pt-2 text-center text-foreground backdrop-blur-[24px] transition-all duration-200">
+                      <div className="relative flex min-h-[28px] w-full items-start justify-between">
                         <div className="flex flex-col items-start text-left">
                           <span className="text-[13px] leading-tight font-semibold text-foreground">
                             Hour Pillar
@@ -339,28 +336,28 @@ export default function BaziCalculator() {
                           </span>
                         </div>
                       </div>
-                      <div className="mt-2 flex flex-col items-center justify-center">
+                      <div className="mt-0.5 flex flex-col items-center justify-center">
                         <strong className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[48px] leading-none text-muted-foreground drop-shadow-sm">
                           ?
                         </strong>
                       </div>
-                      <div className="my-1 h-[1px] w-full bg-border"></div>
+                      <div className="my-0.5 h-[1px] w-full bg-border"></div>
                       <div className="relative flex flex-col items-center justify-center">
                         <strong className="font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[44px] leading-none text-muted-foreground drop-shadow-sm">
                           ?
                         </strong>
                       </div>
-                      <div className="mt-1 flex min-h-[40px] w-full justify-center gap-2 rounded-[12px] bg-muted/50 p-[10px]">
+                      <div className="mt-0.5 flex min-h-[40px] w-full justify-center gap-1 rounded-[12px] bg-muted/50 p-1.5">
                         <span className="text-[12px] font-medium text-muted-foreground">
                           N/A
                         </span>
                       </div>
-                      <div className="mt-1 flex flex-col items-center justify-center">
+                      <div className="mt-0.5 flex flex-col items-center justify-center">
                         <span className="text-center text-[12px] leading-tight font-semibold text-muted-foreground">
                           N/A
                         </span>
                       </div>
-                      <div className="my-1 h-[1px] w-full bg-border"></div>
+                      <div className="my-0.5 h-[1px] w-full bg-border"></div>
                       <div className="flex items-center justify-center">
                         <span className="text-[13px] font-bold tracking-wide text-muted-foreground uppercase">
                           N/A
@@ -504,14 +501,17 @@ export default function BaziCalculator() {
               </div>
             </div>
 
-            {/* ── Baris 2: [Lucky Stars] | [Luck Pillar Explorer] ── */}
-            <div className="grid grid-cols-1 gap-2 lg:grid-cols-[minmax(0,2fr)_minmax(0,10fr)]">
-              {/* Lucky Stars */}
-              <div className="rounded-[16px] border border-border bg-card p-4 shadow-sm">
-                <h4 className="mb-2 text-[14px] font-bold text-foreground">
-                  ✨ Lucky Stars
-                </h4>
-                <LuckyStars stars={luckyStars} mode={mode} />
+            {/* ── Baris 2: [Element Structure] | [Luck Pillar Explorer] ── */}
+            <div className="grid grid-cols-1 gap-1 lg:grid-cols-[minmax(0,2fr)_minmax(0,10fr)]">
+              {/* Element Structure */}
+              <div className="rounded-[16px] border border-border bg-card p-2 shadow-sm">
+                <Suspense
+                  fallback={
+                    <div className="h-40 animate-pulse rounded-[12px] bg-muted" />
+                  }
+                >
+                  <ElementStructure elementData={elementData} />
+                </Suspense>
               </div>
 
               {/* Luck Pillar Explorer */}

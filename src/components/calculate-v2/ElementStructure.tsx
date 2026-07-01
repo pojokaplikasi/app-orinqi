@@ -219,7 +219,7 @@ export default function ElementStructure({
     <div className="flex w-full flex-col items-center gap-0">
       {/* ── Header ── */}
       <div
-        className="w-full rounded-t-[16px] py-2 text-center text-[13px] font-bold tracking-[0.2em] text-white uppercase"
+        className="w-full rounded-t-[16px] py-1 text-center text-[13px] font-bold tracking-[0.2em] text-white uppercase"
         style={{
           background: "linear-gradient(90deg, #C9A96E 0%, #B8860B 100%)",
         }}
@@ -228,10 +228,10 @@ export default function ElementStructure({
       </div>
 
       {/* ── Legend ── */}
-      <div className="flex items-center justify-center gap-4 py-2">
+      <div className="flex items-center justify-center gap-1 py-0.5">
         <button
           onClick={() => setShowNatal((v) => !v)}
-          className="flex items-center gap-2 rounded-full px-3 py-1 text-[12px] font-semibold transition-all"
+          className="flex items-center gap-1 rounded-full px-2 py-0.5 text-[12px] font-semibold transition-all"
           style={{
             background: showNatal ? "#F5DEB3" : "#e5e7eb",
             color: showNatal ? "#5C4033" : "#9ca3af",
@@ -247,7 +247,7 @@ export default function ElementStructure({
         </button>
         <button
           onClick={() => setShowAnnual((v) => !v)}
-          className="flex items-center gap-2 rounded-full px-3 py-1 text-[12px] font-semibold transition-all"
+          className="flex items-center gap-1 rounded-full px-2 py-0.5 text-[12px] font-semibold transition-all"
           style={{
             background: showAnnual ? "#E8D5F5" : "#e5e7eb",
             color: showAnnual ? "#6B21A8" : "#9ca3af",
@@ -314,7 +314,7 @@ export default function ElementStructure({
       </div>
 
       {/* ── Element Cards ── */}
-      <div className="mt-2 grid w-full grid-cols-2 gap-1.5">
+      <div className="mt-1 grid w-full grid-cols-2 gap-1">
         {ELEMENT_ORDER.map((elem) => {
           const meta = ELEMENT_META[elem]
           const color = ELEMENT_COLORS[elem] ?? "#888"
@@ -327,7 +327,7 @@ export default function ElementStructure({
             >
               {/* Header */}
               <div
-                className="flex items-center gap-1.5 px-2 py-1"
+                className="flex items-center gap-1 px-1.5 py-0.5"
                 style={{ backgroundColor: color + "18" }}
               >
                 <span className="text-[13px] leading-none">{meta.icon}</span>
