@@ -1,7 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import React, { Suspense, lazy, useEffect, useRef, useState } from "react"
+import React, {
+  Suspense,
+  lazy,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
 import {
   detectAllBranchInteractions,
   detectAllHSCombinations,
@@ -18,6 +25,10 @@ import {
   calculateCurrentYearPillar,
 } from "@/lib/bazi/pillar-calculations"
 import HeroForm from "@/components/calculate-v2/HeroForm"
+import type {
+  ExplorerSelection,
+  LuckPillarExplorerHandle,
+} from "@/components/calculate-v2/LuckPillarExplorer"
 import LuckyStars from "@/components/calculate-v2/LuckyStars"
 import Pillar from "@/components/calculate-v2/Pillar"
 import StickyHeader from "@/components/calculate-v2/StickyHeader"
@@ -51,15 +62,16 @@ export default function BaziCalculator() {
   const [branchInteractions, setBranchInteractions] = useState<any>(null)
   const [currentPillars, setCurrentPillars] = useState<any>(null)
 
-  // Selection state for drill-down (managed inside LuckPillarExplorer)
+  // Explorer selection — drives the 4 right-side transit pillars
+  const [explorerSelection, setExplorerSelection] =
+    useState<ExplorerSelection | null>(null)
 
   // Expanded Pillar State
   const [expandedPillarId, setExpandedPillarId] = useState<string | null>(null)
 
-  // Explorer state is managed inside LuckPillarExplorer
-
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const heroRef = useRef<HTMLDivElement>(null)
+  const explorerRef = useRef<LuckPillarExplorerHandle>(null)
 
   useEffect(() => {
     if (baziData && scrollContainerRef.current) {
@@ -162,12 +174,64 @@ export default function BaziCalculator() {
       )
       setBranchInteractions(interactions)
 
-      // Reset selections (explorer manages its own state now)
+      // Reset explorer selection
+      setExplorerSelection(null)
     } catch (err: any) {
       setError(err.message)
     } finally {
       setLoading(false)
     }
+  }
+
+  // ── Recalculate derived data when explorer selection changes ──────────
+  const handleExplorerSelectionChange = useCallback(
+    (selection: ExplorerSelection) => {
+      setExplorerSelection(selection)
+
+      if (!baziData) return
+
+      // Build a currentPillars-compatible object from explorer selection
+      const activePillars = {
+        luck: selection.luck ?? currentPillars?.luck ?? null,
+        year: selection.year ?? currentPillars?.year ?? null,
+        month: selection.month ?? currentPillars?.month ?? null,
+        day: selection.day ?? currentPillars?.day ?? null,
+      }
+
+      // Recalculate all derived data with the new transit pillars
+      const stars = calculateLuckyStars(baziData.four_pillars, activePillars)
+      setLuckyStars(stars)
+
+      const elements = calculateElementStructure(
+        baziData.four_pillars,
+        activePillars
+      )
+      setElementData(elements)
+
+      const tenGods = calculateTenGods(baziData.four_pillars, activePillars)
+      setTenGodsData(tenGods)
+
+      const combos = detectAllHSCombinations(
+        baziData.four_pillars,
+        activePillars
+      )
+      setHsCombos(combos)
+
+      const interactions = detectAllBranchInteractions(
+        baziData.four_pillars,
+        activePillars
+      )
+      setBranchInteractions(interactions)
+    },
+    [baziData, currentPillars]
+  )
+
+  // ── Compute the active transit pillars (explorer overrides current) ─────
+  const activeTransitPillars = {
+    luck: explorerSelection?.luck ?? currentPillars?.luck ?? null,
+    year: explorerSelection?.year ?? currentPillars?.year ?? null,
+    month: explorerSelection?.month ?? currentPillars?.month ?? null,
+    day: explorerSelection?.day ?? currentPillars?.day ?? null,
   }
 
   return (
@@ -418,14 +482,22 @@ export default function BaziCalculator() {
                   />
                   <div className="self-stretch rounded-full bg-border"></div>
                   <Pillar
-                    title="Current Cycle"
-                    pillarData={currentPillars?.luck}
+                    title={
+                      activeTransitPillars.luck?.year_start
+                        ? `Luck ${activeTransitPillars.luck?.number ?? ""} (大運)`
+                        : "Current Cycle"
+                    }
+                    pillarData={activeTransitPillars.luck}
                     isCurrent
                     luckyStars={luckyStars}
                     hsCombos={hsCombos?.CL}
                     branchInteractions={branchInteractions?.CL}
                     periodLabel="Period"
-                    periodValue={currentPillars?.luck?.luck_period}
+                    periodValue={
+                      activeTransitPillars.luck?.year_start
+                        ? `${activeTransitPillars.luck.year_start}–${activeTransitPillars.luck.year_end}`
+                        : activeTransitPillars.luck?.luck_period
+                    }
                     dayMasterName={
                       baziData.four_pillars.day_pillar?.heavenly_stem?.name
                     }
@@ -436,16 +508,28 @@ export default function BaziCalculator() {
                       )
                     }
                     mode={mode}
+                    onPrev={() => explorerRef.current?.navigateLuck("prev")}
+                    onNext={() => explorerRef.current?.navigateLuck("next")}
                   />
                   <Pillar
-                    title="Current Year"
-                    pillarData={currentPillars?.year}
+                    title={
+                      activeTransitPillars.year?.year
+                        ? `${activeTransitPillars.year.year} (年柱)`
+                        : "Current Year"
+                    }
+                    pillarData={activeTransitPillars.year}
                     isCurrent
                     luckyStars={luckyStars}
                     hsCombos={hsCombos?.CY}
                     branchInteractions={branchInteractions?.CY}
-                    periodLabel="Year"
-                    periodValue={currentPillars?.year?.year?.toString()}
+                    periodLabel={
+                      activeTransitPillars.year?.age ? "Age" : "Year"
+                    }
+                    periodValue={
+                      activeTransitPillars.year?.age
+                        ? `Age ${activeTransitPillars.year.age}`
+                        : activeTransitPillars.year?.year?.toString()
+                    }
                     dayMasterName={
                       baziData.four_pillars.day_pillar?.heavenly_stem?.name
                     }
@@ -456,16 +540,25 @@ export default function BaziCalculator() {
                       )
                     }
                     mode={mode}
+                    onPrev={() => explorerRef.current?.navigateYear("prev")}
+                    onNext={() => explorerRef.current?.navigateYear("next")}
                   />
                   <Pillar
-                    title="Current Month"
-                    pillarData={currentPillars?.month}
+                    title={
+                      activeTransitPillars.month?.month_english
+                        ? `${activeTransitPillars.month.month_english} (月柱)`
+                        : "Current Month"
+                    }
+                    pillarData={activeTransitPillars.month}
                     isCurrent
                     luckyStars={luckyStars}
                     hsCombos={hsCombos?.CM}
                     branchInteractions={branchInteractions?.CM}
                     periodLabel="Month"
-                    periodValue={currentPillars?.month?.month_english}
+                    periodValue={
+                      activeTransitPillars.month?.month_english ??
+                      activeTransitPillars.month?.month?.toString()
+                    }
                     dayMasterName={
                       baziData.four_pillars.day_pillar?.heavenly_stem?.name
                     }
@@ -476,16 +569,22 @@ export default function BaziCalculator() {
                       )
                     }
                     mode={mode}
+                    onPrev={() => explorerRef.current?.navigateMonth("prev")}
+                    onNext={() => explorerRef.current?.navigateMonth("next")}
                   />
                   <Pillar
-                    title="Current Day"
-                    pillarData={currentPillars?.day}
+                    title={
+                      activeTransitPillars.day?.day
+                        ? `Day ${activeTransitPillars.day.day} (日柱)`
+                        : "Current Day"
+                    }
+                    pillarData={activeTransitPillars.day}
                     isCurrent
                     luckyStars={luckyStars}
                     hsCombos={hsCombos?.CD}
                     branchInteractions={branchInteractions?.CD}
                     periodLabel="Day"
-                    periodValue={currentPillars?.day?.day?.toString()}
+                    periodValue={activeTransitPillars.day?.day?.toString()}
                     dayMasterName={
                       baziData.four_pillars.day_pillar?.heavenly_stem?.name
                     }
@@ -496,6 +595,8 @@ export default function BaziCalculator() {
                       )
                     }
                     mode={mode}
+                    onPrev={() => explorerRef.current?.navigateDay("prev")}
+                    onNext={() => explorerRef.current?.navigateDay("next")}
                   />
                 </div>
               </div>
@@ -521,6 +622,7 @@ export default function BaziCalculator() {
                 }
               >
                 <LuckPillarExplorer
+                  ref={explorerRef}
                   baziData={baziData}
                   luckyStars={luckyStars}
                   date={date}
@@ -528,6 +630,7 @@ export default function BaziCalculator() {
                   timezone={timezone}
                   unknownTime={unknownTime}
                   mode={mode}
+                  onSelectionChange={handleExplorerSelectionChange}
                 />
               </Suspense>
             </div>

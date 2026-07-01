@@ -1,10 +1,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import React, { useCallback, useEffect, useRef, useState } from "react"
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react"
 import { detectLuckPillarCombinations } from "@/lib/bazi/combinations"
 import DetailDialog from "@/components/DetailDialog"
 import Pillar from "@/components/Pillar"
+
+export interface ExplorerSelection {
+  luck: any | null
+  year: any | null
+  month: any | null
+  day: any | null
+}
+
+export interface LuckPillarExplorerHandle {
+  navigateLuck: (direction: "prev" | "next") => void
+  navigateYear: (direction: "prev" | "next") => void
+  navigateMonth: (direction: "prev" | "next") => void
+  navigateDay: (direction: "prev" | "next") => void
+}
 
 interface LuckPillarExplorerProps {
   baziData: any
@@ -15,6 +36,7 @@ interface LuckPillarExplorerProps {
   unknownTime: boolean
   mode?: "classic" | "modern"
   onHourSelect?: (pillar: any) => void
+  onSelectionChange?: (selection: ExplorerSelection) => void
 }
 
 const ROW_COLORS = [
@@ -33,15 +55,22 @@ const ROW_LABELS = [
   { label: "Hour Pillar", icon: "⏰", zh: "時柱" },
 ]
 
-export default function LuckPillarExplorer({
-  baziData,
-  luckyStars,
-  date,
-  time,
-  unknownTime,
-  mode = "modern",
-  onHourSelect,
-}: LuckPillarExplorerProps) {
+const LuckPillarExplorer = forwardRef<
+  LuckPillarExplorerHandle,
+  LuckPillarExplorerProps
+>(function LuckPillarExplorer(
+  {
+    baziData,
+    luckyStars,
+    date,
+    time,
+    unknownTime,
+    mode = "modern",
+    onHourSelect,
+    onSelectionChange,
+  },
+  ref
+) {
   const dayMasterName =
     baziData?.four_pillars?.day_pillar?.heavenly_stem?.name ?? undefined
 
@@ -198,6 +227,195 @@ export default function LuckPillarExplorer({
   }, [autoSelectCurrentTime])
 
   // ── Cascade handlers (event-driven, not effect-driven) ───────────────────
+  // Each handler auto-selects the first item in the next level and cascades down.
+
+  const fetchYearsAndCascade = useCallback(
+    (lp: any) => {
+      setLoadingYear(true)
+      fetch("/api/calculate_yearly", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          start_year: lp.year_start,
+          end_year: lp.year_end,
+          birth_time: birthTime,
+        }),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          const yp: any[] = data.yearly_pillars ?? []
+          setYearPillars(yp)
+          if (yp.length > 0) {
+            const firstYear = yp[0].year
+            setSelectedYear(firstYear)
+            // Cascade: fetch months for first year
+            setLoadingMonth(true)
+            fetch("/api/calculate_monthly", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ year: firstYear, birth_time: birthTime }),
+            })
+              .then((r) => r.json())
+              .then((mdata) => {
+                const mp: any[] = mdata.monthly_pillars ?? []
+                setMonthPillars(mp)
+                if (mp.length > 0) {
+                  const firstMonth = mp[0].month
+                  setSelectedMonth(firstMonth)
+                  // Cascade: fetch days for first month
+                  setLoadingDay(true)
+                  fetch("/api/calculate_daily", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      year: firstYear,
+                      month: firstMonth,
+                      birth_time: birthTime,
+                    }),
+                  })
+                    .then((r) => r.json())
+                    .then((ddata) => {
+                      const dp: any[] = ddata.daily_pillars ?? []
+                      setDayPillars(dp)
+                      if (dp.length > 0) {
+                        const firstDay = dp[0].day
+                        setSelectedDay(firstDay)
+                        // Cascade: fetch hours for first day
+                        setLoadingHour(true)
+                        fetch("/api/calculate_hourly", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            year: firstYear,
+                            month: firstMonth,
+                            day: firstDay,
+                            birth_time: birthTime,
+                          }),
+                        })
+                          .then((r) => r.json())
+                          .then((hdata) => {
+                            setHourPillars(hdata.hourly_pillars ?? [])
+                          })
+                          .finally(() => setLoadingHour(false))
+                      }
+                    })
+                    .finally(() => setLoadingDay(false))
+                }
+              })
+              .finally(() => setLoadingMonth(false))
+          }
+        })
+        .catch(console.error)
+        .finally(() => setLoadingYear(false))
+    },
+    [birthTime]
+  )
+
+  const fetchMonthsAndCascade = useCallback(
+    (year: number) => {
+      setLoadingMonth(true)
+      fetch("/api/calculate_monthly", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ year, birth_time: birthTime }),
+      })
+        .then((r) => r.json())
+        .then((mdata) => {
+          const mp: any[] = mdata.monthly_pillars ?? []
+          setMonthPillars(mp)
+          if (mp.length > 0) {
+            const firstMonth = mp[0].month
+            setSelectedMonth(firstMonth)
+            // Cascade: fetch days for first month
+            setLoadingDay(true)
+            fetch("/api/calculate_daily", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                year,
+                month: firstMonth,
+                birth_time: birthTime,
+              }),
+            })
+              .then((r) => r.json())
+              .then((ddata) => {
+                const dp: any[] = ddata.daily_pillars ?? []
+                setDayPillars(dp)
+                if (dp.length > 0) {
+                  const firstDay = dp[0].day
+                  setSelectedDay(firstDay)
+                  // Cascade: fetch hours for first day
+                  setLoadingHour(true)
+                  fetch("/api/calculate_hourly", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      year,
+                      month: firstMonth,
+                      day: firstDay,
+                      birth_time: birthTime,
+                    }),
+                  })
+                    .then((r) => r.json())
+                    .then((hdata) => {
+                      setHourPillars(hdata.hourly_pillars ?? [])
+                    })
+                    .finally(() => setLoadingHour(false))
+                }
+              })
+              .finally(() => setLoadingDay(false))
+          }
+        })
+        .catch(console.error)
+        .finally(() => setLoadingMonth(false))
+    },
+    [birthTime]
+  )
+
+  const fetchDaysAndCascade = useCallback(
+    (month: number, year: number) => {
+      setLoadingDay(true)
+      fetch("/api/calculate_daily", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          year,
+          month,
+          birth_time: birthTime,
+        }),
+      })
+        .then((r) => r.json())
+        .then((ddata) => {
+          const dp: any[] = ddata.daily_pillars ?? []
+          setDayPillars(dp)
+          if (dp.length > 0) {
+            const firstDay = dp[0].day
+            setSelectedDay(firstDay)
+            // Cascade: fetch hours for first day
+            setLoadingHour(true)
+            fetch("/api/calculate_hourly", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                year,
+                month,
+                day: firstDay,
+                birth_time: birthTime,
+              }),
+            })
+              .then((r) => r.json())
+              .then((hdata) => {
+                setHourPillars(hdata.hourly_pillars ?? [])
+              })
+              .finally(() => setLoadingHour(false))
+          }
+        })
+        .catch(console.error)
+        .finally(() => setLoadingDay(false))
+    },
+    [birthTime]
+  )
+
   const handleSelectLuck = useCallback(
     (luckIdx: number) => {
       if (!baziData) return
@@ -210,22 +428,9 @@ export default function LuckPillarExplorer({
       setDayPillars([])
       setHourPillars([])
       const lp = baziData.luck_pillars.luck_pillars[luckIdx]
-      setLoadingYear(true)
-      fetch("/api/calculate_yearly", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          start_year: lp.year_start,
-          end_year: lp.year_end,
-          birth_time: birthTime,
-        }),
-      })
-        .then((r) => r.json())
-        .then((data) => setYearPillars(data.yearly_pillars ?? []))
-        .catch(console.error)
-        .finally(() => setLoadingYear(false))
+      fetchYearsAndCascade(lp)
     },
-    [baziData, birthTime]
+    [baziData, fetchYearsAndCascade]
   )
 
   const handleSelectYear = useCallback(
@@ -237,18 +442,9 @@ export default function LuckPillarExplorer({
       setMonthPillars([])
       setDayPillars([])
       setHourPillars([])
-      setLoadingMonth(true)
-      fetch("/api/calculate_monthly", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ year, birth_time: birthTime }),
-      })
-        .then((r) => r.json())
-        .then((data) => setMonthPillars(data.monthly_pillars ?? []))
-        .catch(console.error)
-        .finally(() => setLoadingMonth(false))
+      fetchMonthsAndCascade(year)
     },
-    [baziData, birthTime]
+    [baziData, fetchMonthsAndCascade]
   )
 
   const handleSelectMonth = useCallback(
@@ -258,22 +454,9 @@ export default function LuckPillarExplorer({
       setSelectedDay(null)
       setDayPillars([])
       setHourPillars([])
-      setLoadingDay(true)
-      fetch("/api/calculate_daily", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          year,
-          month,
-          birth_time: birthTime,
-        }),
-      })
-        .then((r) => r.json())
-        .then((data) => setDayPillars(data.daily_pillars ?? []))
-        .catch(console.error)
-        .finally(() => setLoadingDay(false))
+      fetchDaysAndCascade(month, year)
     },
-    [baziData, birthTime]
+    [baziData, fetchDaysAndCascade]
   )
 
   const handleSelectDay = useCallback(
@@ -298,6 +481,77 @@ export default function LuckPillarExplorer({
         .finally(() => setLoadingHour(false))
     },
     [baziData, birthTime]
+  )
+
+  // ── Expose navigation methods to parent via ref ───────────────────────────
+  useImperativeHandle(
+    ref,
+    () => ({
+      navigateLuck: (direction: "prev" | "next") => {
+        if (!baziData?.luck_pillars?.luck_pillars) return
+        const luckPillarsArr: any[] = baziData.luck_pillars.luck_pillars
+        if (selectedLuck === null) return
+        // flex-row-reverse: visually right = lower index, left = higher index
+        const newIdx =
+          direction === "next" ? selectedLuck - 1 : selectedLuck + 1
+        if (newIdx < 0 || newIdx >= luckPillarsArr.length) return
+        handleSelectLuck(newIdx)
+      },
+      navigateYear: (direction: "prev" | "next") => {
+        if (yearPillars.length === 0 || selectedYear === null) return
+        const currentIdx = yearPillars.findIndex((p) => p.year === selectedYear)
+        if (currentIdx === -1) return
+        // flex-row-reverse: visually right = lower index, left = higher index
+        const newIdx = direction === "next" ? currentIdx - 1 : currentIdx + 1
+        if (newIdx < 0 || newIdx >= yearPillars.length) return
+        handleSelectYear(yearPillars[newIdx].year)
+      },
+      navigateMonth: (direction: "prev" | "next") => {
+        if (
+          monthPillars.length === 0 ||
+          selectedMonth === null ||
+          selectedYear === null
+        )
+          return
+        const currentIdx = monthPillars.findIndex(
+          (p) => p.month === selectedMonth
+        )
+        if (currentIdx === -1) return
+        // flex-row-reverse: visually right = lower index, left = higher index
+        const newIdx = direction === "next" ? currentIdx - 1 : currentIdx + 1
+        if (newIdx < 0 || newIdx >= monthPillars.length) return
+        handleSelectMonth(monthPillars[newIdx].month, selectedYear)
+      },
+      navigateDay: (direction: "prev" | "next") => {
+        if (
+          dayPillars.length === 0 ||
+          selectedDay === null ||
+          selectedMonth === null ||
+          selectedYear === null
+        )
+          return
+        const currentIdx = dayPillars.findIndex((p) => p.day === selectedDay)
+        if (currentIdx === -1) return
+        // flex-row-reverse: visually right = lower index, left = higher index
+        const newIdx = direction === "next" ? currentIdx - 1 : currentIdx + 1
+        if (newIdx < 0 || newIdx >= dayPillars.length) return
+        handleSelectDay(dayPillars[newIdx].day, selectedMonth, selectedYear)
+      },
+    }),
+    [
+      baziData,
+      selectedLuck,
+      selectedYear,
+      selectedMonth,
+      selectedDay,
+      yearPillars,
+      monthPillars,
+      dayPillars,
+      handleSelectLuck,
+      handleSelectYear,
+      handleSelectMonth,
+      handleSelectDay,
+    ]
   )
 
   // ── Auto-scroll selected card into view ──────────────────────────────────
@@ -496,6 +750,17 @@ export default function LuckPillarExplorer({
   const selectedMonthData = monthPillars.find((p) => p.month === selectedMonth)
   const selectedDayData = dayPillars.find((p) => p.day === selectedDay)
 
+  // ── Notify parent of selection changes ───────────────────────────────────
+  useEffect(() => {
+    onSelectionChange?.({
+      luck: selectedLuckData ?? null,
+      year: selectedYearData ?? null,
+      month: selectedMonthData ?? null,
+      day: selectedDayData ?? null,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedLuckData, selectedYearData, selectedMonthData, selectedDayData])
+
   return (
     <>
       <div className="flex w-full flex-col gap-0 overflow-hidden rounded-[28px] border border-border bg-card shadow-sm">
@@ -688,7 +953,9 @@ export default function LuckPillarExplorer({
       />
     </>
   )
-}
+})
+
+export default LuckPillarExplorer
 
 function SelectedBadge({ color, text }: { color: string; text: string }) {
   return (

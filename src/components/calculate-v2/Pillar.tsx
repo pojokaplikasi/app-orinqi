@@ -25,6 +25,8 @@ interface PillarProps {
   isExpanded?: boolean
   onToggleExpand?: () => void
   mode?: "classic" | "modern"
+  onPrev?: () => void
+  onNext?: () => void
 }
 
 function Pillar({
@@ -43,6 +45,8 @@ function Pillar({
   isExpanded = false,
   onToggleExpand,
   mode = "modern",
+  onPrev,
+  onNext,
 }: PillarProps) {
   if (!pillarData) return null
 
@@ -246,7 +250,57 @@ function Pillar({
   }
 
   return (
-    <div className={pillarClass} onClick={onClick}>
+    <div className={`${pillarClass} relative`} onClick={onClick}>
+      {/* Prev / Next navigation arrows on left & right edges */}
+      {onPrev && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            onPrev()
+          }}
+          className="absolute top-[25%] left-0 z-20 flex h-7 w-5 items-center justify-center rounded-r-lg bg-muted/80 text-muted-foreground/70 shadow-sm backdrop-blur-sm transition-colors hover:bg-muted hover:text-foreground"
+          title="Previous"
+        >
+          <svg
+            className="h-3.5 w-3.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2.5}
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </button>
+      )}
+      {onNext && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            onNext()
+          }}
+          className="absolute top-[25%] right-0 z-20 flex h-7 w-5 items-center justify-center rounded-l-lg bg-muted/80 text-muted-foreground/70 shadow-sm backdrop-blur-sm transition-colors hover:bg-muted hover:text-foreground"
+          title="Next"
+        >
+          <svg
+            className="h-3.5 w-3.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2.5}
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </button>
+      )}
+
       {/* Header & Ten Gods Badge */}
       <div className="relative flex min-h-[28px] w-full items-start justify-between">
         <div className="flex flex-col items-start text-left">
