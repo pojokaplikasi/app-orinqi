@@ -604,7 +604,7 @@ const LuckPillarExplorer = forwardRef<
         const { hsCombos: lhc, branchInteractions: lbi } =
           detectLuckPillarCombinations(pillar, baziData.four_pillars)
         return (
-          <div key={index} data-selected={selectedLuck === index}>
+          <div key={index} data-selected={selectedLuck === index} className="flex-1 min-w-0">
             <Pillar
               title={`Luck ${pillar.number} (大運)`}
               periodLabel="Period"
@@ -618,6 +618,7 @@ const LuckPillarExplorer = forwardRef<
               branchInteractions={lbi}
               mode={mode}
               hideRelationships={collapsedRows[0]}
+              className="w-full"
             />
           </div>
         )
@@ -631,7 +632,7 @@ const LuckPillarExplorer = forwardRef<
         const { hsCombos: yhc, branchInteractions: ybi } =
           detectLuckPillarCombinations(pillar, baziData.four_pillars)
         return (
-          <div key={index} data-selected={selectedYear === pillar.year}>
+          <div key={index} data-selected={selectedYear === pillar.year} className="flex-1 min-w-0">
             <Pillar
               title={`${pillar.year} (年柱)`}
               periodLabel="Age"
@@ -645,6 +646,7 @@ const LuckPillarExplorer = forwardRef<
               branchInteractions={ybi}
               mode={mode}
               hideRelationships={collapsedRows[1]}
+              className="w-full"
             />
           </div>
         )
@@ -658,7 +660,7 @@ const LuckPillarExplorer = forwardRef<
         const { hsCombos: mhc, branchInteractions: mbi } =
           detectLuckPillarCombinations(pillar, baziData.four_pillars)
         return (
-          <div key={index} data-selected={selectedMonth === pillar.month}>
+          <div key={index} data-selected={selectedMonth === pillar.month} className="flex-1 min-w-0">
             <Pillar
               title={`${pillar.month_english} (月柱)`}
               periodLabel="Month"
@@ -672,6 +674,8 @@ const LuckPillarExplorer = forwardRef<
               branchInteractions={mbi}
               mode={mode}
               hideRelationships={collapsedRows[2]}
+              size="small"
+              className="w-full"
             />
           </div>
         )
@@ -718,7 +722,7 @@ const LuckPillarExplorer = forwardRef<
         const { hsCombos: hhc, branchInteractions: hbi } =
           detectLuckPillarCombinations(pillar, baziData.four_pillars)
         return (
-          <div key={index}>
+          <div key={index} className="flex-1 min-w-0">
             <Pillar
               title={`${pillar.hour_time} (時柱)`}
               periodLabel="Hour"
@@ -737,6 +741,7 @@ const LuckPillarExplorer = forwardRef<
               mode={mode}
               hideRelationships={collapsedRows[4]}
               size="small"
+              className="w-full"
             />
           </div>
         )
@@ -773,7 +778,7 @@ const LuckPillarExplorer = forwardRef<
           return (
             <div
               key={rowIndex}
-              className={`flex flex-col border-b border-border transition-opacity duration-300 last:border-b-0 ${isLocked ? "opacity-40" : "opacity-100"}`}
+              className={`relative flex flex-col border-b border-border transition-opacity duration-300 last:border-b-0 ${isLocked ? "opacity-40" : "opacity-100"}`}
             >
               {/* Row Label */}
               <div
@@ -789,37 +794,6 @@ const LuckPillarExplorer = forwardRef<
                     {meta.zh}
                   </span>
                 </div>
-                {/* Collapse/expand relationship indicators toggle */}
-                {!isLocked && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      toggleRowCollapse(rowIndex)
-                    }}
-                    className="flex h-5 w-5 items-center justify-center rounded-md text-muted-foreground/60 transition-colors hover:bg-muted hover:text-foreground"
-                    title={
-                      collapsedRows[rowIndex]
-                        ? "Show combinations"
-                        : "Hide combinations"
-                    }
-                  >
-                    <svg
-                      className={`h-3.5 w-3.5 transition-transform duration-200 ${
-                        collapsedRows[rowIndex] ? "" : "rotate-180"
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </button>
-                )}
 
                 {/* Reset button — on 10-Year Luck row */}
                 {rowIndex === 0 && (
@@ -909,7 +883,9 @@ const LuckPillarExplorer = forwardRef<
               {/* Horizontal scroll area */}
               <div
                 ref={rowRefs[rowIndex]}
-                className="flex scrollbar-thin scrollbar-thumb-border/40 scrollbar-track-transparent flex-row-reverse flex-nowrap items-stretch gap-1.5 overflow-x-auto scroll-smooth px-3 pt-1 pb-1.5 hover:scrollbar-thumb-border/70"
+                className={`flex scrollbar-thin scrollbar-thumb-border/40 scrollbar-track-transparent flex-row-reverse flex-nowrap items-stretch gap-1.5 scroll-smooth px-3 pt-1 pb-1.5 hover:scrollbar-thumb-border/70 ${
+                  rowIndex === 0 || rowIndex === 1 || rowIndex === 2 || rowIndex === 4 ? "w-full overflow-hidden" : "overflow-x-auto"
+                }`}
                 style={{
                   scrollbarWidth: "thin",
                   scrollbarColor: "rgba(0,0,0,0.15) transparent",
@@ -933,6 +909,38 @@ const LuckPillarExplorer = forwardRef<
                   </div>
                 ) : null}
               </div>
+
+              {/* Collapse/expand relationship indicators toggle (Bottom Left) */}
+              {!isLocked && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    toggleRowCollapse(rowIndex)
+                  }}
+                  className="absolute -bottom-3 left-3 z-20 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-110"
+                  title={
+                    collapsedRows[rowIndex]
+                      ? "Show combinations"
+                      : "Hide combinations"
+                  }
+                >
+                  <svg
+                    className={`h-4 w-4 transition-transform duration-200 ${
+                      collapsedRows[rowIndex] ? "" : "rotate-180"
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+              )}
             </div>
           )
         })}

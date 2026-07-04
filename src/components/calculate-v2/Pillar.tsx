@@ -143,7 +143,7 @@ function Pillar({
   // Format HS Combos
   const hsLabel =
     hsCombos.length > 0
-      ? `HS Combinations ${hsCombos.map((c) => c.partner).join(", ")}`
+      ? `${mode === "classic" ? "He Hua" : "HS Combinations"} ${hsCombos.map((c) => c.partner).join(", ")}`
       : ""
 
   // Format Branch Interactions
@@ -163,16 +163,30 @@ function Pillar({
       const partners = items.map((i) => i.partner).join(",")
       const icon = items[0].interaction.icon
 
-      const name =
-        type === "seasonal"
-          ? "Seasonal Unions"
-          : type === "sanhe"
-            ? "Three Harmonies"
-            : type === "banhe"
-              ? "Half Combinations"
-              : type === "liuhe"
-                ? "Six Harmonies"
-                : "Hidden Combinations"
+      let name = ""
+      if (mode === "classic") {
+        name =
+          type === "seasonal"
+            ? "San Hui"
+            : type === "sanhe"
+              ? "San He"
+              : type === "banhe"
+                ? "Ban He"
+                : type === "liuhe"
+                  ? "Liu He"
+                  : "An He"
+      } else {
+        name =
+          type === "seasonal"
+            ? "Seasonal Unions"
+            : type === "sanhe"
+              ? "Three Harmonies"
+              : type === "banhe"
+                ? "Half Combinations"
+                : type === "liuhe"
+                  ? "Six Harmonies"
+                  : "Hidden Combinations"
+      }
 
       branchLabels.push({
         text: `${name} ${partners}`,
@@ -198,20 +212,38 @@ function Pillar({
       const partners = items.map((i) => i.partner).join(",")
       const icon = items[0].interaction.icon
 
-      const name =
-        type === "ungrateful"
-          ? "Ungrateful Punishment"
-          : type === "arrogant"
-            ? "Bullying Punishment"
-            : type === "rude"
-              ? "Uncivilized Punishment"
-              : type === "self"
-                ? "Self Punishment"
-                : type === "clash"
-                  ? "Six Clashes"
-                  : type === "destruction"
-                    ? "Destruction"
-                    : "Six Harms"
+      let name = ""
+      if (mode === "classic") {
+        name =
+          type === "ungrateful"
+            ? "Wu En Zhi Xing"
+            : type === "arrogant"
+              ? "Chi Shi Zhi Xing"
+              : type === "rude"
+                ? "Wu Li Zhi Xing"
+                : type === "self"
+                  ? "Zi Xing"
+                  : type === "clash"
+                    ? "Liu Chong"
+                    : type === "destruction"
+                      ? "Xiang Po"
+                      : "Xiang Hai"
+      } else {
+        name =
+          type === "ungrateful"
+            ? "Ungrateful Punishment"
+            : type === "arrogant"
+              ? "Bullying Punishment"
+              : type === "rude"
+                ? "Uncivilized Punishment"
+                : type === "self"
+                  ? "Self Punishment"
+                  : type === "clash"
+                    ? "Six Clashes"
+                    : type === "destruction"
+                      ? "Destruction"
+                      : "Six Harms"
+      }
 
       branchLabels.push({
         text: `${name} ${partners}`,
@@ -258,7 +290,7 @@ function Pillar({
             e.stopPropagation()
             onPrev()
           }}
-          className="absolute top-[25%] left-0 z-20 flex h-7 w-5 items-center justify-center rounded-r-lg bg-muted/80 text-muted-foreground/70 shadow-sm backdrop-blur-sm transition-colors hover:bg-muted hover:text-foreground"
+          className="absolute top-[15%] left-0 z-20 flex h-7 w-5 items-center justify-center rounded-r-lg border border-l-0 border-border/50 bg-muted/95 text-foreground/80 shadow-md backdrop-blur-md transition-colors hover:bg-primary/10 hover:text-primary"
           title="Previous"
         >
           <svg
@@ -282,7 +314,7 @@ function Pillar({
             e.stopPropagation()
             onNext()
           }}
-          className="absolute top-[25%] right-0 z-20 flex h-7 w-5 items-center justify-center rounded-l-lg bg-muted/80 text-muted-foreground/70 shadow-sm backdrop-blur-sm transition-colors hover:bg-muted hover:text-foreground"
+          className="absolute top-[15%] right-0 z-20 flex h-7 w-5 items-center justify-center rounded-l-lg border border-r-0 border-border/50 bg-muted/95 text-foreground/80 shadow-md backdrop-blur-md transition-colors hover:bg-primary/10 hover:text-primary"
           title="Next"
         >
           <svg
@@ -390,12 +422,12 @@ function Pillar({
               className="flex flex-1 flex-col items-center justify-center rounded-[10px] border border-black/[0.04] bg-black/[0.02] px-1 py-1 dark:border-white/[0.04] dark:bg-white/[0.02]"
             >
               <span
-                className="mb-0.5 font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[13px] leading-none font-bold drop-shadow-sm"
+                className="mb-0.5 font-['STKaiti','KaiTi','SimSun','Microsoft_YaHei',serif] text-[14px] leading-none font-extrabold drop-shadow-md"
                 style={{ color: ELEMENT_COLORS[qi.element] }}
               >
                 {qi.character}
               </span>
-              <span className="text-[7px] font-bold tracking-wider text-muted-foreground/70 uppercase">
+              <span className="text-[8px] font-extrabold tracking-wider text-muted-foreground/90 uppercase">
                 {qi.ten_gods || "-"}
               </span>
             </div>
@@ -405,7 +437,7 @@ function Pillar({
 
       {/* Element Section (Nayin) & Life Stage */}
       <div className="mt-0.5 flex min-h-[18px] w-full items-center justify-between px-0.5">
-        <span className="line-clamp-2 flex-1 pr-1 text-left text-[10px] font-medium text-muted-foreground/80">
+        <span className="line-clamp-2 flex-1 pr-1 text-left text-[10px] font-bold text-muted-foreground/90">
           {heavenly_stem?.name && earthly_branch?.name
             ? formatNayinName(
                 getNayinFromStemBranch(heavenly_stem.name, earthly_branch.name),
@@ -429,7 +461,7 @@ function Pillar({
           <div className="flex w-full flex-col gap-1 text-left">
             {hsLabel && (
               <div
-                className="flex items-center gap-1 rounded-lg bg-black/[0.02] px-1.5 py-0.5 text-[9px] font-normal dark:bg-white/[0.02]"
+                className="flex items-center gap-1 rounded-lg bg-black/[0.02] px-1.5 py-0.5 text-[9px] font-semibold dark:bg-white/[0.02]"
                 style={{ color: "var(--color-chart-3)" }}
               >
                 <div className="h-1 w-1 shrink-0 rounded-full bg-current opacity-50"></div>
@@ -459,7 +491,7 @@ function Pillar({
               return (
                 <div
                   key={idx}
-                  className={`flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-[9px] font-normal ${bgColor}`}
+                  className={`flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-[9px] font-semibold ${bgColor}`}
                   style={{ color }}
                 >
                   <div className="h-1 w-1 shrink-0 rounded-full bg-current opacity-50"></div>

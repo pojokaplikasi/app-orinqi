@@ -242,14 +242,14 @@ export function calculateElementStructure(
   calculatePillar(fourPillars.day_pillar, false)
   calculatePillar(fourPillars.hour_pillar, false)
 
-  if (currentPillars && currentPillars.current_luck)
-    calculatePillar(currentPillars.current_luck, false)
-  if (currentPillars && currentPillars.current_year)
-    calculatePillar(currentPillars.current_year, false)
-  if (currentPillars && currentPillars.current_month)
-    calculatePillar(currentPillars.current_month, false)
-  if (currentPillars && currentPillars.current_day)
-    calculatePillar(currentPillars.current_day, false)
+  if (currentPillars && (currentPillars.luck || currentPillars.current_luck))
+    calculatePillar(currentPillars.luck || currentPillars.current_luck, false)
+  if (currentPillars && (currentPillars.year || currentPillars.current_year))
+    calculatePillar(currentPillars.year || currentPillars.current_year, false)
+  if (currentPillars && (currentPillars.month || currentPillars.current_month))
+    calculatePillar(currentPillars.month || currentPillars.current_month, false)
+  if (currentPillars && (currentPillars.day || currentPillars.current_day))
+    calculatePillar(currentPillars.day || currentPillars.current_day, false)
 
   const natalTotal = Object.values(elements).reduce(
     (sum, e) => sum + e.natal,
@@ -429,14 +429,14 @@ export function calculateTenGods(fourPillarsData: any, currentPillars: any) {
   natalPillars.forEach((pillar) => processPillar(pillar, "annual"))
 
   const currentPillarsList = []
-  if (currentPillars.current_luck)
-    currentPillarsList.push(currentPillars.current_luck)
-  if (currentPillars.current_year)
-    currentPillarsList.push(currentPillars.current_year)
-  if (currentPillars.current_month)
-    currentPillarsList.push(currentPillars.current_month)
-  if (currentPillars.current_day)
-    currentPillarsList.push(currentPillars.current_day)
+  if (currentPillars.luck || currentPillars.current_luck)
+    currentPillarsList.push(currentPillars.luck || currentPillars.current_luck)
+  if (currentPillars.year || currentPillars.current_year)
+    currentPillarsList.push(currentPillars.year || currentPillars.current_year)
+  if (currentPillars.month || currentPillars.current_month)
+    currentPillarsList.push(currentPillars.month || currentPillars.current_month)
+  if (currentPillars.day || currentPillars.current_day)
+    currentPillarsList.push(currentPillars.day || currentPillars.current_day)
 
   currentPillarsList.forEach((pillar) => processPillar(pillar, "annual"))
 

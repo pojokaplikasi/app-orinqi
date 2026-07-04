@@ -76,10 +76,10 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
           >
             {/* Avatar */}
             <span
-              className="flex-shrink-0 text-[18px] leading-none font-bold"
+              className="flex-shrink-0 text-[18px] leading-none font-bold min-w-[20px] text-center"
               style={{ color }}
             >
-              {allStems || chineseChar.split(" ").pop()?.[0] || "?"}
+              {allStems}
             </span>
 
             {/* Name + Chinese */}

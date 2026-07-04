@@ -58,7 +58,7 @@ export default function LuckyStars({
   const starConfig = [
     {
       id: "nobleman",
-      name: "Noble People",
+      name: mode === "modern" ? "Noble People" : "Tian Yi Gui Ren",
       chinese: "贵人",
       icon: "👑",
       color: "#16A34A",
@@ -74,7 +74,7 @@ export default function LuckyStars({
     },
     {
       id: "intelligence",
-      name: "Intelligence",
+      name: mode === "modern" ? "Intelligence" : "Wen Chang",
       chinese: "文昌",
       icon: "🎓",
       color: "#2563EB",
@@ -87,7 +87,7 @@ export default function LuckyStars({
     },
     {
       id: "peachBlossom",
-      name: "Peach Blossom",
+      name: mode === "modern" ? "Peach Blossom" : "Xian Chi",
       chinese: "桃花",
       icon: "🌸",
       color: "#EC4899",
@@ -100,7 +100,7 @@ export default function LuckyStars({
     },
     {
       id: "skyHorse",
-      name: "Sky Horse",
+      name: mode === "modern" ? "Sky Horse" : "Yi Ma",
       chinese: "驿马",
       icon: "🦄",
       color: "#F97316",
@@ -113,7 +113,7 @@ export default function LuckyStars({
     },
     {
       id: "solitary",
-      name: "Solitary",
+      name: mode === "modern" ? "Solitary" : "Gu Chen",
       chinese: "孤辰",
       icon: "🌙",
       color: "#9333EA",
@@ -126,7 +126,7 @@ export default function LuckyStars({
     },
     {
       id: "heavenlyDoctor",
-      name: "Heavenly Doctor",
+      name: mode === "modern" ? "Heavenly Doctor" : "Tian Yi",
       chinese: "天医",
       icon: "⚕️",
       color: "#10B981",
@@ -141,7 +141,7 @@ export default function LuckyStars({
       id: "kongwang",
       name: mode === "modern" ? "Dead Emptiness" : "Kong Wang",
       chinese: "空亡",
-      icon: "🌪️",
+      icon: "☯️",
       color: "#8B5CF6",
       branches:
         stars.kongwang && stars.kongwang.length > 0

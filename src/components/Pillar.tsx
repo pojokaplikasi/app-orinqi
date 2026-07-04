@@ -27,6 +27,7 @@ interface PillarProps {
   mode?: "classic" | "modern"
   hideRelationships?: boolean
   size?: "default" | "small"
+  className?: string
 }
 
 export default function Pillar({
@@ -47,6 +48,7 @@ export default function Pillar({
   mode = "modern",
   hideRelationships = false,
   size = "default",
+  className = "",
 }: PillarProps) {
   if (!pillarData) return null
 
@@ -229,6 +231,14 @@ export default function Pillar({
   let pillarClass = isSmall
     ? `flex-none w-[100px] md:w-[110px] lg:w-[120px] h-full ${hideRelationships ? "" : "min-h-[240px]"} p-1.5 pt-2 rounded-[14px] bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-[24px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.04)] text-foreground text-center box-border transition-all duration-300 relative flex flex-col gap-1`
     : `flex-none w-[120px] md:w-[140px] lg:w-[160px] h-full ${hideRelationships ? "" : "min-h-[320px]"} p-2 pt-2 rounded-[18px] bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-[24px] border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.04)] text-foreground text-center box-border transition-all duration-300 relative flex flex-col gap-1`
+
+  if (className) {
+    // If a custom width class is provided, remove the default fixed widths
+    if (className.includes('w-')) {
+      pillarClass = pillarClass.replace(/w-\[[^\]]+\]/g, '').replace(/md:w-\[[^\]]+\]/g, '').replace(/lg:w-\[[^\]]+\]/g, '')
+    }
+    pillarClass += ` ${className}`
+  }
 
   if (isCurrent) {
     pillarClass +=

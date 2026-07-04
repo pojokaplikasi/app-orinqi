@@ -215,6 +215,15 @@ export default function ElementStructure({
     annual: parseFloat(elementData.annual[elem] ?? "0"),
   }))
 
+  // Find the maximum value across all elements (both natal and annual)
+  const maxDataValue = Math.max(
+    ...data.map((d) => Math.max(d.natal, d.annual))
+  )
+  
+  // Round up to the nearest 10 for a cleaner chart scale (e.g., 34 -> 40, 42 -> 50)
+  // If max is 0, default to 100 to avoid broken chart
+  const chartMax = maxDataValue > 0 ? Math.ceil(maxDataValue / 10) * 10 : 100
+
   return (
     <div className="flex w-full flex-col items-center gap-0">
       {/* ── Header ── */}
@@ -278,7 +287,7 @@ export default function ElementStructure({
             />
             <PolarRadiusAxis
               angle={90}
-              domain={[0, 100]}
+              domain={[0, chartMax]}
               tickCount={6}
               tick={{ fontSize: 10, fill: "#999" }}
               axisLine={false}
@@ -292,8 +301,8 @@ export default function ElementStructure({
                 strokeWidth={2}
                 fill="#F5DEB3"
                 fillOpacity={0.45}
-                dot={{ r: 4, fill: "#222", strokeWidth: 0 }}
-                activeDot={{ r: 6, fill: "#222" }}
+                dot={false}
+                activeDot={false}
               />
             )}
             {showAnnual && (
@@ -304,8 +313,8 @@ export default function ElementStructure({
                 strokeWidth={2}
                 fill="#9B59B6"
                 fillOpacity={0.3}
-                dot={{ r: 4, fill: "#8B2FC9", strokeWidth: 0 }}
-                activeDot={{ r: 6, fill: "#8B2FC9" }}
+                dot={false}
+                activeDot={false}
               />
             )}
             <Tooltip content={<CustomTooltip />} />
