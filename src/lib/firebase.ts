@@ -2,16 +2,14 @@ import { getApp, getApps, initializeApp } from "firebase/app"
 import { getAuth } from "firebase/auth"
 import { getFirestore } from "firebase/firestore"
 import { getStorage } from "firebase/storage"
+import { getDatabase } from "firebase/database"
 
-// Parse the base64 encoded JSON config from environment variable
+// Parse the base64 encoded JSON config
 const getFirebaseConfig = () => {
   try {
-    const encodedConfig = process.env.NEXT_PUBLIC_FIREBASE_CONFIG
-    if (!encodedConfig) {
-      console.warn("Firebase config is missing in environment variables")
-      return {}
-    }
-
+    // Hardcoded base64 config as requested
+    const encodedConfig = "eyJhcGlLZXkiOiJBSXphU3lCMW11MXBhdVBPZkhvWGYwb2Y2b2g1Rk94OGpMYzZlNk0iLCJhdXRoRG9tYWluIjoib3JpbnFpLTZkYWY0LmZpcmViYXNlYXBwLmNvbSIsImRhdGFiYXNlVVJMIjoiaHR0cHM6Ly9vcmlucWktNmRhZjQtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcCIsInByb2plY3RJZCI6Im9yaW5xaS02ZGFmNCIsInN0b3JhZ2VCdWNrZXQiOiJvcmlucWktNmRhZjQuZmlyZWJhc2VzdG9yYWdlLmFwcCIsIm1lc3NhZ2luZ1NlbmRlcklkIjoiOTI0ODkwMjE2NjY3IiwiYXBwSWQiOiIxOjkyNDg5MDIxNjY2Nzp3ZWI6YTY2NDE5ZTBiNWE2ZGZlYWMxYjRmZSIsIm1lYXN1cmVtZW50SWQiOiJHLUtSQ0wwTVg5UEUifQ=="
+    
     // Decode base64 and parse JSON
     const decodedConfig = Buffer.from(encodedConfig, "base64").toString("utf-8")
     return JSON.parse(decodedConfig)
@@ -28,5 +26,6 @@ const app = !getApps().length ? initializeApp(firebaseConfig) : getApp()
 const auth = getAuth(app)
 const db = getFirestore(app)
 const storage = getStorage(app)
+const rtdb = getDatabase(app)
 
-export { app, auth, db, storage }
+export { app, auth, db, storage, rtdb }
