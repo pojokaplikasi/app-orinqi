@@ -152,7 +152,7 @@ export default function DashboardPage() {
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white shadow-sm">
             <span className="font-['STKaiti','KaiTi',serif] text-sm font-bold">命</span>
           </div>
-          <span className="text-lg font-bold tracking-tight">Dashboard</span>
+          <span className="text-lg font-bold tracking-tight">Orinqi</span>
         </div>
         <div className="flex items-center gap-4">
           <Link href="/calculate-v2">

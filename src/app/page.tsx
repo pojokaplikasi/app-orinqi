@@ -36,7 +36,7 @@ export default function Page() {
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white shadow-sm">
             <span className="font-['STKaiti','KaiTi',serif] text-sm font-bold">命</span>
           </div>
-          <span className="text-lg font-bold tracking-tight">BaZi Calc</span>
+          <span className="text-lg font-bold tracking-tight">Orinqi</span>
         </div>
         <div className="hidden items-center gap-8 md:flex">
           <Link href="#features" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Features</Link>
@@ -389,7 +389,7 @@ export default function Page() {
                 <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white">
                   <span className="font-['STKaiti'] text-[10px] font-bold">命</span>
                 </div>
-                <span className="font-bold">BaZi Calc</span>
+                <span className="font-bold">Orinqi</span>
               </div>
               <p className="text-sm text-muted-foreground">
                 Professional BaZi calculation with modern precision and elegant design.
@@ -408,7 +408,7 @@ export default function Page() {
             </div>
           </div>
           <div className="mt-12 border-t border-border/50 pt-8 text-center text-sm text-muted-foreground">
-            © {new Date().getFullYear()} BaZi Calculator. All rights reserved.
+            © {new Date().getFullYear()} Orinqi. All rights reserved.
           </div>
         </div>
       </footer>

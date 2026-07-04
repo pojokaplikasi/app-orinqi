@@ -488,7 +488,7 @@ export default function HeroForm({
                 </span>
               </div>
               <h1 className="text-[32px] leading-tight font-bold tracking-tight text-foreground md:text-[40px]">
-                Bazi Calculator
+                Orinqi Calculator
               </h1>
             </div>
             <p className="text-[15px] font-medium tracking-wide text-muted-foreground md:text-[16px]">
