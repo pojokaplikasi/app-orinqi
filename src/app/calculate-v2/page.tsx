@@ -9,6 +9,7 @@ import React, {
   useRef,
   useState,
 } from "react"
+import { useSearchParams } from "next/navigation"
 import {
   detectAllBranchInteractions,
   detectAllHSCombinations,
@@ -34,7 +35,6 @@ import Pillar from "@/components/calculate-v2/Pillar"
 import StickyHeader from "@/components/calculate-v2/StickyHeader"
 import TenGods from "@/components/calculate-v2/TenGods"
 import { useAuth } from "@/components/providers/AuthProvider"
-import { useSearchParams } from "next/navigation"
 
 const LuckPillarExplorer = lazy(
   () => import("@/components/calculate-v2/LuckPillarExplorer")
@@ -46,7 +46,7 @@ const ElementStructure = lazy(
 function BaziCalculatorContent() {
   const { user, loading: authLoading } = useAuth()
   const searchParams = useSearchParams()
-  
+
   const [date, setDate] = useState("")
   const [time, setTime] = useState("")
   const [timezone, setTimezone] = useState("")
@@ -79,59 +79,19 @@ function BaziCalculatorContent() {
   const heroRef = useRef<HTMLDivElement>(null)
   const explorerRef = useRef<LuckPillarExplorerHandle>(null)
 
-  // Auto-fill and calculate from URL params
-  useEffect(() => {
-    const pName = searchParams.get("name")
-    const pDate = searchParams.get("date")
-    const pTime = searchParams.get("time")
-    const pTimezone = searchParams.get("timezone")
-    const pGender = searchParams.get("gender")
-    const pUnknownTime = searchParams.get("unknownTime")
-
-    if (pDate && pTimezone && pGender !== null) {
-      setIsAutoCalculating(true)
-      setChartName(pName || "Your Destiny Chart")
-      setDate(pDate)
-      setTime(pTime || "")
-      setTimezone(pTimezone)
-      setGender(parseInt(pGender, 10))
-      setUnknownTime(pUnknownTime === "true")
-      
-      // Trigger calculation automatically using the URL params directly
-      // to avoid waiting for React state batching
-      handleCalculateDirect(
-        pDate, 
-        pTime || "", 
-        pTimezone, 
-        parseInt(pGender, 10), 
-        pUnknownTime === "true"
-      )
-    }
-  }, [searchParams])
-
-  useEffect(() => {
-    if (baziData && scrollContainerRef.current) {
-      const container = scrollContainerRef.current
-      setTimeout(() => {
-        if (container) {
-          container.scrollLeft =
-            (container.scrollWidth - container.clientWidth) / 2
-        }
-      }, 100)
-    }
-  }, [baziData, currentPillars])
-
   const handleCalculateDirect = async (
-    calcDate: string, 
-    calcTime: string, 
-    calcTimezone: string, 
-    calcGender: number, 
+    calcDate: string,
+    calcTime: string,
+    calcTimezone: string,
+    calcGender: number,
     calcUnknownTime: boolean
   ) => {
     setError("")
     setLoading(true)
 
-    const actualDateTime = calcUnknownTime ? `${calcDate}T12:00` : `${calcDate}T${calcTime}`
+    const actualDateTime = calcUnknownTime
+      ? `${calcDate}T12:00`
+      : `${calcDate}T${calcTime}`
 
     try {
       const response = await fetch("/api/calculate", {
@@ -208,6 +168,48 @@ function BaziCalculatorContent() {
       setLoading(false)
     }
   }
+
+  // Auto-fill and calculate from URL params
+  useEffect(() => {
+    const pName = searchParams.get("name")
+    const pDate = searchParams.get("date")
+    const pTime = searchParams.get("time")
+    const pTimezone = searchParams.get("timezone")
+    const pGender = searchParams.get("gender")
+    const pUnknownTime = searchParams.get("unknownTime")
+
+    if (pDate && pTimezone && pGender !== null) {
+      setIsAutoCalculating(true)
+      setChartName(pName || "Your Destiny Chart")
+      setDate(pDate)
+      setTime(pTime || "")
+      setTimezone(pTimezone)
+      setGender(parseInt(pGender, 10))
+      setUnknownTime(pUnknownTime === "true")
+
+      // Trigger calculation automatically using the URL params directly
+      // to avoid waiting for React state batching
+      handleCalculateDirect(
+        pDate,
+        pTime || "",
+        pTimezone,
+        parseInt(pGender, 10),
+        pUnknownTime === "true"
+      )
+    }
+  }, [searchParams])
+
+  useEffect(() => {
+    if (baziData && scrollContainerRef.current) {
+      const container = scrollContainerRef.current
+      setTimeout(() => {
+        if (container) {
+          container.scrollLeft =
+            (container.scrollWidth - container.clientWidth) / 2
+        }
+      }, 100)
+    }
+  }, [baziData, currentPillars])
 
   const handleCalculate = async () => {
     setError("")
@@ -298,7 +300,11 @@ function BaziCalculatorContent() {
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       {/* Hidden button for auto-calculation from URL params */}
-      <button id="auto-calc-btn" className="hidden" onClick={handleCalculate}></button>
+      <button
+        id="auto-calc-btn"
+        className="hidden"
+        onClick={handleCalculate}
+      ></button>
 
       {/* Legend — fixed bottom-left of page */}
       {baziData && (
@@ -724,14 +730,18 @@ function BaziCalculatorContent() {
 
 export default function BaziCalculator() {
   return (
-    <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-          <p className="text-sm text-muted-foreground">Loading calculator...</p>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-background">
+          <div className="flex flex-col items-center gap-4">
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+            <p className="text-sm text-muted-foreground">
+              Loading calculator...
+            </p>
+          </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <BaziCalculatorContent />
     </Suspense>
   )

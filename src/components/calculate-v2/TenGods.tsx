@@ -76,7 +76,7 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
           >
             {/* Avatar */}
             <span
-              className="flex-shrink-0 text-[18px] leading-none font-bold min-w-[20px] text-center"
+              className="min-w-[20px] flex-shrink-0 text-center text-[18px] leading-none font-bold"
               style={{ color }}
             >
               {allStems}

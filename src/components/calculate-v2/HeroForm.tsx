@@ -1,8 +1,8 @@
 import React, { useState } from "react"
-import { useAuth } from "@/components/providers/AuthProvider"
-import { ref, push, set } from "firebase/database"
-import { rtdb } from "@/lib/firebase"
 import { useRouter } from "next/navigation"
+import { push, ref, set } from "firebase/database"
+import { rtdb } from "@/lib/firebase"
+import { useAuth } from "@/components/providers/AuthProvider"
 
 interface HeroFormProps {
   date: string
@@ -69,7 +69,7 @@ export default function HeroForm({
   const handleCalculateWithSave = async () => {
     // Panggil fungsi calculate asli
     await onCalculate()
-    
+
     // Jika user login dan nama chart sudah diisi, simpan ke Firebase
     if (user && chartName.trim() && date && timezone && gender !== null) {
       try {
@@ -82,7 +82,7 @@ export default function HeroForm({
           timezone: timezone,
           gender: gender,
           unknownTime: unknownTime,
-          createdAt: Date.now()
+          createdAt: Date.now(),
         })
       } catch (error) {
         console.error("Failed to save history to Firebase:", error)
@@ -294,31 +294,92 @@ export default function HeroForm({
         </svg>
       </div>
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-col lg:flex-row items-center gap-12">
-        
+      <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-col items-center gap-12 lg:flex-row">
         {/* Left Side: Large SVG Illustration */}
-        <div className="hidden lg:flex w-1/2 flex-col items-center justify-center">
-          <div className="relative w-full max-w-[520px] aspect-square">
-            <svg viewBox="0 0 520 520" className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
+        <div className="hidden w-1/2 flex-col items-center justify-center lg:flex">
+          <div className="relative aspect-square w-full max-w-[520px]">
+            <svg
+              viewBox="0 0 520 520"
+              className="h-full w-full"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <defs>
-                <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.08" />
+                <linearGradient
+                  id="bg-grad"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop
+                    offset="0%"
+                    stopColor="hsl(var(--primary))"
+                    stopOpacity="0.08"
+                  />
                   <stop offset="100%" stopColor="#F97316" stopOpacity="0.04" />
                 </linearGradient>
-                <linearGradient id="pillar-fill" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.25" />
-                  <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.05" />
+                <linearGradient
+                  id="pillar-fill"
+                  x1="0%"
+                  y1="0%"
+                  x2="0%"
+                  y2="100%"
+                >
+                  <stop
+                    offset="0%"
+                    stopColor="hsl(var(--primary))"
+                    stopOpacity="0.25"
+                  />
+                  <stop
+                    offset="100%"
+                    stopColor="hsl(var(--primary))"
+                    stopOpacity="0.05"
+                  />
                 </linearGradient>
-                <linearGradient id="pillar-fill-day" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.5" />
-                  <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.1" />
+                <linearGradient
+                  id="pillar-fill-day"
+                  x1="0%"
+                  y1="0%"
+                  x2="0%"
+                  y2="100%"
+                >
+                  <stop
+                    offset="0%"
+                    stopColor="hsl(var(--primary))"
+                    stopOpacity="0.5"
+                  />
+                  <stop
+                    offset="100%"
+                    stopColor="hsl(var(--primary))"
+                    stopOpacity="0.1"
+                  />
                 </linearGradient>
-                <linearGradient id="core-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="1" />
+                <linearGradient
+                  id="core-grad"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop
+                    offset="0%"
+                    stopColor="hsl(var(--primary))"
+                    stopOpacity="1"
+                  />
                   <stop offset="100%" stopColor="#F97316" stopOpacity="1" />
                 </linearGradient>
-                <linearGradient id="ring-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.6" />
+                <linearGradient
+                  id="ring-grad"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop
+                    offset="0%"
+                    stopColor="hsl(var(--primary))"
+                    stopOpacity="0.6"
+                  />
                   <stop offset="100%" stopColor="#F97316" stopOpacity="0.2" />
                 </linearGradient>
               </defs>
@@ -327,8 +388,24 @@ export default function HeroForm({
               <circle cx="260" cy="260" r="230" fill="url(#bg-grad)" />
 
               {/* ── Outer Decorative Ring ── */}
-              <circle cx="260" cy="260" r="228" fill="none" stroke="url(#ring-grad)" strokeWidth="1.5" strokeDasharray="6 4" />
-              <circle cx="260" cy="260" r="210" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-primary/15" />
+              <circle
+                cx="260"
+                cy="260"
+                r="228"
+                fill="none"
+                stroke="url(#ring-grad)"
+                strokeWidth="1.5"
+                strokeDasharray="6 4"
+              />
+              <circle
+                cx="260"
+                cy="260"
+                r="210"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="0.5"
+                className="text-primary/15"
+              />
 
               {/* ── BaGua Octagon ── */}
               <polygon
@@ -358,95 +435,543 @@ export default function HeroForm({
                 { x1: 90, y1: 220, x2: 120, y2: 220 },
                 { x1: 140, y1: 100, x2: 160, y2: 120 },
               ].map((line, i) => (
-                <line key={i} x1={line.x1} y1={line.y1} x2={line.x2} y2={line.y2} stroke="currentColor" strokeWidth="2" className="text-primary/40" />
+                <line
+                  key={i}
+                  x1={line.x1}
+                  y1={line.y1}
+                  x2={line.x2}
+                  y2={line.y2}
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="text-primary/40"
+                />
               ))}
 
               {/* ── Trigram symbols at 8 directions ── */}
               {/* North - ☵ Kan (Water) */}
               <g transform="translate(260, 38)">
-                <rect x="-12" y="-4" width="24" height="2.5" rx="1" fill="currentColor" className="text-primary/60" />
-                <rect x="-12" y="0" width="9" height="2.5" rx="1" fill="currentColor" className="text-primary/60" />
-                <rect x="3" y="0" width="9" height="2.5" rx="1" fill="currentColor" className="text-primary/60" />
-                <rect x="-12" y="4" width="24" height="2.5" rx="1" fill="currentColor" className="text-primary/60" />
+                <rect
+                  x="-12"
+                  y="-4"
+                  width="24"
+                  height="2.5"
+                  rx="1"
+                  fill="currentColor"
+                  className="text-primary/60"
+                />
+                <rect
+                  x="-12"
+                  y="0"
+                  width="9"
+                  height="2.5"
+                  rx="1"
+                  fill="currentColor"
+                  className="text-primary/60"
+                />
+                <rect
+                  x="3"
+                  y="0"
+                  width="9"
+                  height="2.5"
+                  rx="1"
+                  fill="currentColor"
+                  className="text-primary/60"
+                />
+                <rect
+                  x="-12"
+                  y="4"
+                  width="24"
+                  height="2.5"
+                  rx="1"
+                  fill="currentColor"
+                  className="text-primary/60"
+                />
               </g>
               {/* South - ☲ Li (Fire) */}
               <g transform="translate(260, 402)">
-                <rect x="-12" y="-4" width="24" height="2.5" rx="1" fill="currentColor" className="text-primary/60" />
-                <rect x="-12" y="0" width="9" height="2.5" rx="1" fill="currentColor" className="text-primary/60" />
-                <rect x="3" y="0" width="9" height="2.5" rx="1" fill="currentColor" className="text-primary/60" />
-                <rect x="-12" y="4" width="24" height="2.5" rx="1" fill="currentColor" className="text-primary/60" />
+                <rect
+                  x="-12"
+                  y="-4"
+                  width="24"
+                  height="2.5"
+                  rx="1"
+                  fill="currentColor"
+                  className="text-primary/60"
+                />
+                <rect
+                  x="-12"
+                  y="0"
+                  width="9"
+                  height="2.5"
+                  rx="1"
+                  fill="currentColor"
+                  className="text-primary/60"
+                />
+                <rect
+                  x="3"
+                  y="0"
+                  width="9"
+                  height="2.5"
+                  rx="1"
+                  fill="currentColor"
+                  className="text-primary/60"
+                />
+                <rect
+                  x="-12"
+                  y="4"
+                  width="24"
+                  height="2.5"
+                  rx="1"
+                  fill="currentColor"
+                  className="text-primary/60"
+                />
               </g>
               {/* East - ☳ Zhen (Thunder) */}
               <g transform="translate(445, 220)">
-                <rect x="-12" y="-4" width="24" height="2.5" rx="1" fill="currentColor" className="text-primary/60" />
-                <rect x="-12" y="0" width="9" height="2.5" rx="1" fill="currentColor" className="text-primary/60" />
-                <rect x="3" y="0" width="9" height="2.5" rx="1" fill="currentColor" className="text-primary/60" />
-                <rect x="-12" y="4" width="24" height="2.5" rx="1" fill="currentColor" className="text-primary/60" />
+                <rect
+                  x="-12"
+                  y="-4"
+                  width="24"
+                  height="2.5"
+                  rx="1"
+                  fill="currentColor"
+                  className="text-primary/60"
+                />
+                <rect
+                  x="-12"
+                  y="0"
+                  width="9"
+                  height="2.5"
+                  rx="1"
+                  fill="currentColor"
+                  className="text-primary/60"
+                />
+                <rect
+                  x="3"
+                  y="0"
+                  width="9"
+                  height="2.5"
+                  rx="1"
+                  fill="currentColor"
+                  className="text-primary/60"
+                />
+                <rect
+                  x="-12"
+                  y="4"
+                  width="24"
+                  height="2.5"
+                  rx="1"
+                  fill="currentColor"
+                  className="text-primary/60"
+                />
               </g>
               {/* West - ☱ Dui (Lake) */}
               <g transform="translate(75, 220)">
-                <rect x="-12" y="-4" width="24" height="2.5" rx="1" fill="currentColor" className="text-primary/60" />
-                <rect x="-12" y="0" width="24" height="2.5" rx="1" fill="currentColor" className="text-primary/60" />
-                <rect x="-12" y="4" width="9" height="2.5" rx="1" fill="currentColor" className="text-primary/60" />
-                <rect x="3" y="4" width="9" height="2.5" rx="1" fill="currentColor" className="text-primary/60" />
+                <rect
+                  x="-12"
+                  y="-4"
+                  width="24"
+                  height="2.5"
+                  rx="1"
+                  fill="currentColor"
+                  className="text-primary/60"
+                />
+                <rect
+                  x="-12"
+                  y="0"
+                  width="24"
+                  height="2.5"
+                  rx="1"
+                  fill="currentColor"
+                  className="text-primary/60"
+                />
+                <rect
+                  x="-12"
+                  y="4"
+                  width="9"
+                  height="2.5"
+                  rx="1"
+                  fill="currentColor"
+                  className="text-primary/60"
+                />
+                <rect
+                  x="3"
+                  y="4"
+                  width="9"
+                  height="2.5"
+                  rx="1"
+                  fill="currentColor"
+                  className="text-primary/60"
+                />
               </g>
 
               {/* ── Inner Circle ── */}
-              <circle cx="260" cy="220" r="130" fill="none" stroke="currentColor" strokeWidth="1" className="text-border/50" />
+              <circle
+                cx="260"
+                cy="220"
+                r="130"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1"
+                className="text-border/50"
+              />
 
               {/* ── Four Pillars ── */}
               {/* Year Pillar */}
               <g transform="translate(120, 130)">
-                <rect x="0" y="0" width="52" height="130" rx="8" fill="url(#pillar-fill)" stroke="currentColor" strokeWidth="1.5" className="text-primary/30" />
-                <rect x="0" y="0" width="52" height="30" rx="8" fill="url(#pillar-fill)" />
-                <rect x="0" y="20" width="52" height="10" fill="url(#pillar-fill)" />
-                <line x1="0" y1="65" x2="52" y2="65" stroke="currentColor" strokeWidth="0.8" className="text-border/50" />
-                <text x="26" y="22" textAnchor="middle" fontSize="14" fontFamily="STKaiti, KaiTi, serif" fill="currentColor" className="text-foreground/70">年</text>
-                <text x="26" y="50" textAnchor="middle" fontSize="18" fontFamily="STKaiti, KaiTi, serif" fill="currentColor" className="text-primary/80">甲</text>
-                <text x="26" y="90" textAnchor="middle" fontSize="18" fontFamily="STKaiti, KaiTi, serif" fill="currentColor" className="text-foreground/60">子</text>
-                <text x="26" y="118" textAnchor="middle" fontSize="9" fontFamily="sans-serif" fill="currentColor" className="text-muted-foreground/60">YEAR</text>
+                <rect
+                  x="0"
+                  y="0"
+                  width="52"
+                  height="130"
+                  rx="8"
+                  fill="url(#pillar-fill)"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  className="text-primary/30"
+                />
+                <rect
+                  x="0"
+                  y="0"
+                  width="52"
+                  height="30"
+                  rx="8"
+                  fill="url(#pillar-fill)"
+                />
+                <rect
+                  x="0"
+                  y="20"
+                  width="52"
+                  height="10"
+                  fill="url(#pillar-fill)"
+                />
+                <line
+                  x1="0"
+                  y1="65"
+                  x2="52"
+                  y2="65"
+                  stroke="currentColor"
+                  strokeWidth="0.8"
+                  className="text-border/50"
+                />
+                <text
+                  x="26"
+                  y="22"
+                  textAnchor="middle"
+                  fontSize="14"
+                  fontFamily="STKaiti, KaiTi, serif"
+                  fill="currentColor"
+                  className="text-foreground/70"
+                >
+                  年
+                </text>
+                <text
+                  x="26"
+                  y="50"
+                  textAnchor="middle"
+                  fontSize="18"
+                  fontFamily="STKaiti, KaiTi, serif"
+                  fill="currentColor"
+                  className="text-primary/80"
+                >
+                  甲
+                </text>
+                <text
+                  x="26"
+                  y="90"
+                  textAnchor="middle"
+                  fontSize="18"
+                  fontFamily="STKaiti, KaiTi, serif"
+                  fill="currentColor"
+                  className="text-foreground/60"
+                >
+                  子
+                </text>
+                <text
+                  x="26"
+                  y="118"
+                  textAnchor="middle"
+                  fontSize="9"
+                  fontFamily="sans-serif"
+                  fill="currentColor"
+                  className="text-muted-foreground/60"
+                >
+                  YEAR
+                </text>
                 <circle cx="26" cy="128" r="3" fill="#4CAF50" opacity="0.8" />
               </g>
               {/* Month Pillar */}
               <g transform="translate(182, 110)">
-                <rect x="0" y="0" width="52" height="150" rx="8" fill="url(#pillar-fill)" stroke="currentColor" strokeWidth="1.5" className="text-primary/30" />
-                <rect x="0" y="0" width="52" height="30" rx="8" fill="url(#pillar-fill)" />
-                <rect x="0" y="20" width="52" height="10" fill="url(#pillar-fill)" />
-                <line x1="0" y1="65" x2="52" y2="65" stroke="currentColor" strokeWidth="0.8" className="text-border/50" />
-                <text x="26" y="22" textAnchor="middle" fontSize="14" fontFamily="STKaiti, KaiTi, serif" fill="currentColor" className="text-foreground/70">月</text>
-                <text x="26" y="50" textAnchor="middle" fontSize="18" fontFamily="STKaiti, KaiTi, serif" fill="currentColor" className="text-primary/80">丙</text>
-                <text x="26" y="90" textAnchor="middle" fontSize="18" fontFamily="STKaiti, KaiTi, serif" fill="currentColor" className="text-foreground/60">午</text>
-                <text x="26" y="138" textAnchor="middle" fontSize="9" fontFamily="sans-serif" fill="currentColor" className="text-muted-foreground/60">MONTH</text>
+                <rect
+                  x="0"
+                  y="0"
+                  width="52"
+                  height="150"
+                  rx="8"
+                  fill="url(#pillar-fill)"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  className="text-primary/30"
+                />
+                <rect
+                  x="0"
+                  y="0"
+                  width="52"
+                  height="30"
+                  rx="8"
+                  fill="url(#pillar-fill)"
+                />
+                <rect
+                  x="0"
+                  y="20"
+                  width="52"
+                  height="10"
+                  fill="url(#pillar-fill)"
+                />
+                <line
+                  x1="0"
+                  y1="65"
+                  x2="52"
+                  y2="65"
+                  stroke="currentColor"
+                  strokeWidth="0.8"
+                  className="text-border/50"
+                />
+                <text
+                  x="26"
+                  y="22"
+                  textAnchor="middle"
+                  fontSize="14"
+                  fontFamily="STKaiti, KaiTi, serif"
+                  fill="currentColor"
+                  className="text-foreground/70"
+                >
+                  月
+                </text>
+                <text
+                  x="26"
+                  y="50"
+                  textAnchor="middle"
+                  fontSize="18"
+                  fontFamily="STKaiti, KaiTi, serif"
+                  fill="currentColor"
+                  className="text-primary/80"
+                >
+                  丙
+                </text>
+                <text
+                  x="26"
+                  y="90"
+                  textAnchor="middle"
+                  fontSize="18"
+                  fontFamily="STKaiti, KaiTi, serif"
+                  fill="currentColor"
+                  className="text-foreground/60"
+                >
+                  午
+                </text>
+                <text
+                  x="26"
+                  y="138"
+                  textAnchor="middle"
+                  fontSize="9"
+                  fontFamily="sans-serif"
+                  fill="currentColor"
+                  className="text-muted-foreground/60"
+                >
+                  MONTH
+                </text>
                 <circle cx="26" cy="148" r="3" fill="#f44336" opacity="0.8" />
               </g>
               {/* Day Pillar (highlighted - Day Master) */}
               <g transform="translate(244, 90)">
-                <rect x="0" y="0" width="56" height="170" rx="8" fill="url(#pillar-fill-day)" stroke="url(#core-grad)" strokeWidth="2" />
-                <rect x="0" y="0" width="56" height="32" rx="8" fill="url(#pillar-fill-day)" />
-                <rect x="0" y="22" width="56" height="10" fill="url(#pillar-fill-day)" />
-                <line x1="0" y1="68" x2="56" y2="68" stroke="currentColor" strokeWidth="0.8" className="text-primary/30" />
-                <text x="28" y="23" textAnchor="middle" fontSize="14" fontFamily="STKaiti, KaiTi, serif" fill="currentColor" className="text-foreground/90">日</text>
-                <text x="28" y="54" textAnchor="middle" fontSize="22" fontFamily="STKaiti, KaiTi, serif" fill="hsl(var(--primary))">戊</text>
-                <text x="28" y="98" textAnchor="middle" fontSize="22" fontFamily="STKaiti, KaiTi, serif" fill="currentColor" className="text-foreground/80">午</text>
-                <text x="28" y="148" textAnchor="middle" fontSize="9" fontFamily="sans-serif" fill="hsl(var(--primary))" fontWeight="bold">DAY</text>
-                <text x="28" y="160" textAnchor="middle" fontSize="8" fontFamily="sans-serif" fill="currentColor" className="text-muted-foreground/60">MASTER</text>
+                <rect
+                  x="0"
+                  y="0"
+                  width="56"
+                  height="170"
+                  rx="8"
+                  fill="url(#pillar-fill-day)"
+                  stroke="url(#core-grad)"
+                  strokeWidth="2"
+                />
+                <rect
+                  x="0"
+                  y="0"
+                  width="56"
+                  height="32"
+                  rx="8"
+                  fill="url(#pillar-fill-day)"
+                />
+                <rect
+                  x="0"
+                  y="22"
+                  width="56"
+                  height="10"
+                  fill="url(#pillar-fill-day)"
+                />
+                <line
+                  x1="0"
+                  y1="68"
+                  x2="56"
+                  y2="68"
+                  stroke="currentColor"
+                  strokeWidth="0.8"
+                  className="text-primary/30"
+                />
+                <text
+                  x="28"
+                  y="23"
+                  textAnchor="middle"
+                  fontSize="14"
+                  fontFamily="STKaiti, KaiTi, serif"
+                  fill="currentColor"
+                  className="text-foreground/90"
+                >
+                  日
+                </text>
+                <text
+                  x="28"
+                  y="54"
+                  textAnchor="middle"
+                  fontSize="22"
+                  fontFamily="STKaiti, KaiTi, serif"
+                  fill="hsl(var(--primary))"
+                >
+                  戊
+                </text>
+                <text
+                  x="28"
+                  y="98"
+                  textAnchor="middle"
+                  fontSize="22"
+                  fontFamily="STKaiti, KaiTi, serif"
+                  fill="currentColor"
+                  className="text-foreground/80"
+                >
+                  午
+                </text>
+                <text
+                  x="28"
+                  y="148"
+                  textAnchor="middle"
+                  fontSize="9"
+                  fontFamily="sans-serif"
+                  fill="hsl(var(--primary))"
+                  fontWeight="bold"
+                >
+                  DAY
+                </text>
+                <text
+                  x="28"
+                  y="160"
+                  textAnchor="middle"
+                  fontSize="8"
+                  fontFamily="sans-serif"
+                  fill="currentColor"
+                  className="text-muted-foreground/60"
+                >
+                  MASTER
+                </text>
                 <circle cx="28" cy="168" r="4" fill="url(#core-grad)" />
               </g>
               {/* Hour Pillar */}
               <g transform="translate(310, 120)">
-                <rect x="0" y="0" width="52" height="140" rx="8" fill="url(#pillar-fill)" stroke="currentColor" strokeWidth="1.5" className="text-primary/30" />
-                <rect x="0" y="0" width="52" height="30" rx="8" fill="url(#pillar-fill)" />
-                <rect x="0" y="20" width="52" height="10" fill="url(#pillar-fill)" />
-                <line x1="0" y1="65" x2="52" y2="65" stroke="currentColor" strokeWidth="0.8" className="text-border/50" />
-                <text x="26" y="22" textAnchor="middle" fontSize="14" fontFamily="STKaiti, KaiTi, serif" fill="currentColor" className="text-foreground/70">時</text>
-                <text x="26" y="50" textAnchor="middle" fontSize="18" fontFamily="STKaiti, KaiTi, serif" fill="currentColor" className="text-primary/80">壬</text>
-                <text x="26" y="90" textAnchor="middle" fontSize="18" fontFamily="STKaiti, KaiTi, serif" fill="currentColor" className="text-foreground/60">子</text>
-                <text x="26" y="128" textAnchor="middle" fontSize="9" fontFamily="sans-serif" fill="currentColor" className="text-muted-foreground/60">HOUR</text>
+                <rect
+                  x="0"
+                  y="0"
+                  width="52"
+                  height="140"
+                  rx="8"
+                  fill="url(#pillar-fill)"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  className="text-primary/30"
+                />
+                <rect
+                  x="0"
+                  y="0"
+                  width="52"
+                  height="30"
+                  rx="8"
+                  fill="url(#pillar-fill)"
+                />
+                <rect
+                  x="0"
+                  y="20"
+                  width="52"
+                  height="10"
+                  fill="url(#pillar-fill)"
+                />
+                <line
+                  x1="0"
+                  y1="65"
+                  x2="52"
+                  y2="65"
+                  stroke="currentColor"
+                  strokeWidth="0.8"
+                  className="text-border/50"
+                />
+                <text
+                  x="26"
+                  y="22"
+                  textAnchor="middle"
+                  fontSize="14"
+                  fontFamily="STKaiti, KaiTi, serif"
+                  fill="currentColor"
+                  className="text-foreground/70"
+                >
+                  時
+                </text>
+                <text
+                  x="26"
+                  y="50"
+                  textAnchor="middle"
+                  fontSize="18"
+                  fontFamily="STKaiti, KaiTi, serif"
+                  fill="currentColor"
+                  className="text-primary/80"
+                >
+                  壬
+                </text>
+                <text
+                  x="26"
+                  y="90"
+                  textAnchor="middle"
+                  fontSize="18"
+                  fontFamily="STKaiti, KaiTi, serif"
+                  fill="currentColor"
+                  className="text-foreground/60"
+                >
+                  子
+                </text>
+                <text
+                  x="26"
+                  y="128"
+                  textAnchor="middle"
+                  fontSize="9"
+                  fontFamily="sans-serif"
+                  fill="currentColor"
+                  className="text-muted-foreground/60"
+                >
+                  HOUR
+                </text>
                 <circle cx="26" cy="138" r="3" fill="#2196F3" opacity="0.8" />
               </g>
 
               {/* ── Bottom Label ── */}
-              <text x="260" y="310" textAnchor="middle" fontSize="11" fontFamily="sans-serif" letterSpacing="4" fill="currentColor" className="text-muted-foreground/50">FOUR PILLARS OF DESTINY</text>
+              <text
+                x="260"
+                y="310"
+                textAnchor="middle"
+                fontSize="11"
+                fontFamily="sans-serif"
+                letterSpacing="4"
+                fill="currentColor"
+                className="text-muted-foreground/50"
+              >
+                FOUR PILLARS OF DESTINY
+              </text>
 
               {/* ── Five Elements Row ── */}
               <g transform="translate(260, 350)">
@@ -458,15 +983,43 @@ export default function HeroForm({
                   { label: "水", color: "#2196F3", x: 80 },
                 ].map((el) => (
                   <g key={el.label} transform={`translate(${el.x}, 0)`}>
-                    <circle cx="0" cy="0" r="16" fill={el.color} opacity="0.15" />
-                    <circle cx="0" cy="0" r="16" fill="none" stroke={el.color} strokeWidth="1" opacity="0.5" />
-                    <text x="0" y="6" textAnchor="middle" fontSize="14" fontFamily="STKaiti, KaiTi, serif" fill={el.color}>{el.label}</text>
+                    <circle
+                      cx="0"
+                      cy="0"
+                      r="16"
+                      fill={el.color}
+                      opacity="0.15"
+                    />
+                    <circle
+                      cx="0"
+                      cy="0"
+                      r="16"
+                      fill="none"
+                      stroke={el.color}
+                      strokeWidth="1"
+                      opacity="0.5"
+                    />
+                    <text
+                      x="0"
+                      y="6"
+                      textAnchor="middle"
+                      fontSize="14"
+                      fontFamily="STKaiti, KaiTi, serif"
+                      fill={el.color}
+                    >
+                      {el.label}
+                    </text>
                   </g>
                 ))}
               </g>
 
               {/* ── Corner Decorations ── */}
-              <g className="text-primary/20" fill="none" stroke="currentColor" strokeWidth="1">
+              <g
+                className="text-primary/20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1"
+              >
                 <path d="M30 30 L30 55 M30 30 L55 30" />
                 <path d="M490 30 L490 55 M490 30 L465 30" />
                 <path d="M30 490 L30 465 M30 490 L55 490" />
@@ -477,9 +1030,9 @@ export default function HeroForm({
         </div>
 
         {/* Right Side: Form Container */}
-        <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start">
+        <div className="flex w-full flex-col items-center lg:w-1/2 lg:items-start">
           {/* Hero Header */}
-          <div className="mb-8 flex flex-col items-center lg:items-start text-center lg:text-left">
+          <div className="mb-8 flex flex-col items-center text-center lg:items-start lg:text-left">
             <div className="mb-4 flex items-center justify-center lg:justify-start">
               {/* App Mark (Seal) */}
               <div className="mr-4 flex h-[48px] w-[48px] items-center justify-center rounded-full border-2 border-border bg-gradient-to-br from-primary to-primary/80 shadow-sm md:h-[56px] md:w-[56px]">
@@ -507,7 +1060,9 @@ export default function HeroForm({
                   type="text"
                   className="h-[56px] w-full rounded-[16px] border border-input bg-background px-4 text-[16px] text-foreground transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none"
                   value={chartName === "Your Destiny Chart" ? "" : chartName}
-                  onChange={(e) => setChartName(e.target.value || "Your Destiny Chart")}
+                  onChange={(e) =>
+                    setChartName(e.target.value || "Your Destiny Chart")
+                  }
                   placeholder="Enter your name"
                 />
               </div>
@@ -562,219 +1117,225 @@ export default function HeroForm({
                     value={timezone}
                     onChange={(e) => setTimezone(e.target.value)}
                   >
-                  <option value="" disabled>
-                    Select Timezone
-                  </option>
-                  <option value="Etc/GMT+12">
-                    (UTC-12:00) International Date Line West
-                  </option>
-                  <option value="Pacific/Midway">
-                    (UTC-11:00) Pacific/Midway, US/Samoa
-                  </option>
-                  <option value="Pacific/Honolulu">
-                    (UTC-10:00) Pacific/Honolulu, US/Hawaii
-                  </option>
-                  <option value="America/Anchorage">
-                    (UTC-09:00) America/Anchorage, US/Alaska
-                  </option>
-                  <option value="America/Los_Angeles">
-                    (UTC-08:00) America/Los_Angeles
-                  </option>
-                  <option value="America/Denver">
-                    (UTC-07:00) America/Denver
-                  </option>
-                  <option value="America/Chicago">
-                    (UTC-06:00) America/Chicago
-                  </option>
-                  <option value="America/New_York">
-                    (UTC-05:00) America/New_York
-                  </option>
-                  <option value="America/Halifax">
-                    (UTC-04:00) America/Halifax
-                  </option>
-                  <option value="America/Argentina/Buenos_Aires">
-                    (UTC-03:00) America/Argentina/Buenos_Aires
-                  </option>
-                  <option value="America/Noronha">
-                    (UTC-02:00) America/Noronha
-                  </option>
-                  <option value="Atlantic/Cape_Verde">
-                    (UTC-01:00) Atlantic/Cape_Verde
-                  </option>
-                  <option value="GMT">(UTC+00:00) UTC, GMT</option>
-                  <option value="Europe/London">
-                    (UTC+01:00) Europe/London
-                  </option>
-                  <option value="Europe/Helsinki">
-                    (UTC+02:00) Europe/Helsinki
-                  </option>
-                  <option value="Europe/Moscow">
-                    (UTC+03:00) Europe/Moscow
-                  </option>
-                  <option value="Asia/Dubai">(UTC+04:00) Asia/Dubai</option>
-                  <option value="Asia/Karachi">(UTC+05:00) Asia/Karachi</option>
-                  <option value="Asia/Dhaka">(UTC+06:00) Asia/Dhaka</option>
-                  <option value="Asia/Bangkok">(UTC+07:00) Asia/Bangkok</option>
-                  <option value="Asia/Ho_Chi_Minh">
-                    (UTC+07:00) Asia/Ho_Chi_Minh
-                  </option>
-                  <option value="Asia/Jakarta">(UTC+07:00) Asia/Jakarta</option>
-                  <option value="Asia/Singapore">
-                    (UTC+08:00) Asia/Singapore
-                  </option>
-                  <option value="Asia/Shanghai">
-                    (UTC+08:00) Asia/Shanghai
-                  </option>
-                  <option value="Asia/Taipei">(UTC+08:00) Asia/Taipei</option>
-                  <option value="Asia/Tokyo">(UTC+09:00) Asia/Tokyo</option>
-                  <option value="Asia/Seoul">(UTC+09:00) Asia/Seoul</option>
-                  <option value="Australia/Brisbane">
-                    (UTC+10:00) Australia/Brisbane
-                  </option>
-                  <option value="Australia/Sydney">
-                    (UTC+10:00) Australia/Sydney
-                  </option>
-                  <option value="Pacific/Noumea">
-                    (UTC+11:00) Pacific/Noumea
-                  </option>
-                  <option value="Pacific/Auckland">
-                    (UTC+12:00) Pacific/Auckland
-                  </option>
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-muted-foreground">
-                  <svg
-                    className="h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M19 9l-7 7-7-7"
-                    ></path>
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Controls Row */}
-          <div className="mb-10 flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
-            {/* Left side: Gender & Unknown Time */}
-            <div className="flex w-full flex-col items-start gap-6 md:w-auto md:flex-row md:items-center">
-              {/* Gender Segmented Control */}
-              <div className="flex w-full flex-col md:w-auto">
-                <label className="mb-2 ml-1 text-[14px] font-medium text-muted-foreground md:hidden">
-                  Gender
-                </label>
-                <div className="flex w-full rounded-[16px] bg-muted p-1 md:w-auto">
-                  <button
-                    type="button"
-                    onClick={() => setGender(0)}
-                    className={`flex-1 rounded-[12px] px-6 py-2.5 text-[15px] font-medium transition-all duration-200 md:flex-none ${gender === 0 ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-                  >
-                    Female
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setGender(1)}
-                    className={`flex-1 rounded-[12px] px-6 py-2.5 text-[15px] font-medium transition-all duration-200 md:flex-none ${gender === 1 ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-                  >
-                    Male
-                  </button>
-                </div>
-              </div>
-
-              {/* Unknown Time Checkbox */}
-              <label className="group mt-2 flex cursor-pointer items-center gap-3 md:mt-0">
-                <div className="relative flex items-center justify-center">
-                  <input
-                    type="checkbox"
-                    checked={unknownTime}
-                    onChange={(e) => setUnknownTime(e.target.checked)}
-                    className="peer h-5 w-5 cursor-pointer appearance-none rounded-[6px] border-2 border-input transition-all duration-200 checked:border-primary checked:bg-primary focus:ring-4 focus:ring-primary/10 focus:outline-none"
-                  />
-                  <svg
-                    className="pointer-events-none absolute h-3 w-3 text-primary-foreground opacity-0 transition-opacity duration-200 peer-checked:opacity-100"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="3"
-                      d="M5 13l4 4L19 7"
-                    ></path>
-                  </svg>
-                </div>
-                <span className="text-[15px] text-muted-foreground transition-colors duration-200 select-none group-hover:text-foreground">
-                  I don&apos;t know my birth time
-                </span>
-              </label>
-            </div>
-          </div>
-
-          {/* Bottom Row: Calculate Button & Mode Toggle */}
-          <div className="flex flex-col items-center gap-8">
-            {/* Calculate Button */}
-            <button
-              onClick={handleCalculateWithSave}
-              disabled={loading}
-              className="flex h-[56px] w-full min-w-[280px] items-center justify-center rounded-[18px] bg-gradient-to-r from-primary to-secondary text-[16px] font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-[2px] hover:shadow-md active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 disabled:active:scale-100 md:w-auto"
-            >
-              {loading ? (
-                <div className="flex items-center gap-2">
-                  <svg
-                    className="h-5 w-5 animate-spin text-primary-foreground"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
+                    <option value="" disabled>
+                      Select Timezone
+                    </option>
+                    <option value="Etc/GMT+12">
+                      (UTC-12:00) International Date Line West
+                    </option>
+                    <option value="Pacific/Midway">
+                      (UTC-11:00) Pacific/Midway, US/Samoa
+                    </option>
+                    <option value="Pacific/Honolulu">
+                      (UTC-10:00) Pacific/Honolulu, US/Hawaii
+                    </option>
+                    <option value="America/Anchorage">
+                      (UTC-09:00) America/Anchorage, US/Alaska
+                    </option>
+                    <option value="America/Los_Angeles">
+                      (UTC-08:00) America/Los_Angeles
+                    </option>
+                    <option value="America/Denver">
+                      (UTC-07:00) America/Denver
+                    </option>
+                    <option value="America/Chicago">
+                      (UTC-06:00) America/Chicago
+                    </option>
+                    <option value="America/New_York">
+                      (UTC-05:00) America/New_York
+                    </option>
+                    <option value="America/Halifax">
+                      (UTC-04:00) America/Halifax
+                    </option>
+                    <option value="America/Argentina/Buenos_Aires">
+                      (UTC-03:00) America/Argentina/Buenos_Aires
+                    </option>
+                    <option value="America/Noronha">
+                      (UTC-02:00) America/Noronha
+                    </option>
+                    <option value="Atlantic/Cape_Verde">
+                      (UTC-01:00) Atlantic/Cape_Verde
+                    </option>
+                    <option value="GMT">(UTC+00:00) UTC, GMT</option>
+                    <option value="Europe/London">
+                      (UTC+01:00) Europe/London
+                    </option>
+                    <option value="Europe/Helsinki">
+                      (UTC+02:00) Europe/Helsinki
+                    </option>
+                    <option value="Europe/Moscow">
+                      (UTC+03:00) Europe/Moscow
+                    </option>
+                    <option value="Asia/Dubai">(UTC+04:00) Asia/Dubai</option>
+                    <option value="Asia/Karachi">
+                      (UTC+05:00) Asia/Karachi
+                    </option>
+                    <option value="Asia/Dhaka">(UTC+06:00) Asia/Dhaka</option>
+                    <option value="Asia/Bangkok">
+                      (UTC+07:00) Asia/Bangkok
+                    </option>
+                    <option value="Asia/Ho_Chi_Minh">
+                      (UTC+07:00) Asia/Ho_Chi_Minh
+                    </option>
+                    <option value="Asia/Jakarta">
+                      (UTC+07:00) Asia/Jakarta
+                    </option>
+                    <option value="Asia/Singapore">
+                      (UTC+08:00) Asia/Singapore
+                    </option>
+                    <option value="Asia/Shanghai">
+                      (UTC+08:00) Asia/Shanghai
+                    </option>
+                    <option value="Asia/Taipei">(UTC+08:00) Asia/Taipei</option>
+                    <option value="Asia/Tokyo">(UTC+09:00) Asia/Tokyo</option>
+                    <option value="Asia/Seoul">(UTC+09:00) Asia/Seoul</option>
+                    <option value="Australia/Brisbane">
+                      (UTC+10:00) Australia/Brisbane
+                    </option>
+                    <option value="Australia/Sydney">
+                      (UTC+10:00) Australia/Sydney
+                    </option>
+                    <option value="Pacific/Noumea">
+                      (UTC+11:00) Pacific/Noumea
+                    </option>
+                    <option value="Pacific/Auckland">
+                      (UTC+12:00) Pacific/Auckland
+                    </option>
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-muted-foreground">
+                    <svg
+                      className="h-4 w-4"
+                      fill="none"
                       stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  <span>Calculating...</span>
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M19 9l-7 7-7-7"
+                      ></path>
+                    </svg>
+                  </div>
                 </div>
-              ) : (
-                "Calculate"
-              )}
-            </button>
+              </div>
+            </div>
 
-            {/* Classic / Modern Toggle (Liquid Glass) */}
-            <div className="flex rounded-[16px] border border-border bg-card/50 p-1 shadow-sm backdrop-blur-md">
+            {/* Controls Row */}
+            <div className="mb-10 flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
+              {/* Left side: Gender & Unknown Time */}
+              <div className="flex w-full flex-col items-start gap-6 md:w-auto md:flex-row md:items-center">
+                {/* Gender Segmented Control */}
+                <div className="flex w-full flex-col md:w-auto">
+                  <label className="mb-2 ml-1 text-[14px] font-medium text-muted-foreground md:hidden">
+                    Gender
+                  </label>
+                  <div className="flex w-full rounded-[16px] bg-muted p-1 md:w-auto">
+                    <button
+                      type="button"
+                      onClick={() => setGender(0)}
+                      className={`flex-1 rounded-[12px] px-6 py-2.5 text-[15px] font-medium transition-all duration-200 md:flex-none ${gender === 0 ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                    >
+                      Female
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setGender(1)}
+                      className={`flex-1 rounded-[12px] px-6 py-2.5 text-[15px] font-medium transition-all duration-200 md:flex-none ${gender === 1 ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                    >
+                      Male
+                    </button>
+                  </div>
+                </div>
+
+                {/* Unknown Time Checkbox */}
+                <label className="group mt-2 flex cursor-pointer items-center gap-3 md:mt-0">
+                  <div className="relative flex items-center justify-center">
+                    <input
+                      type="checkbox"
+                      checked={unknownTime}
+                      onChange={(e) => setUnknownTime(e.target.checked)}
+                      className="peer h-5 w-5 cursor-pointer appearance-none rounded-[6px] border-2 border-input transition-all duration-200 checked:border-primary checked:bg-primary focus:ring-4 focus:ring-primary/10 focus:outline-none"
+                    />
+                    <svg
+                      className="pointer-events-none absolute h-3 w-3 text-primary-foreground opacity-0 transition-opacity duration-200 peer-checked:opacity-100"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="3"
+                        d="M5 13l4 4L19 7"
+                      ></path>
+                    </svg>
+                  </div>
+                  <span className="text-[15px] text-muted-foreground transition-colors duration-200 select-none group-hover:text-foreground">
+                    I don&apos;t know my birth time
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            {/* Bottom Row: Calculate Button & Mode Toggle */}
+            <div className="flex flex-col items-center gap-8">
+              {/* Calculate Button */}
               <button
-                type="button"
-                onClick={() => setMode("classic")}
-                className={`rounded-[12px] px-6 py-2 text-[14px] font-medium transition-all duration-200 ${mode === "classic" ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-md" : "text-muted-foreground hover:text-foreground"}`}
+                onClick={handleCalculateWithSave}
+                disabled={loading}
+                className="flex h-[56px] w-full min-w-[280px] items-center justify-center rounded-[18px] bg-gradient-to-r from-primary to-secondary text-[16px] font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-[2px] hover:shadow-md active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 disabled:active:scale-100 md:w-auto"
               >
-                Classic
+                {loading ? (
+                  <div className="flex items-center gap-2">
+                    <svg
+                      className="h-5 w-5 animate-spin text-primary-foreground"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    <span>Calculating...</span>
+                  </div>
+                ) : (
+                  "Calculate"
+                )}
               </button>
-              <button
-                type="button"
-                onClick={() => setMode("modern")}
-                className={`rounded-[12px] px-6 py-2 text-[14px] font-medium transition-all duration-200 ${mode === "modern" ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-md" : "text-muted-foreground hover:text-foreground"}`}
-              >
-                Modern
-              </button>
+
+              {/* Classic / Modern Toggle (Liquid Glass) */}
+              <div className="flex rounded-[16px] border border-border bg-card/50 p-1 shadow-sm backdrop-blur-md">
+                <button
+                  type="button"
+                  onClick={() => setMode("classic")}
+                  className={`rounded-[12px] px-6 py-2 text-[14px] font-medium transition-all duration-200 ${mode === "classic" ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-md" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  Classic
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMode("modern")}
+                  className={`rounded-[12px] px-6 py-2 text-[14px] font-medium transition-all duration-200 ${mode === "modern" ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-md" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  Modern
+                </button>
+              </div>
             </div>
           </div>
-        </div>
         </div>
       </div>
     </div>

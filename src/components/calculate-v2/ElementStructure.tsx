@@ -216,10 +216,8 @@ export default function ElementStructure({
   }))
 
   // Find the maximum value across all elements (both natal and annual)
-  const maxDataValue = Math.max(
-    ...data.map((d) => Math.max(d.natal, d.annual))
-  )
-  
+  const maxDataValue = Math.max(...data.map((d) => Math.max(d.natal, d.annual)))
+
   // Round up to the nearest 10 for a cleaner chart scale (e.g., 34 -> 40, 42 -> 50)
   // If max is 0, default to 100 to avoid broken chart
   const chartMax = maxDataValue > 0 ? Math.ceil(maxDataValue / 10) * 10 : 100

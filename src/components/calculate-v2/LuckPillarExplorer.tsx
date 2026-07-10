@@ -604,7 +604,11 @@ const LuckPillarExplorer = forwardRef<
         const { hsCombos: lhc, branchInteractions: lbi } =
           detectLuckPillarCombinations(pillar, baziData.four_pillars)
         return (
-          <div key={index} data-selected={selectedLuck === index} className="flex-1 min-w-0">
+          <div
+            key={index}
+            data-selected={selectedLuck === index}
+            className="min-w-0 flex-1"
+          >
             <Pillar
               title={`Luck ${pillar.number} (大運)`}
               periodLabel="Period"
@@ -632,7 +636,11 @@ const LuckPillarExplorer = forwardRef<
         const { hsCombos: yhc, branchInteractions: ybi } =
           detectLuckPillarCombinations(pillar, baziData.four_pillars)
         return (
-          <div key={index} data-selected={selectedYear === pillar.year} className="flex-1 min-w-0">
+          <div
+            key={index}
+            data-selected={selectedYear === pillar.year}
+            className="min-w-0 flex-1"
+          >
             <Pillar
               title={`${pillar.year} (年柱)`}
               periodLabel="Age"
@@ -660,7 +668,11 @@ const LuckPillarExplorer = forwardRef<
         const { hsCombos: mhc, branchInteractions: mbi } =
           detectLuckPillarCombinations(pillar, baziData.four_pillars)
         return (
-          <div key={index} data-selected={selectedMonth === pillar.month} className="flex-1 min-w-0">
+          <div
+            key={index}
+            data-selected={selectedMonth === pillar.month}
+            className="min-w-0 flex-1"
+          >
             <Pillar
               title={`${pillar.month_english} (月柱)`}
               periodLabel="Month"
@@ -722,7 +734,7 @@ const LuckPillarExplorer = forwardRef<
         const { hsCombos: hhc, branchInteractions: hbi } =
           detectLuckPillarCombinations(pillar, baziData.four_pillars)
         return (
-          <div key={index} className="flex-1 min-w-0">
+          <div key={index} className="min-w-0 flex-1">
             <Pillar
               title={`${pillar.hour_time} (時柱)`}
               periodLabel="Hour"
@@ -884,7 +896,12 @@ const LuckPillarExplorer = forwardRef<
               <div
                 ref={rowRefs[rowIndex]}
                 className={`flex scrollbar-thin scrollbar-thumb-border/40 scrollbar-track-transparent flex-row-reverse flex-nowrap items-stretch gap-1.5 scroll-smooth px-3 pt-1 pb-1.5 hover:scrollbar-thumb-border/70 ${
-                  rowIndex === 0 || rowIndex === 1 || rowIndex === 2 || rowIndex === 4 ? "w-full overflow-hidden" : "overflow-x-auto"
+                  rowIndex === 0 ||
+                  rowIndex === 1 ||
+                  rowIndex === 2 ||
+                  rowIndex === 4
+                    ? "w-full overflow-hidden"
+                    : "overflow-x-auto"
                 }`}
                 style={{
                   scrollbarWidth: "thin",
