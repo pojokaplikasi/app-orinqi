@@ -56,7 +56,6 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
       {sortedGods.map(([godName, natalPoints]: [string, any]) => {
         const annualPoints = tenGodsPoints.annual[godName] || 0
         const chineseChar = tenGodsChinese[godName] || ""
-        const color = tenGodsColors[godName] || "#A855F7"
 
         const natalStemsArr = tenGodsStems.natal[godName] || []
         const annualStemsArr = tenGodsStems.annual[godName] || []
@@ -75,10 +74,7 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
             className="flex items-center gap-1 rounded-[10px] border border-border bg-card px-1.5 py-1"
           >
             {/* Avatar */}
-            <span
-              className="min-w-[20px] flex-shrink-0 text-center text-[18px] leading-none font-bold"
-              style={{ color }}
-            >
+            <span className="min-w-[20px] flex-shrink-0 text-center text-[18px] leading-none font-bold text-black">
               {allStems}
             </span>
 
@@ -87,22 +83,18 @@ export default function TenGods({ tenGodsData }: TenGodsProps) {
               <span className="truncate text-[12px] leading-tight font-semibold text-foreground">
                 {godName}
               </span>
-              <span className="truncate text-[10px] leading-tight text-muted-foreground">
+              <span className="truncate text-[10px] leading-tight text-black">
                 {chineseChar}
               </span>
             </div>
 
             {/* Stats */}
-            <div className="flex flex-shrink-0 items-center gap-1 text-[11px]">
-              <span className="text-muted-foreground">N</span>
-              <span className="font-semibold" style={{ color }}>
-                {natalPercent.toFixed(1)}%
-              </span>
+            <div className="flex flex-shrink-0 items-center gap-1 text-[11px] text-black">
+              <span>N</span>
+              <span className="font-semibold">{natalPercent.toFixed(1)}%</span>
               <div className="h-2.5 w-px bg-border" />
-              <span className="text-muted-foreground">A</span>
-              <span className="font-semibold" style={{ color, opacity: 0.75 }}>
-                {annualPercent.toFixed(1)}%
-              </span>
+              <span>A</span>
+              <span className="font-semibold">{annualPercent.toFixed(1)}%</span>
             </div>
           </div>
         )

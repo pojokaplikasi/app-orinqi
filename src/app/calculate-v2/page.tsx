@@ -179,6 +179,7 @@ function BaziCalculatorContent() {
     const pUnknownTime = searchParams.get("unknownTime")
 
     if (pDate && pTimezone && pGender !== null) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsAutoCalculating(true)
       setChartName(pName || "Your Destiny Chart")
       setDate(pDate)

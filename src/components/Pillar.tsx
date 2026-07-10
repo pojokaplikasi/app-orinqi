@@ -145,7 +145,9 @@ export default function Pillar({
   // Format HS Combos
   const hsLabel =
     hsCombos.length > 0
-      ? `HS Combinations ${hsCombos.map((c) => c.partner).join(", ")}`
+      ? `${mode === "classic" ? "He Hua" : "HS Combinations"} ${hsCombos
+          .map((c) => c.partner)
+          .join(", ")}`
       : ""
 
   // Format Branch Interactions
@@ -165,16 +167,30 @@ export default function Pillar({
       const partners = items.map((i) => i.partner).join(",")
       const icon = items[0].interaction.icon
 
-      const name =
-        type === "seasonal"
-          ? "Seasonal Unions"
-          : type === "sanhe"
-            ? "Three Harmonies"
-            : type === "banhe"
-              ? "Half Combinations"
-              : type === "liuhe"
-                ? "Six Harmonies"
-                : "Hidden Combinations"
+      let name = ""
+      if (mode === "classic") {
+        name =
+          type === "seasonal"
+            ? "San Hui"
+            : type === "sanhe"
+              ? "San He"
+              : type === "banhe"
+                ? "Ban He"
+                : type === "liuhe"
+                  ? "Liu He"
+                  : "An He"
+      } else {
+        name =
+          type === "seasonal"
+            ? "Seasonal Unions"
+            : type === "sanhe"
+              ? "Three Harmonies"
+              : type === "banhe"
+                ? "Half Combinations"
+                : type === "liuhe"
+                  ? "Six Harmonies"
+                  : "Hidden Combinations"
+      }
 
       branchLabels.push({
         text: `${name} ${partners}`,
@@ -200,20 +216,38 @@ export default function Pillar({
       const partners = items.map((i) => i.partner).join(",")
       const icon = items[0].interaction.icon
 
-      const name =
-        type === "ungrateful"
-          ? "Ungrateful Punishment"
-          : type === "arrogant"
-            ? "Bullying Punishment"
-            : type === "rude"
-              ? "Uncivilized Punishment"
-              : type === "self"
-                ? "Self Punishment"
-                : type === "clash"
-                  ? "Six Clashes"
-                  : type === "destruction"
-                    ? "Destruction"
-                    : "Six Harms"
+      let name = ""
+      if (mode === "classic") {
+        name =
+          type === "ungrateful"
+            ? "Wu En Zhi Xing"
+            : type === "arrogant"
+              ? "Chi Shi Zhi Xing"
+              : type === "rude"
+                ? "Wu Li Zhi Xing"
+                : type === "self"
+                  ? "Zi Xing"
+                  : type === "clash"
+                    ? "Liu Chong"
+                    : type === "destruction"
+                      ? "Xiang Po"
+                      : "Xiang Hai"
+      } else {
+        name =
+          type === "ungrateful"
+            ? "Ungrateful Punishment"
+            : type === "arrogant"
+              ? "Bullying Punishment"
+              : type === "rude"
+                ? "Uncivilized Punishment"
+                : type === "self"
+                  ? "Self Punishment"
+                  : type === "clash"
+                    ? "Six Clashes"
+                    : type === "destruction"
+                      ? "Destruction"
+                      : "Six Harms"
+      }
 
       branchLabels.push({
         text: `${name} ${partners}`,
@@ -234,8 +268,11 @@ export default function Pillar({
 
   if (className) {
     // If a custom width class is provided, remove the default fixed widths
-    if (className.includes('w-')) {
-      pillarClass = pillarClass.replace(/w-\[[^\]]+\]/g, '').replace(/md:w-\[[^\]]+\]/g, '').replace(/lg:w-\[[^\]]+\]/g, '')
+    if (className.includes("w-")) {
+      pillarClass = pillarClass
+        .replace(/w-\[[^\]]+\]/g, "")
+        .replace(/md:w-\[[^\]]+\]/g, "")
+        .replace(/lg:w-\[[^\]]+\]/g, "")
     }
     pillarClass += ` ${className}`
   }

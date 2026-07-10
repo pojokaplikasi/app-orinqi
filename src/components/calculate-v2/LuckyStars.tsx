@@ -168,7 +168,7 @@ export default function LuckyStars({
             className="flex items-center gap-1 rounded-[10px] border border-border bg-card px-1.5 py-1"
           >
             {/* Icon */}
-            <span className="flex-shrink-0 text-[22px] leading-none">
+            <span className="flex-shrink-0 text-[22px] leading-none text-black">
               {star.icon}
             </span>
 
@@ -177,16 +177,13 @@ export default function LuckyStars({
               <span className="truncate text-[12px] leading-tight font-semibold text-foreground">
                 {star.name}
               </span>
-              <span className="text-[10px] leading-tight text-muted-foreground">
+              <span className="text-[10px] leading-tight text-black">
                 {star.chinese}
               </span>
             </div>
 
             {/* Branch value */}
-            <span
-              className="shrink-0 text-[11px] font-medium"
-              style={{ color: star.color }}
-            >
+            <span className="shrink-0 text-[11px] font-medium text-black">
               {star.branches}
             </span>
           </div>
