@@ -174,6 +174,8 @@ export function calculateCurrentMonthPillar(
 
   return {
     month: month,
+    gregorian_month: month,
+    gregorian_month_label: monthNames[month - 1],
     month_english: monthNames[month - 1],
     heavenly_stem: {
       name: HEAVENLY_STEMS[monthStemIndex].name,

@@ -125,7 +125,7 @@ const LuckPillarExplorer = forwardRef<
 
     const now = new Date()
     const currentYear = now.getFullYear()
-    const currentMonth = now.getMonth() + 1
+    const currentGregorianMonth = now.getMonth() + 1
     const currentDay = now.getDate()
 
     // Find current luck pillar
@@ -169,18 +169,21 @@ const LuckPillarExplorer = forwardRef<
           .then((mdata) => {
             const mp: any[] = mdata.monthly_pillars ?? []
             setMonthPillars(mp)
-            const matchMonth = mp.find((p: any) => p.month === currentMonth)
+            // Match by gregorian_month (the actual calendar month)
+            const matchMonth = mp.find(
+              (p: any) => p.gregorian_month === currentGregorianMonth
+            )
             if (!matchMonth) return
-            setSelectedMonth(currentMonth)
+            setSelectedMonth(matchMonth.month)
 
-            // Fetch days for current month, then auto-select current day
+            // Fetch days for current month using Gregorian month
             setLoadingDay(true)
             fetch("/api/calculate_daily", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 year: currentYear,
-                month: currentMonth,
+                month: currentGregorianMonth,
                 birth_time: birthTime,
               }),
             })
@@ -199,7 +202,7 @@ const LuckPillarExplorer = forwardRef<
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
                     year: currentYear,
-                    month: currentMonth,
+                    month: currentGregorianMonth,
                     day: currentDay,
                     birth_time: birthTime,
                   }),
@@ -261,15 +264,17 @@ const LuckPillarExplorer = forwardRef<
                 setMonthPillars(mp)
                 if (mp.length > 0) {
                   const firstMonth = mp[0].month
+                  const firstGregorianMonth =
+                    mp[0].gregorian_month ?? firstMonth
                   setSelectedMonth(firstMonth)
-                  // Cascade: fetch days for first month
+                  // Cascade: fetch days for first month (use Gregorian month)
                   setLoadingDay(true)
                   fetch("/api/calculate_daily", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                       year: firstYear,
-                      month: firstMonth,
+                      month: firstGregorianMonth,
                       birth_time: birthTime,
                     }),
                   })
@@ -287,7 +292,7 @@ const LuckPillarExplorer = forwardRef<
                           headers: { "Content-Type": "application/json" },
                           body: JSON.stringify({
                             year: firstYear,
-                            month: firstMonth,
+                            month: firstGregorianMonth,
                             day: firstDay,
                             birth_time: birthTime,
                           }),
@@ -325,15 +330,16 @@ const LuckPillarExplorer = forwardRef<
           setMonthPillars(mp)
           if (mp.length > 0) {
             const firstMonth = mp[0].month
+            const firstGregorianMonth = mp[0].gregorian_month ?? firstMonth
             setSelectedMonth(firstMonth)
-            // Cascade: fetch days for first month
+            // Cascade: fetch days for first month (use Gregorian month)
             setLoadingDay(true)
             fetch("/api/calculate_daily", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 year,
-                month: firstMonth,
+                month: firstGregorianMonth,
                 birth_time: birthTime,
               }),
             })
@@ -351,7 +357,7 @@ const LuckPillarExplorer = forwardRef<
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                       year,
-                      month: firstMonth,
+                      month: firstGregorianMonth,
                       day: firstDay,
                       birth_time: birthTime,
                     }),
@@ -372,15 +378,27 @@ const LuckPillarExplorer = forwardRef<
     [birthTime]
   )
 
+  // Helper: get Gregorian month from a Chinese month number using monthPillars data
+  const getGregorianMonth = useCallback(
+    (chineseMonth: number, pillars: any[]) => {
+      const found = pillars.find((p: any) => p.month === chineseMonth)
+      return found?.gregorian_month ?? chineseMonth
+    },
+    []
+  )
+
   const fetchDaysAndCascade = useCallback(
-    (month: number, year: number) => {
+    (chineseMonth: number, year: number, gregorianMonth?: number) => {
+      // Use provided gregorianMonth, or derive from monthPillars
+      const gMonth =
+        gregorianMonth ?? getGregorianMonth(chineseMonth, monthPillars)
       setLoadingDay(true)
       fetch("/api/calculate_daily", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           year,
-          month,
+          month: gMonth,
           birth_time: birthTime,
         }),
       })
@@ -398,7 +416,7 @@ const LuckPillarExplorer = forwardRef<
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 year,
-                month,
+                month: gMonth,
                 day: firstDay,
                 birth_time: birthTime,
               }),
@@ -413,7 +431,7 @@ const LuckPillarExplorer = forwardRef<
         .catch(console.error)
         .finally(() => setLoadingDay(false))
     },
-    [birthTime]
+    [birthTime, monthPillars, getGregorianMonth]
   )
 
   const handleSelectLuck = useCallback(
@@ -448,29 +466,35 @@ const LuckPillarExplorer = forwardRef<
   )
 
   const handleSelectMonth = useCallback(
-    (month: number, year: number) => {
+    (chineseMonth: number, year: number) => {
       if (!baziData) return
-      setSelectedMonth(month)
+      setSelectedMonth(chineseMonth)
       setSelectedDay(null)
       setDayPillars([])
       setHourPillars([])
-      fetchDaysAndCascade(month, year)
+      // Look up the Gregorian month from the pillar data
+      const pillar = monthPillars.find((p: any) => p.month === chineseMonth)
+      const gregorianMonth = pillar?.gregorian_month ?? chineseMonth
+      fetchDaysAndCascade(chineseMonth, year, gregorianMonth)
     },
-    [baziData, fetchDaysAndCascade]
+    [baziData, fetchDaysAndCascade, monthPillars]
   )
 
   const handleSelectDay = useCallback(
-    (day: number, month: number, year: number) => {
+    (day: number, chineseMonth: number, year: number) => {
       if (!baziData) return
       setSelectedDay(day)
       setHourPillars([])
       setLoadingHour(true)
+      // Look up the Gregorian month from the pillar data
+      const pillar = monthPillars.find((p: any) => p.month === chineseMonth)
+      const gregorianMonth = pillar?.gregorian_month ?? chineseMonth
       fetch("/api/calculate_hourly", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           year,
-          month,
+          month: gregorianMonth,
           day,
           birth_time: birthTime,
         }),
@@ -480,7 +504,7 @@ const LuckPillarExplorer = forwardRef<
         .catch(console.error)
         .finally(() => setLoadingHour(false))
     },
-    [baziData, birthTime]
+    [baziData, birthTime, monthPillars]
   )
 
   // ── Expose navigation methods to parent via ref ───────────────────────────
@@ -661,7 +685,10 @@ const LuckPillarExplorer = forwardRef<
       },
     },
     {
-      pillars: monthPillars,
+      pillars: [...monthPillars].sort(
+        (a, b) =>
+          (a.gregorian_month ?? a.month) - (b.gregorian_month ?? b.month)
+      ),
       loading: loadingMonth,
       isActive: selectedYear !== null,
       renderCard: (pillar: any, index: number) => {
@@ -674,9 +701,9 @@ const LuckPillarExplorer = forwardRef<
             className="min-w-0 flex-1"
           >
             <Pillar
-              title={`${pillar.month_english} (月柱)`}
+              title={`${pillar.gregorian_month_label ?? pillar.month_english} (月柱)`}
               periodLabel="Month"
-              periodValue={`Month ${pillar.month}`}
+              periodValue={pillar.month_english}
               pillarData={pillar}
               isSelected={selectedMonth === pillar.month}
               onClick={() => handleSelectMonth(pillar.month, selectedYear!)}
@@ -843,10 +870,16 @@ const LuckPillarExplorer = forwardRef<
                 {rowIndex === 2 && selectedMonth !== null && (
                   <SelectedBadge
                     color={color}
-                    text={
-                      monthPillars.find((m) => m.month === selectedMonth)
-                        ?.month_english ?? String(selectedMonth)
-                    }
+                    text={(() => {
+                      const mp = monthPillars.find(
+                        (m) => m.month === selectedMonth
+                      )
+                      return (
+                        mp?.gregorian_month_label ??
+                        mp?.month_english ??
+                        String(selectedMonth)
+                      )
+                    })()}
                   />
                 )}
                 {rowIndex === 3 && selectedDay !== null && (

@@ -994,12 +994,34 @@ export function calculateMonthlyPillars(
     "Ox",
   ]
 
+  // Gregorian month labels for display
+  const gregorianMonthLabels = [
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+    "January",
+  ]
+
   for (let chineseMonth = 1; chineseMonth <= 12; chineseMonth++) {
     const monthStemIndex = (monthStemBase + chineseMonth - 1) % 10
     const monthBranchIndex = (chineseMonth + 1) % 12
 
+    // Map Chinese month to approximate Gregorian month
+    // Chinese month 1 (Tiger) ≈ Feb, month 2 (Rabbit) ≈ Mar, ..., month 12 (Ox) ≈ Jan
+    const gregorianMonth = (chineseMonth % 12) + 1
+
     const monthlyPillar = {
       month: chineseMonth,
+      gregorian_month: gregorianMonth,
+      gregorian_month_label: gregorianMonthLabels[chineseMonth - 1],
       year: year,
       month_name: chineseMonthNames[chineseMonth - 1],
       month_english: englishMonthNames[chineseMonth - 1],

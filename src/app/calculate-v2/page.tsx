@@ -633,9 +633,11 @@ function BaziCalculatorContent() {
                   />
                   <Pillar
                     title={
-                      activeTransitPillars.month?.month_english
-                        ? `${activeTransitPillars.month.month_english} (月柱)`
-                        : "Current Month"
+                      activeTransitPillars.month?.gregorian_month_label
+                        ? `${activeTransitPillars.month.gregorian_month_label} (月柱)`
+                        : activeTransitPillars.month?.month_english
+                          ? `${activeTransitPillars.month.month_english} (月柱)`
+                          : "Current Month"
                     }
                     pillarData={activeTransitPillars.month}
                     isCurrent
