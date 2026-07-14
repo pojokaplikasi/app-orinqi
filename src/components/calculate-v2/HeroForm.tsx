@@ -1051,23 +1051,6 @@ export default function HeroForm({
 
           {/* Main Form Container (Liquid Glass) */}
           <div className="w-full rounded-[24px] border border-border bg-card p-6 shadow-sm md:p-8">
-            <div className="mb-6 flex flex-col">
-              <label className="mb-2 ml-1 text-[14px] font-medium text-muted-foreground">
-                Name
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  className="h-[56px] w-full rounded-[16px] border border-input bg-background px-4 text-[16px] text-foreground transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none"
-                  value={chartName === "Your Destiny Chart" ? "" : chartName}
-                  onChange={(e) =>
-                    setChartName(e.target.value || "Your Destiny Chart")
-                  }
-                  placeholder="Enter your name"
-                />
-              </div>
-            </div>
-
             {/* Desktop: 2 columns, Mobile: 1 column */}
             <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Date Input */}
@@ -1277,6 +1260,27 @@ export default function HeroForm({
                     I don&apos;t know my birth time
                   </span>
                 </label>
+              </div>
+            </div>
+
+            {/* Name Input (Optional) */}
+            <div className="mb-8 flex flex-col">
+              <label className="mb-2 ml-1 text-[14px] font-medium text-muted-foreground">
+                Name{" "}
+                <span className="text-[12px] text-muted-foreground/60">
+                  (Optional)
+                </span>
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  className="h-[56px] w-full rounded-[16px] border border-input bg-background px-4 text-[16px] text-foreground transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none"
+                  value={chartName === "Your Destiny Chart" ? "" : chartName}
+                  onChange={(e) =>
+                    setChartName(e.target.value || "Your Destiny Chart")
+                  }
+                  placeholder="Default: Your Destiny Chart"
+                />
               </div>
             </div>
 
