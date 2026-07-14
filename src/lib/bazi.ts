@@ -844,16 +844,9 @@ export function calculateLuckPillars(
     (stem) => stem.name === fourPillars.day_pillar.heavenly_stem.name
   )
 
-  const [startYears, startMonths] = calculateDayunStartAge(
-    birthTime,
-    fourPillars,
-    forward
-  )
-  let baseAge = startYears
-
-  if (startMonths >= 6) {
-    baseAge += 1
-  }
+  // 10-year luck pillars always start from the year after birth year
+  // e.g. born 2000 → pillar 1 = 2001–2010, pillar 2 = 2011–2020, etc.
+  const birthYear = birthTime.year()
 
   for (let i = 0; i < 10; i++) {
     let stemIdx, branchIdx
@@ -865,8 +858,7 @@ export function calculateLuckPillars(
       branchIdx = (startBranchIdx - i - 1 + 12) % 12
     }
 
-    const startAge = baseAge + i * 10
-    const startYear = birthTime.year() + startAge
+    const startYear = birthYear + 1 + i * 10
     const endYear = startYear + 9
 
     let luckStartTime
@@ -916,6 +908,7 @@ export function calculateYearlyPillars(
   const refStem = (targetStem - (daysToOct1987 % 10) + 10) % 10
   const daysSinceRef = Math.floor(birthTime.diff(refDate, "day", true))
   const dayStemIndex = (refStem + (daysSinceRef % 10) + 10) % 10
+  const birthYear = birthTime.year()
 
   for (let year = startYear; year <= endYear; year++) {
     const yearOffset = year - 1984
@@ -924,6 +917,7 @@ export function calculateYearlyPillars(
 
     const yearlyPillar = {
       year: year,
+      age: year - birthYear,
       heavenly_stem: {
         name: HEAVENLY_STEMS[yearStemIndex].name,
         character: HEAVENLY_STEMS[yearStemIndex].character,
