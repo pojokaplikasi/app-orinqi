@@ -844,10 +844,22 @@ export function calculateLuckPillars(
     (stem) => stem.name === fourPillars.day_pillar.heavenly_stem.name
   )
 
-  // 10-year luck pillars always start from the year after birth year
-  // e.g. born 2000 → pillar 1 = 2001–2010, pillar 2 = 2011–2020, etc.
+  // Calculate exact starting age based on Jie Qi distance (matching app.py logic)
+  const [startYears, startMonths] = calculateDayunStartAge(
+    birthTime,
+    fourPillars,
+    forward
+  )
+  let baseAge = startYears // Use years as base age
+
+  // If months >= 6, round up to next year
+  if (startMonths >= 6) {
+    baseAge += 1
+  }
+
   const birthYear = birthTime.year()
 
+  // Generate 10 luck pillars (standard)
   for (let i = 0; i < 10; i++) {
     let stemIdx, branchIdx
     if (forward) {
@@ -858,14 +870,18 @@ export function calculateLuckPillars(
       branchIdx = (startBranchIdx - i - 1 + 12) % 12
     }
 
-    const startYear = birthYear + 1 + i * 10
+    // Calculate start year and age using base_age from Jie Qi calculation
+    const startAge = baseAge + i * 10
+    const startYear = birthYear + startAge
     const endYear = startYear + 9
 
+    // Calculate time when this luck pillar begins - use birth month/day
     let luckStartTime
     try {
       luckStartTime = birthTime.year(startYear)
     } catch (e) {
-      luckStartTime = birthTime.year(startYear).month(1).date(28) // Feb 28
+      // Handle leap year issues (Feb 29)
+      luckStartTime = birthTime.year(startYear).month(1).date(28)
     }
 
     const luckPillar = {
