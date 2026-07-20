@@ -97,8 +97,6 @@ function Pillar({
       : "Wood") ||
     "Wood"
 
-  const nayinElement = gan_zhi?.element_name || "Wood"
-
   // Check Lucky Stars for this branch
   const starsForThisBranch = []
   if (luckyStars && earthly_branch?.name) {
@@ -161,7 +159,6 @@ function Pillar({
     if (groupedInteractions[type]) {
       const items = groupedInteractions[type]
       const partners = items.map((i) => i.partner).join(",")
-      const icon = items[0].interaction.icon
 
       let name = ""
       if (mode === "classic") {
@@ -210,7 +207,6 @@ function Pillar({
     if (groupedInteractions[type]) {
       const items = groupedInteractions[type]
       const partners = items.map((i) => i.partner).join(",")
-      const icon = items[0].interaction.icon
 
       let name = ""
       if (mode === "classic") {
