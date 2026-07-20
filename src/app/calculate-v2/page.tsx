@@ -110,20 +110,9 @@ function BaziCalculatorContent() {
       const data = await response.json()
       setBaziData(data)
 
-      // Calculate current pillars
+      // Calculate current pillars using the browser's local date/time.
+      // The browser timezone is the user's selected location in normal usage.
       const now = new Date()
-      console.log("[BAZI CLIENT] Calculation context:", {
-        actualDateTime,
-        timezone: calcTimezone,
-        clientTime: now.toString(),
-        clientISOString: now.toISOString(),
-        clientTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        clientTimezoneOffsetMinutes: now.getTimezoneOffset(),
-        currentYear: now.getFullYear(),
-        currentMonth: now.getMonth() + 1,
-        currentDay: now.getDate(),
-        currentHour: now.getHours(),
-      })
       const birthTimeData = { dateTime: actualDateTime }
 
       const currYear = calculateCurrentYearPillar(now, data.four_pillars)
