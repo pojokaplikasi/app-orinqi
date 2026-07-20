@@ -222,6 +222,7 @@ const LuckPillarExplorer = forwardRef<
                 year: currentYear,
                 month: currentGregorianMonth,
                 birth_time: birthTime,
+                timezone,
               }),
             })
               .then((r) => r.json())
@@ -447,6 +448,7 @@ const LuckPillarExplorer = forwardRef<
           year,
           month: gMonth,
           birth_time: birthTime,
+          timezone,
         }),
       })
         .then((r) => r.json())
@@ -478,7 +480,7 @@ const LuckPillarExplorer = forwardRef<
         .catch(console.error)
         .finally(() => setLoadingDay(false))
     },
-    [birthTime, monthPillars, getGregorianMonth]
+    [birthTime, monthPillars, getGregorianMonth, timezone]
   )
 
   const handleSelectLuck = useCallback(
