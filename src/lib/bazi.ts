@@ -304,20 +304,19 @@ export const HIDDEN_STEMS: Record<
 
 export function getChineseNewYearBoundary(
   year: number,
-  convertToLocal: boolean = false
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _convertToLocal: boolean = false
 ): dayjs.Dayjs {
+  // Jie Qi data is stored in CST (UTC+8) wall-clock time.
+  // Parse as Asia/Shanghai so the internal UTC timestamp is correct.
+  // Comparison with timezone-aware birthTime (e.g. UTC+7) works automatically
+  // because dayjs compares the underlying UTC instants.
+
   // PRIORITY 1: Use new complete Jieqi data if available (1909-2183)
   if (COMPLETE_JIEQI_DATA && COMPLETE_JIEQI_DATA[year.toString()]) {
     if (COMPLETE_JIEQI_DATA[year.toString()]["lichun"]) {
       const lichunStr = COMPLETE_JIEQI_DATA[year.toString()]["lichun"]
-      let lichunDt = dayjs(lichunStr, "YYYY-MM-DD HH:mm:ss")
-
-      // Convert from CST (UTC+8) to local time (UTC+7) if requested
-      if (convertToLocal) {
-        lichunDt = lichunDt.subtract(1, "hour")
-      }
-
-      return lichunDt
+      return dayjs.tz(lichunStr, "YYYY-MM-DD HH:mm:ss", "Asia/Shanghai")
     }
   }
 
@@ -328,37 +327,28 @@ export function getChineseNewYearBoundary(
     LEGACY_LICHUN_DATA[year.toString()]["lichun"]
   ) {
     const lichunStr = LEGACY_LICHUN_DATA[year.toString()]["lichun"]
-    let lichunDt = dayjs(lichunStr, "YYYY-MM-DD HH:mm:ss")
-
-    // Convert from CST (UTC+8) to local time (UTC+7) if requested
-    if (convertToLocal) {
-      lichunDt = lichunDt.subtract(1, "hour")
-    }
-
-    return lichunDt
+    return dayjs.tz(lichunStr, "YYYY-MM-DD HH:mm:ss", "Asia/Shanghai")
   }
 
   // PRIORITY 3: Fallback to approximate date if data is missing
-  return dayjs(`${year}-02-04 00:00:00`)
+  return dayjs.tz(`${year}-02-04 00:00:00`, "YYYY-MM-DD HH:mm:ss", "Asia/Shanghai")
 }
 
 export function getSolarTermMoment(
   year: number,
   term: string,
-  convertToLocal: boolean = false
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _convertToLocal: boolean = false
 ): dayjs.Dayjs {
+  // Jie Qi data is stored in CST (UTC+8) wall-clock time.
+  // Parse as Asia/Shanghai so the internal UTC timestamp is correct.
+  // Comparison with timezone-aware birthTime works automatically.
+
   // PRIORITY 1: Use new complete Jieqi data if available (1909-2183)
   if (COMPLETE_JIEQI_DATA && COMPLETE_JIEQI_DATA[year.toString()]) {
     if (COMPLETE_JIEQI_DATA[year.toString()][term]) {
       const termStr = COMPLETE_JIEQI_DATA[year.toString()][term]
-      let termDt = dayjs(termStr, "YYYY-MM-DD HH:mm:ss")
-
-      // Convert from CST (UTC+8) to local time (UTC+7) if requested
-      if (convertToLocal) {
-        termDt = termDt.subtract(1, "hour")
-      }
-
-      return termDt
+      return dayjs.tz(termStr, "YYYY-MM-DD HH:mm:ss", "Asia/Shanghai")
     }
   }
 
@@ -369,14 +359,7 @@ export function getSolarTermMoment(
     LEGACY_LICHUN_DATA[year.toString()][term]
   ) {
     const termStr = LEGACY_LICHUN_DATA[year.toString()][term]
-    let termDt = dayjs(termStr, "YYYY-MM-DD HH:mm:ss")
-
-    // Convert from CST (UTC+8) to local time (UTC+7) if requested
-    if (convertToLocal) {
-      termDt = termDt.subtract(1, "hour")
-    }
-
-    return termDt
+    return dayjs.tz(termStr, "YYYY-MM-DD HH:mm:ss", "Asia/Shanghai")
   }
 
   // PRIORITY 3: Fallback to approximate dates if data is missing
@@ -407,8 +390,10 @@ export function getSolarTermMoment(
     xiaoxue: [11, 22], // 小雪 - Minor Snow (Pig month continues)
   }
   const [month, day] = termDates[term] || [1, 1]
-  return dayjs(
-    `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")} 00:00:00`
+  return dayjs.tz(
+    `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")} 00:00:00`,
+    "YYYY-MM-DD HH:mm:ss",
+    "Asia/Shanghai"
   )
 }
 
@@ -416,7 +401,7 @@ export function getVerifiedSolarMonth(dt: dayjs.Dayjs): number {
   const year = dt.year()
 
   // Get the exact moments of key solar terms that define month boundaries
-  // CRITICAL: Convert from CST (UTC+8) to local time (UTC+7) for accurate comparison
+  // Solar terms are parsed as CST (Asia/Shanghai) — dayjs compares UTC instants automatically
   const lichun = getSolarTermMoment(year, "lichun", true) // 立春
   const jingzhe = getSolarTermMoment(year, "jingzhe", true) // 驚蟄
   const qingming = getSolarTermMoment(year, "qingming", true) // 清明
@@ -562,12 +547,13 @@ export function calculatePillars(birthTime: dayjs.Dayjs): any {
 
   // Use verified reference: Jan 1, 1900 = 辛亥 (indices 7, 11)
   // But we need to calibrate to get Oct 20, 1987 = 壬寅 (indices 8, 2)
-  const refDate = dayjs("1900-01-01 00:00:00")
-  // Calculate days difference correctly considering timezones/DST
-  const daysSinceRef = Math.floor(birthTimeForDay.diff(refDate, "day", true))
+  // Use date-only UTC values so day-cycle results are server-timezone independent.
+  const refDate = dayjs.utc("1900-01-01 00:00:00")
+  const birthCalendarDate = dayjs.utc(birthTimeForDay.format("YYYY-MM-DD"))
+  const daysSinceRef = Math.floor(birthCalendarDate.diff(refDate, "day", true))
 
   // Oct 20, 1987 should be 壬寅 (Yang Water + Tiger) = indices 8, 2
-  const oct20_1987 = dayjs("1987-10-20 00:00:00")
+  const oct20_1987 = dayjs.utc("1987-10-20 00:00:00")
   const daysToOct1987 = Math.floor(oct20_1987.diff(refDate, "day", true))
 
   const targetStem = 8 // 壬 (Yang Water)
@@ -916,13 +902,14 @@ export function calculateYearlyPillars(
 ): any[] {
   const yearlyPillars = []
 
-  const refDate = dayjs("1900-01-01 00:00:00")
-  const oct20_1987 = dayjs("1987-10-20 00:00:00")
+  const refDate = dayjs.utc("1900-01-01 00:00:00")
+  const oct20_1987 = dayjs.utc("1987-10-20 00:00:00")
   const daysToOct1987 = Math.floor(oct20_1987.diff(refDate, "day", true))
   const targetStem = 8
   const targetBranch = 2
   const refStem = (targetStem - (daysToOct1987 % 10) + 10) % 10
-  const daysSinceRef = Math.floor(birthTime.diff(refDate, "day", true))
+  const birthCalendarDate = dayjs.utc(birthTime.format("YYYY-MM-DD"))
+  const daysSinceRef = Math.floor(birthCalendarDate.diff(refDate, "day", true))
   const dayStemIndex = (refStem + (daysSinceRef % 10) + 10) % 10
   const birthYear = birthTime.year()
 
@@ -961,8 +948,8 @@ export function calculateMonthlyPillars(
 ): any[] {
   const monthlyPillars = []
 
-  const refDate = dayjs("1900-01-01 00:00:00")
-  const oct20_1987 = dayjs("1987-10-20 00:00:00")
+  const refDate = dayjs.utc("1900-01-01 00:00:00")
+  const oct20_1987 = dayjs.utc("1987-10-20 00:00:00")
   const daysToOct1987 = Math.floor(oct20_1987.diff(refDate, "day", true))
   const targetStem = 8
   const refStem = (targetStem - (daysToOct1987 % 10) + 10) % 10
@@ -1063,20 +1050,25 @@ export function calculateDailyPillars(
 ): any[] {
   const dailyPillars = []
 
-  const refDate = dayjs("1900-01-01 00:00:00")
-  const oct20_1987 = dayjs("1987-10-20 00:00:00")
+  const refDate = dayjs.utc("1900-01-01 00:00:00")
+  const oct20_1987 = dayjs.utc("1987-10-20 00:00:00")
   const daysToOct1987 = Math.floor(oct20_1987.diff(refDate, "day", true))
   const targetStem = 8
   const targetBranch = 2
   const refStem = (targetStem - (daysToOct1987 % 10) + 10) % 10
   const refBranch = (targetBranch - (daysToOct1987 % 12) + 12) % 12
-  const birthDaysSinceRef = Math.floor(birthTime.diff(refDate, "day", true))
+  const birthCalendarDate = dayjs.utc(birthTime.format("YYYY-MM-DD"))
+  const birthDaysSinceRef = Math.floor(
+    birthCalendarDate.diff(refDate, "day", true)
+  )
   const birthDayStemIndex = (refStem + (birthDaysSinceRef % 10) + 10) % 10
 
-  const daysInMonth = dayjs(`${year}-${month}-01`).daysInMonth()
+  const daysInMonth = dayjs
+    .utc(`${year}-${month.toString().padStart(2, "0")}-01`)
+    .daysInMonth()
 
   for (let day = 1; day <= daysInMonth; day++) {
-    const currentDate = dayjs(
+    const currentDate = dayjs.utc(
       `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")} 00:00:00`
     )
     const daysSinceRef = Math.floor(currentDate.diff(refDate, "day", true))
@@ -1120,15 +1112,18 @@ export function calculateHourlyPillars(
 ): any[] {
   const hourlyPillars = []
 
-  const refDate = dayjs("1900-01-01 00:00:00")
-  const oct20_1987 = dayjs("1987-10-20 00:00:00")
+  const refDate = dayjs.utc("1900-01-01 00:00:00")
+  const oct20_1987 = dayjs.utc("1987-10-20 00:00:00")
   const daysToOct1987 = Math.floor(oct20_1987.diff(refDate, "day", true))
   const targetStem = 8
   const refStem = (targetStem - (daysToOct1987 % 10) + 10) % 10
-  const birthDaysSinceRef = Math.floor(birthTime.diff(refDate, "day", true))
+  const birthCalendarDate = dayjs.utc(birthTime.format("YYYY-MM-DD"))
+  const birthDaysSinceRef = Math.floor(
+    birthCalendarDate.diff(refDate, "day", true)
+  )
   const birthDayStemIndex = (refStem + (birthDaysSinceRef % 10) + 10) % 10
 
-  const currentDate = dayjs(
+  const currentDate = dayjs.utc(
     `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")} 00:00:00`
   )
   const daysSinceRef = Math.floor(currentDate.diff(refDate, "day", true))

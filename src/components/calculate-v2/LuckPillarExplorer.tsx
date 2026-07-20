@@ -64,6 +64,7 @@ const LuckPillarExplorer = forwardRef<
     luckyStars,
     date,
     time,
+    timezone,
     unknownTime,
     mode = "modern",
     onHourSelect,
@@ -119,6 +120,20 @@ const LuckPillarExplorer = forwardRef<
 
   const birthTime = unknownTime ? `${date}T12:00` : `${date}T${time}`
 
+  const logExplorerRequest = useCallback(
+    (endpoint: string, payload: Record<string, unknown>) => {
+      console.log("[BAZI EXPLORER] Request", {
+        endpoint,
+        timezone,
+        birthTime,
+        payload,
+        browserTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        browserNow: new Date().toString(),
+      })
+    },
+    [birthTime, timezone]
+  )
+
   // ── Auto-detect current time and auto-select ─────────────────────────────
   const autoSelectCurrentTime = useCallback(() => {
     if (!baziData?.luck_pillars?.luck_pillars) return
@@ -136,10 +151,27 @@ const LuckPillarExplorer = forwardRef<
 
     if (currentLuckIdx === -1) return
 
+    console.log("[BAZI EXPLORER] Auto-select context", {
+      timezone,
+      birthTime,
+      browserTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      currentYear,
+      currentGregorianMonth,
+      currentDay,
+      currentLuckIdx,
+    })
+
     setSelectedLuck(currentLuckIdx)
 
     // Fetch years for that luck pillar, then auto-select current year
     const lp = luckPillars[currentLuckIdx]
+    const yearlyPayload = {
+      start_year: lp.year_start,
+      end_year: lp.year_end,
+      birth_time: birthTime,
+      timezone,
+    }
+    logExplorerRequest("/api/calculate_yearly", yearlyPayload)
     setLoadingYear(true)
     fetch("/api/calculate_yearly", {
       method: "POST",
@@ -148,6 +180,7 @@ const LuckPillarExplorer = forwardRef<
         start_year: lp.year_start,
         end_year: lp.year_end,
         birth_time: birthTime,
+        timezone,
       }),
     })
       .then((r) => r.json())
@@ -163,7 +196,11 @@ const LuckPillarExplorer = forwardRef<
         fetch("/api/calculate_monthly", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ year: currentYear, birth_time: birthTime }),
+          body: JSON.stringify({
+            year: currentYear,
+            birth_time: birthTime,
+            timezone,
+          }),
         })
           .then((r) => r.json())
           .then((mdata) => {
@@ -185,6 +222,7 @@ const LuckPillarExplorer = forwardRef<
                 year: currentYear,
                 month: currentGregorianMonth,
                 birth_time: birthTime,
+                timezone,
               }),
             })
               .then((r) => r.json())
@@ -205,6 +243,7 @@ const LuckPillarExplorer = forwardRef<
                     month: currentGregorianMonth,
                     day: currentDay,
                     birth_time: birthTime,
+                    timezone,
                   }),
                 })
                   .then((r) => r.json())
@@ -242,6 +281,7 @@ const LuckPillarExplorer = forwardRef<
           start_year: lp.year_start,
           end_year: lp.year_end,
           birth_time: birthTime,
+          timezone,
         }),
       })
         .then((r) => r.json())
@@ -256,7 +296,11 @@ const LuckPillarExplorer = forwardRef<
             fetch("/api/calculate_monthly", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ year: firstYear, birth_time: birthTime }),
+              body: JSON.stringify({
+                year: firstYear,
+                birth_time: birthTime,
+                timezone,
+              }),
             })
               .then((r) => r.json())
               .then((mdata) => {
@@ -276,6 +320,7 @@ const LuckPillarExplorer = forwardRef<
                       year: firstYear,
                       month: firstGregorianMonth,
                       birth_time: birthTime,
+                      timezone,
                     }),
                   })
                     .then((r) => r.json())
@@ -295,6 +340,7 @@ const LuckPillarExplorer = forwardRef<
                             month: firstGregorianMonth,
                             day: firstDay,
                             birth_time: birthTime,
+                            timezone,
                           }),
                         })
                           .then((r) => r.json())
@@ -313,7 +359,7 @@ const LuckPillarExplorer = forwardRef<
         .catch(console.error)
         .finally(() => setLoadingYear(false))
     },
-    [birthTime]
+    [birthTime, timezone]
   )
 
   const fetchMonthsAndCascade = useCallback(
@@ -322,7 +368,7 @@ const LuckPillarExplorer = forwardRef<
       fetch("/api/calculate_monthly", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ year, birth_time: birthTime }),
+        body: JSON.stringify({ year, birth_time: birthTime, timezone }),
       })
         .then((r) => r.json())
         .then((mdata) => {
@@ -341,6 +387,7 @@ const LuckPillarExplorer = forwardRef<
                 year,
                 month: firstGregorianMonth,
                 birth_time: birthTime,
+                timezone,
               }),
             })
               .then((r) => r.json())
@@ -360,6 +407,7 @@ const LuckPillarExplorer = forwardRef<
                       month: firstGregorianMonth,
                       day: firstDay,
                       birth_time: birthTime,
+                      timezone,
                     }),
                   })
                     .then((r) => r.json())
@@ -375,7 +423,7 @@ const LuckPillarExplorer = forwardRef<
         .catch(console.error)
         .finally(() => setLoadingMonth(false))
     },
-    [birthTime]
+    [birthTime, timezone]
   )
 
   // Helper: get Gregorian month from a Chinese month number using monthPillars data
@@ -400,6 +448,7 @@ const LuckPillarExplorer = forwardRef<
           year,
           month: gMonth,
           birth_time: birthTime,
+          timezone,
         }),
       })
         .then((r) => r.json())
@@ -431,7 +480,7 @@ const LuckPillarExplorer = forwardRef<
         .catch(console.error)
         .finally(() => setLoadingDay(false))
     },
-    [birthTime, monthPillars, getGregorianMonth]
+    [birthTime, monthPillars, getGregorianMonth, timezone]
   )
 
   const handleSelectLuck = useCallback(
@@ -497,6 +546,7 @@ const LuckPillarExplorer = forwardRef<
           month: gregorianMonth,
           day,
           birth_time: birthTime,
+          timezone,
         }),
       })
         .then((r) => r.json())
@@ -504,7 +554,7 @@ const LuckPillarExplorer = forwardRef<
         .catch(console.error)
         .finally(() => setLoadingHour(false))
     },
-    [baziData, birthTime, monthPillars]
+    [baziData, birthTime, monthPillars, timezone]
   )
 
   // ── Expose navigation methods to parent via ref ───────────────────────────
