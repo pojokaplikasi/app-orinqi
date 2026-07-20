@@ -112,6 +112,18 @@ function BaziCalculatorContent() {
 
       // Calculate current pillars
       const now = new Date()
+      console.log("[BAZI CLIENT] Calculation context:", {
+        actualDateTime,
+        timezone: calcTimezone,
+        clientTime: now.toString(),
+        clientISOString: now.toISOString(),
+        clientTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        clientTimezoneOffsetMinutes: now.getTimezoneOffset(),
+        currentYear: now.getFullYear(),
+        currentMonth: now.getMonth() + 1,
+        currentDay: now.getDate(),
+        currentHour: now.getHours(),
+      })
       const birthTimeData = { dateTime: actualDateTime }
 
       const currYear = calculateCurrentYearPillar(now, data.four_pillars)

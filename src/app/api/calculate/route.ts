@@ -15,6 +15,19 @@ export async function POST(request: Request) {
     const timezoneStr = data.location
     const gender = parseInt(data.gender)
 
+    console.log("[BAZI API] Environment:", {
+      serverTime: new Date().toString(),
+      serverISOString: new Date().toISOString(),
+      serverTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      processTZ: process.env.TZ || "not set",
+    })
+    console.log("[BAZI API] Input:", {
+      dateTimeStr,
+      timezoneStr,
+      gender,
+      unknownBirthTime: data.unknownBirthTime,
+    })
+
     let birthTime
     if (dateTimeStr.includes("T")) {
       birthTime = dayjs(dateTimeStr.replace("Z", "+00:00"))
@@ -22,13 +35,26 @@ export async function POST(request: Request) {
       birthTime = dayjs(dateTimeStr, "YYYY-MM-DD HH:mm")
     }
 
+    console.log("[BAZI API] Parsed before timezone:", {
+      formatted: birthTime.format(),
+      offset: birthTime.format("Z"),
+      isValid: birthTime.isValid(),
+    })
+
     if (timezoneStr) {
       try {
         birthTime = birthTime.tz(timezoneStr, true)
       } catch (e) {
-        console.error("Timezone error:", e)
+        console.error("[BAZI API] Timezone error:", e)
       }
     }
+
+    console.log("[BAZI API] Parsed after timezone:", {
+      formatted: birthTime.format(),
+      offset: birthTime.format("Z"),
+      timezone: birthTime.format("z"),
+      iso: birthTime.toISOString(),
+    })
 
     const fourPillars = calculatePillars(birthTime)
     const luckPillars = calculateLuckPillars(birthTime, gender, fourPillars)
