@@ -64,6 +64,7 @@ const LuckPillarExplorer = forwardRef<
     luckyStars,
     date,
     time,
+    timezone,
     unknownTime,
     mode = "modern",
     onHourSelect,
@@ -148,6 +149,7 @@ const LuckPillarExplorer = forwardRef<
         start_year: lp.year_start,
         end_year: lp.year_end,
         birth_time: birthTime,
+        timezone,
       }),
     })
       .then((r) => r.json())
@@ -163,7 +165,11 @@ const LuckPillarExplorer = forwardRef<
         fetch("/api/calculate_monthly", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ year: currentYear, birth_time: birthTime }),
+          body: JSON.stringify({
+            year: currentYear,
+            birth_time: birthTime,
+            timezone,
+          }),
         })
           .then((r) => r.json())
           .then((mdata) => {
@@ -205,6 +211,7 @@ const LuckPillarExplorer = forwardRef<
                     month: currentGregorianMonth,
                     day: currentDay,
                     birth_time: birthTime,
+                    timezone,
                   }),
                 })
                   .then((r) => r.json())
@@ -242,6 +249,7 @@ const LuckPillarExplorer = forwardRef<
           start_year: lp.year_start,
           end_year: lp.year_end,
           birth_time: birthTime,
+          timezone,
         }),
       })
         .then((r) => r.json())
@@ -256,7 +264,11 @@ const LuckPillarExplorer = forwardRef<
             fetch("/api/calculate_monthly", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ year: firstYear, birth_time: birthTime }),
+              body: JSON.stringify({
+                year: firstYear,
+                birth_time: birthTime,
+                timezone,
+              }),
             })
               .then((r) => r.json())
               .then((mdata) => {
@@ -276,6 +288,7 @@ const LuckPillarExplorer = forwardRef<
                       year: firstYear,
                       month: firstGregorianMonth,
                       birth_time: birthTime,
+                      timezone,
                     }),
                   })
                     .then((r) => r.json())
@@ -295,6 +308,7 @@ const LuckPillarExplorer = forwardRef<
                             month: firstGregorianMonth,
                             day: firstDay,
                             birth_time: birthTime,
+                            timezone,
                           }),
                         })
                           .then((r) => r.json())
@@ -313,7 +327,7 @@ const LuckPillarExplorer = forwardRef<
         .catch(console.error)
         .finally(() => setLoadingYear(false))
     },
-    [birthTime]
+    [birthTime, timezone]
   )
 
   const fetchMonthsAndCascade = useCallback(
@@ -322,7 +336,7 @@ const LuckPillarExplorer = forwardRef<
       fetch("/api/calculate_monthly", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ year, birth_time: birthTime }),
+        body: JSON.stringify({ year, birth_time: birthTime, timezone }),
       })
         .then((r) => r.json())
         .then((mdata) => {
@@ -341,6 +355,7 @@ const LuckPillarExplorer = forwardRef<
                 year,
                 month: firstGregorianMonth,
                 birth_time: birthTime,
+                timezone,
               }),
             })
               .then((r) => r.json())
@@ -360,6 +375,7 @@ const LuckPillarExplorer = forwardRef<
                       month: firstGregorianMonth,
                       day: firstDay,
                       birth_time: birthTime,
+                      timezone,
                     }),
                   })
                     .then((r) => r.json())
@@ -375,7 +391,7 @@ const LuckPillarExplorer = forwardRef<
         .catch(console.error)
         .finally(() => setLoadingMonth(false))
     },
-    [birthTime]
+    [birthTime, timezone]
   )
 
   // Helper: get Gregorian month from a Chinese month number using monthPillars data
@@ -497,6 +513,7 @@ const LuckPillarExplorer = forwardRef<
           month: gregorianMonth,
           day,
           birth_time: birthTime,
+          timezone,
         }),
       })
         .then((r) => r.json())
@@ -504,7 +521,7 @@ const LuckPillarExplorer = forwardRef<
         .catch(console.error)
         .finally(() => setLoadingHour(false))
     },
-    [baziData, birthTime, monthPillars]
+    [baziData, birthTime, monthPillars, timezone]
   )
 
   // ── Expose navigation methods to parent via ref ───────────────────────────
