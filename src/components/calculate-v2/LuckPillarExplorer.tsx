@@ -120,6 +120,20 @@ const LuckPillarExplorer = forwardRef<
 
   const birthTime = unknownTime ? `${date}T12:00` : `${date}T${time}`
 
+  const logExplorerRequest = useCallback(
+    (endpoint: string, payload: Record<string, unknown>) => {
+      console.log("[BAZI EXPLORER] Request", {
+        endpoint,
+        timezone,
+        birthTime,
+        payload,
+        browserTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        browserNow: new Date().toString(),
+      })
+    },
+    [birthTime, timezone]
+  )
+
   // ── Auto-detect current time and auto-select ─────────────────────────────
   const autoSelectCurrentTime = useCallback(() => {
     if (!baziData?.luck_pillars?.luck_pillars) return
@@ -137,10 +151,27 @@ const LuckPillarExplorer = forwardRef<
 
     if (currentLuckIdx === -1) return
 
+    console.log("[BAZI EXPLORER] Auto-select context", {
+      timezone,
+      birthTime,
+      browserTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      currentYear,
+      currentGregorianMonth,
+      currentDay,
+      currentLuckIdx,
+    })
+
     setSelectedLuck(currentLuckIdx)
 
     // Fetch years for that luck pillar, then auto-select current year
     const lp = luckPillars[currentLuckIdx]
+    const yearlyPayload = {
+      start_year: lp.year_start,
+      end_year: lp.year_end,
+      birth_time: birthTime,
+      timezone,
+    }
+    logExplorerRequest("/api/calculate_yearly", yearlyPayload)
     setLoadingYear(true)
     fetch("/api/calculate_yearly", {
       method: "POST",
