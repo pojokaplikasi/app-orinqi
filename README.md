@@ -1,80 +1,284 @@
-# Bazi Calculator - Dokumentasi Proyek
+# 命 Orinqi — Bazi Calculator
 
-## 1. Ekosistem dan Tech Stack (Teknologi yang Digunakan)
-Proyek ini menggunakan arsitektur **Client-Server** yang memisahkan antara antarmuka pengguna (frontend) dan mesin kalkulasi (backend).
+> Kalkulator Ba Zi (八字) modern berbasis web. Masukkan tanggal & waktu lahir, dan dapatkan analisis lengkap pilar nasib, dewa sepuluh, struktur elemen, bintang keberuntungan, hingga siklus Luck Pillar — semua dalam tampilan yang bersih dan elegan.
 
-### Backend (Mesin Kalkulasi)
-* **Bahasa:** Python 3.x
-* **Framework:** Flask (menyediakan RESTful API via endpoint `/calculate`).
-* **Library Utama:** `datetime`, `calendar`, `dateutil.tz` (sangat krusial untuk manajemen zona waktu), `json`.
-* **Fungsi Utama:** Melakukan perhitungan astronomis yang sangat presisi untuk menentukan 4 Pilar (Tahun, Bulan, Hari, Jam) dan Pilar Keberuntungan (Dayun) berdasarkan data *Jie Qi* (Solar Terms).
+---
 
-### Frontend (Antarmuka Pengguna)
-* **Bahasa:** HTML5, CSS3, Vanilla JavaScript (tanpa framework seperti React/Vue).
-* **Library UI:** Bootstrap 5.2 (untuk layout dan styling responsif), FontAwesome (untuk ikon), Animate.css (untuk animasi).
-* **Fungsi Utama:** Mengumpulkan input pengguna (tanggal, waktu, zona waktu, jenis kelamin), mengirim request ke backend, merender hasil kalkulasi ke dalam bentuk visual (tabel pilar), dan **mendeteksi serta menampilkan kombinasi/interaksi** antar pilar (seperti San He, Liu Chong, dll).
+## 📖 Daftar Isi
 
-### Data Layer (Database Astronomis)
-* Menggunakan file JSON statis (`jieqi_ultra_precise_1909_2183_cst.json`).
-* File ini berisi data 24 *Jie Qi* (Solar Terms) yang sangat presisi dari tahun 1909 hingga 2183, dihitung menggunakan algoritma VSOP87 dan Kepler. Data ini disimpan dalam zona waktu CST (China Standard Time / UTC+8).
+- [Tentang Proyek](#-tentang-proyek)
+- [Fitur Utama](#-fitur-utama)
+- [Teknologi yang Digunakan](#-teknologi-yang-digunakan)
+- [Prasyarat](#-prasyarat)
+- [Cara Instalasi & Menjalankan Proyek](#-cara-instalasi--menjalankan-proyek)
+- [Struktur Folder](#-struktur-folder)
+- [Cara Pengembangan](#-cara-pengembangan)
+- [Perintah yang Tersedia](#-perintah-yang-tersedia)
+- [Konfigurasi Firebase](#-konfigurasi-firebase)
+- [Kontribusi](#-kontribusi)
 
-## 2. Struktur File Utama
-* **`app.py`**: Jantung dari aplikasi backend. Berisi logika untuk menghitung *Four Pillars* (Pilar Kelahiran) dan *Luck Pillars* (Pilar Keberuntungan/Dayun). File ini menangani konversi zona waktu yang kompleks agar perhitungan sesuai dengan waktu lokal pengguna.
-* **`script.js`**: Otak dari frontend. Menangani event listener (tombol calculate, toggle), mengirim data ke `app.py`, dan berisi ratusan baris kode untuk **mendeteksi interaksi Bazi** (Kombinasi Batang Langit, Interaksi Cabang Bumi seperti San He, Clash, Punishment, Harm, dll).
-* **`index.html`**: Struktur halaman web, form input, dan kerangka untuk menampilkan hasil (Natal Chart dan Current Pillars).
-* **`style.css`**: Mengatur tampilan visual, warna elemen (Kayu=Hijau, Api=Merah, dll), dan layout pilar.
-* **`jieqi_ultra_precise_1909_2183_cst.json`**: Sumber kebenaran (source of truth) untuk pergantian bulan dan tahun dalam kalender Bazi.
-* **File Markdown (`FEATURE_*.md`, `FIX_*.md`)**: Dokumentasi ekstensif yang mencatat sejarah perbaikan bug dan penambahan fitur.
+---
 
-## 3. Alur Kerja Aplikasi (Flow)
-1. **Input Pengguna:** Pengguna memasukkan Tanggal Lahir, Waktu Lahir (opsional jika "Don't Know Birth Time" dicentang), Zona Waktu Lokal (misal: WIB/UTC+7), dan Jenis Kelamin di antarmuka web (`index.html`).
-2. **Validasi & Pengiriman (Frontend):** `script.js` memvalidasi input. Jika waktu tidak diketahui, sistem otomatis menggunakan jam 12:00 siang. Data dikemas dalam format JSON dan dikirim via HTTP POST ke endpoint `/calculate` di backend.
-3. **Pemrosesan Backend (`app.py`):**
-    * **Manajemen Zona Waktu:** Backend menerima waktu lokal pengguna. **Krusial:** Backend *tidak* mengubah waktu pengguna ke CST. Sebaliknya, saat membandingkan waktu lahir dengan data *Jie Qi* (yang berada di CST), data *Jie Qi* tersebut yang dikonversi ke zona waktu lokal pengguna.
-    * **Kalkulasi Pilar Hari:** Dihitung berdasarkan jumlah hari sejak referensi (1 Jan 1900). **Aturan Khusus:** Jika waktu >= 23:00 (Jam Zi), hari otomatis berganti ke hari berikutnya.
-    * **Kalkulasi Pilar Tahun & Bulan:** Backend mencari posisi waktu lahir di antara 24 *Jie Qi*. Pergantian tahun didasarkan pada titik *Lichun* (Awal Musim Semi), bukan 1 Januari atau Imlek kalender lunar.
-    * **Kalkulasi Pilar Jam:** Dihitung berdasarkan siklus 2 jam tradisional (Zi, Chou, Yin, dst).
-    * **Kalkulasi Dayun (Pilar Keberuntungan):** Menghitung jarak (dalam hari) dari waktu lahir ke *Jie Qi* berikutnya (jika maju) atau sebelumnya (jika mundur), lalu dikonversi menjadi umur mulai (Start Age) dengan rumus 3 hari = 1 tahun.
-4. **Pengembalian Data:** Backend mengirim kembali data lengkap (Elemen, Batang Langit, Cabang Bumi, Akar Tersembunyi/Hidden Stems, 10 Gods) ke frontend dalam format JSON.
-5. **Rendering & Deteksi Kombinasi (Frontend):**
-    * `script.js` menerima data dan menggambar kotak-kotak pilar (Natal Chart & Current Pillars).
-    * Fungsi seperti `detectAllHSCombinations` dan `detectAllBranchInteractions` berjalan untuk membandingkan setiap pilar dengan pilar lainnya.
-    * Sistem mendeteksi interaksi positif (San Hui, San He, Ban He, Liu He, An He) dan negatif (Clash, Punishment, Destruction, Harm).
-    * Hasil interaksi ditampilkan di bagian bawah setiap pilar dengan ikon dan warna yang sesuai (bisa di-toggle antara istilah Klasik/Pinyin atau Modern/Inggris).
+## 🌟 Tentang Proyek
 
-## 4. Fitur & Aturan Bisnis Bazi yang Diterapkan
-Proyek ini sangat memperhatikan detail aturan Bazi tradisional:
-* **Transisi Hari 23:00:** Hari Bazi berganti pada jam 23:00 (awal jam Zi), bukan jam 00:00 tengah malam.
-* **Akurasi Zona Waktu:** Perhitungan jam dan *Jie Qi* benar-benar menggunakan waktu lokal pengguna, bukan waktu server atau CST.
-* **Kalkulasi Umur Dayun yang Presisi:** Menghitung selisih hari aktual ke *Jie Qi* terdekat, bukan menggunakan angka baku.
-* **Current Day Pillar:** Menampilkan pilar hari ini secara real-time (juga mengikuti aturan transisi 23:00).
-* **An He (Hidden Combinations):** Mendeteksi kombinasi tersembunyi berdasarkan *Hidden Stems* di dalam Cabang Bumi (misal: Yin-Chou, Zi-Chen).
-* **Unknown Birth Time:** Jika pengguna tidak tahu jam lahirnya, sistem menggunakan jam 12 siang untuk menghitung 3 pilar pertama, dan mengosongkan Pilar Jam (serta tidak menghitung kombinasi yang melibatkan jam).
-* **Classic/Modern Toggle:** Pengguna dapat memilih untuk menampilkan istilah kombinasi dalam bahasa Pinyin (Klasik) atau Bahasa Inggris (Modern).
+**Orinqi** adalah aplikasi web kalkulator **Ba Zi (八字)** — sistem metafisika tradisional Tiongkok yang menganalisis nasib seseorang berdasarkan tanggal dan waktu kelahiran.
 
-## 5. Cara Menjalankan Aplikasi
-Aplikasi ini berjalan di atas server Flask (Python). Berikut langkah-langkah untuk menjalankannya secara lokal:
+Aplikasi ini dibangun dengan pendekatan **modern dan minimalis**, terinspirasi dari desain Apple, Stripe, dan Linear — sehingga terasa premium tanpa kesan "kuno" atau terlalu bernuansa Cina tradisional.
 
-1. **Persiapan Lingkungan (Prerequisites):**
-   Pastikan Python 3.x sudah terinstal di sistem Anda.
-   
-2. **Instalasi Dependensi:**
-   Buka terminal/command prompt dan instal library yang dibutuhkan:
-   ```bash
-   pip install flask flask-cors python-dateutil pytz
-   ```
+**Siapa yang bisa menggunakan ini?**
+- Praktisi dan peminat Ba Zi / Feng Shui
+- Siapa saja yang ingin mengetahui analisis pilar nasib mereka
+- Developer yang ingin belajar atau berkontribusi
 
-3. **Menjalankan Server:**
-   Navigasi ke direktori proyek (`BAZI 01`) dan jalankan file `app.py`:
-   ```bash
-   cd "path/to/BAZI 01"
-   python app.py
-   ```
-   Server Flask akan berjalan, biasanya di port `5000`.
+---
 
-4. **Mengakses Aplikasi:**
-   Buka web browser (Chrome, Firefox, Safari, dll) dan akses alamat berikut:
-   ```
-   http://localhost:5000
-   ```
-   *(Catatan: Meskipun Anda bisa membuka file `index.html` secara langsung di browser, sangat disarankan untuk menjalankannya melalui server Flask agar API `/calculate` dapat diakses tanpa kendala CORS).*
+## ✨ Fitur Utama
+
+| Fitur | Keterangan |
+|---|---|
+| 🔢 **Kalkulasi Ba Zi** | Hitung 4 pilar (Tahun, Bulan, Hari, Jam) dari tanggal & waktu lahir |
+| 🧭 **Ten Gods (Sepuluh Dewa)** | Analisis hubungan elemen antar pilar |
+| 🌊 **Struktur Elemen** | Distribusi kekuatan 5 elemen (Kayu, Api, Tanah, Logam, Air) |
+| ⭐ **Lucky Stars** | Bintang keberuntungan berdasarkan pilar |
+| 🔄 **Luck Pillar Explorer** | Jelajahi siklus 10 tahunan (Da Yun) |
+| 📅 **Pilar Hari Ini** | Tampilkan pilar tahun, bulan, dan hari saat ini secara real-time |
+| 💾 **Riwayat Kalkulasi** | Simpan dan kelola riwayat perhitungan (perlu login) |
+| 👤 **Autentikasi** | Login / Register dengan Firebase Auth |
+| 🌙 **Dark / Light Mode** | Tema gelap dan terang |
+| 📱 **Responsif** | Tampilan optimal di desktop maupun mobile |
+
+---
+
+## 🛠 Teknologi yang Digunakan
+
+| Teknologi | Versi | Fungsi |
+|---|---|---|
+| [Next.js](https://nextjs.org/) | 16 | Framework utama (React) |
+| [React](https://react.dev/) | 19 | Library UI |
+| [TypeScript](https://www.typescriptlang.org/) | 5 | Bahasa pemrograman |
+| [Tailwind CSS](https://tailwindcss.com/) | 4 | Styling / tampilan |
+| [shadcn/ui](https://ui.shadcn.com/) | — | Komponen UI siap pakai |
+| [Firebase](https://firebase.google.com/) | 12 | Auth, Database, Storage |
+| [Recharts](https://recharts.org/) | 3 | Grafik elemen |
+| [Zod](https://zod.dev/) | 4 | Validasi form |
+| [React Hook Form](https://react-hook-form.com/) | 7 | Manajemen form |
+| [Day.js](https://day.js.org/) | 1 | Manipulasi tanggal |
+
+---
+
+## 📋 Prasyarat
+
+Sebelum memulai, pastikan komputer kamu sudah terinstal:
+
+1. **Node.js** versi 18 ke atas
+   - Cek dengan perintah: `node --version`
+   - Download di: https://nodejs.org/
+
+2. **npm** (biasanya sudah ikut bersama Node.js)
+   - Cek dengan perintah: `npm --version`
+
+3. **Git** (untuk mengunduh kode)
+   - Cek dengan perintah: `git --version`
+   - Download di: https://git-scm.com/
+
+> 💡 **Belum pernah pakai terminal?** Buka aplikasi **Terminal** (Mac/Linux) atau **Command Prompt / PowerShell** (Windows), lalu ketik perintah-perintah di bawah ini.
+
+---
+
+## 🚀 Cara Instalasi & Menjalankan Proyek
+
+### Langkah 1 — Unduh kode proyek
+
+```bash
+git clone https://github.com/username/orinqi.git
+cd orinqi
+```
+
+> Ganti `username/orinqi` dengan URL repositori yang sebenarnya.
+
+### Langkah 2 — Install semua dependensi
+
+```bash
+npm install
+```
+
+> Proses ini mungkin memakan waktu 1–3 menit. Tunggu hingga selesai.
+
+### Langkah 3 — Buat file konfigurasi environment
+
+Buat file baru bernama `.env.local` di folder utama proyek, lalu isi dengan:
+
+```env
+# Tidak ada variabel environment tambahan yang diperlukan saat ini.
+# Firebase sudah dikonfigurasi di dalam kode.
+```
+
+> Jika kamu ingin menggunakan Firebase project milikmu sendiri, lihat bagian [Konfigurasi Firebase](#-konfigurasi-firebase).
+
+### Langkah 4 — Jalankan server pengembangan
+
+```bash
+npm run dev
+```
+
+### Langkah 5 — Buka di browser
+
+Buka browser dan kunjungi:
+
+```
+http://localhost:3000
+```
+
+Selesai! 🎉 Aplikasi sudah berjalan di komputer kamu.
+
+---
+
+## 📁 Struktur Folder
+
+```
+orinqi/
+├── src/
+│   ├── app/                    # Halaman-halaman aplikasi (Next.js App Router)
+│   │   ├── page.tsx            # Halaman utama / landing page
+│   │   ├── calculate-v2/       # Halaman kalkulator Ba Zi
+│   │   ├── dashboard/          # Halaman dashboard & riwayat
+│   │   ├── login/              # Halaman login
+│   │   └── register/           # Halaman registrasi
+│   ├── components/             # Komponen UI yang dapat digunakan ulang
+│   │   ├── calculate-v2/       # Komponen khusus halaman kalkulator
+│   │   ├── providers/          # Context providers (Auth, Theme)
+│   │   └── ui/                 # Komponen dasar (Button, Card, dll.)
+│   ├── lib/                    # Logika inti & utilitas
+│   │   ├── bazi/               # Algoritma kalkulasi Ba Zi
+│   │   ├── bazi.ts             # Entry point kalkulasi
+│   │   ├── firebase.ts         # Konfigurasi Firebase
+│   │   └── utils.ts            # Fungsi utilitas umum
+│   └── hooks/                  # Custom React hooks
+├── public/                     # Aset statis (gambar, ikon, dll.)
+├── master_filie/               # File referensi & data Jieqi (24 solar terms)
+├── next.config.ts              # Konfigurasi Next.js
+├── tailwind.config.ts          # Konfigurasi Tailwind CSS
+├── tsconfig.json               # Konfigurasi TypeScript
+└── package.json                # Daftar dependensi & skrip
+```
+
+---
+
+## 💻 Cara Pengembangan
+
+### Alur kerja dasar
+
+1. **Jalankan server dev** dengan `npm run dev` — setiap perubahan kode akan langsung terlihat di browser tanpa perlu restart.
+
+2. **Edit halaman** di folder `src/app/` — setiap folder adalah sebuah route/halaman.
+
+3. **Buat komponen baru** di `src/components/` — komponen adalah bagian UI yang bisa dipakai ulang.
+
+4. **Tambah logika Ba Zi** di `src/lib/bazi/` — semua algoritma perhitungan ada di sini.
+
+### Menambah halaman baru
+
+Buat folder baru di `src/app/`, lalu buat file `page.tsx` di dalamnya:
+
+```
+src/app/nama-halaman/page.tsx  →  http://localhost:3000/nama-halaman
+```
+
+### Menambah komponen UI baru (shadcn/ui)
+
+```bash
+npx shadcn@latest add nama-komponen
+# Contoh:
+npx shadcn@latest add dialog
+npx shadcn@latest add calendar
+```
+
+### Mengecek error TypeScript
+
+```bash
+npm run typecheck
+```
+
+### Merapikan kode (formatting)
+
+```bash
+npm run format
+```
+
+### Mengecek kualitas kode (linting)
+
+```bash
+npm run lint
+```
+
+---
+
+## 📜 Perintah yang Tersedia
+
+| Perintah | Fungsi |
+|---|---|
+| `npm run dev` | Jalankan server pengembangan (mode development) |
+| `npm run build` | Build aplikasi untuk produksi |
+| `npm run start` | Jalankan aplikasi hasil build (mode produksi) |
+| `npm run lint` | Cek kualitas kode dengan ESLint |
+| `npm run format` | Rapikan format kode dengan Prettier |
+| `npm run typecheck` | Cek error TypeScript tanpa build |
+
+---
+
+## 🔥 Konfigurasi Firebase
+
+Proyek ini menggunakan **Firebase** untuk:
+- **Authentication** — Login & Register pengguna
+- **Firestore** — Database dokumen
+- **Realtime Database** — Riwayat kalkulasi
+- **Storage** — Penyimpanan file
+
+Saat ini konfigurasi Firebase sudah tertanam di dalam kode (`src/lib/firebase.ts`). Jika kamu ingin menggunakan Firebase project milikmu sendiri:
+
+1. Buat project baru di [Firebase Console](https://console.firebase.google.com/)
+2. Aktifkan **Authentication** (Email/Password), **Firestore**, **Realtime Database**, dan **Storage**
+3. Salin konfigurasi Firebase kamu
+4. Ubah nilai di `src/lib/firebase.ts` sesuai konfigurasi project kamu
+
+---
+
+## 🤝 Kontribusi
+
+Ingin berkontribusi? Ikuti langkah berikut:
+
+1. **Fork** repositori ini
+2. Buat **branch** baru: `git checkout -b fitur/nama-fitur`
+3. Lakukan perubahan dan **commit**: `git commit -m "feat: tambah fitur X"`
+4. **Push** ke branch kamu: `git push origin fitur/nama-fitur`
+5. Buat **Pull Request**
+
+### Konvensi penamaan commit
+
+| Prefix | Digunakan untuk |
+|---|---|
+| `feat:` | Fitur baru |
+| `fix:` | Perbaikan bug |
+| `style:` | Perubahan tampilan/styling |
+| `refactor:` | Refaktor kode (bukan fitur/bug) |
+| `docs:` | Perubahan dokumentasi |
+| `chore:` | Pemeliharaan (update dependensi, dll.) |
+
+---
+
+## ❓ Pertanyaan Umum
+
+**Q: Aplikasi tidak bisa dibuka di browser setelah `npm run dev`?**
+> Pastikan port 3000 tidak digunakan aplikasi lain. Coba akses `http://localhost:3001` jika 3000 sudah terpakai.
+
+**Q: Error saat `npm install`?**
+> Pastikan versi Node.js kamu minimal v18. Jalankan `node --version` untuk mengecek.
+
+**Q: Bagaimana cara deploy ke internet?**
+> Cara termudah adalah menggunakan [Vercel](https://vercel.com/) — platform resmi dari pembuat Next.js. Cukup hubungkan repositori GitHub kamu dan deploy otomatis.
+
+---
+
+<div align="center">
+  <p>Dibuat dengan ❤️ menggunakan Next.js & Firebase</p>
+</div>

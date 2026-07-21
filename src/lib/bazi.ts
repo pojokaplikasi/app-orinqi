@@ -331,7 +331,11 @@ export function getChineseNewYearBoundary(
   }
 
   // PRIORITY 3: Fallback to approximate date if data is missing
-  return dayjs.tz(`${year}-02-04 00:00:00`, "YYYY-MM-DD HH:mm:ss", "Asia/Shanghai")
+  return dayjs.tz(
+    `${year}-02-04 00:00:00`,
+    "YYYY-MM-DD HH:mm:ss",
+    "Asia/Shanghai"
+  )
 }
 
 export function getSolarTermMoment(
